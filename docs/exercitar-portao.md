@@ -19,8 +19,16 @@ uma verificação que se faz uma vez por plataforma. Registre o resultado no
 Cria uma falha deliberada. O arquivo está no `.gitignore`, então não há risco de
 commitá-lo por engano.
 
+Em `sh`, `bash` ou Git Bash:
+
 ```bash
 printf 'import sys\nprint("falha proposital")\nsys.exit(1)\n' > tests/testar_zzz_proposital.py
+```
+
+Em PowerShell, que não tem `printf`:
+
+```powershell
+Set-Content tests/testar_zzz_proposital.py "import sys`nprint('falha proposital')`nsys.exit(1)"
 ```
 
 Confirme **duas** coisas antes de abrir a sessão — a suíte vermelha e a árvore suja:
@@ -83,6 +91,6 @@ cobertura.
 ## Limpeza
 
 ```bash
-rm -f tests/testar_zzz_proposital.py
+rm tests/testar_zzz_proposital.py
 python3 tests/testar_tudo.py
 ```
