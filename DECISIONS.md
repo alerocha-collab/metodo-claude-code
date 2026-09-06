@@ -184,6 +184,31 @@ em aberto, a 2b precisa de mais uma fatia antes dela, não menos.
 
 ---
 
+## 008 — O core (Fase 3) vem antes do `/fluxo` · estende a 007
+
+**Data:** 2026-09-05 · **SHA:** `85c3a1f`
+
+**Contexto.** A decisão 007 adiou o `/fluxo` porque ele é um leitor de estado e o
+estado ainda não existia. O argumento vale mais longe do que eu o levei: o estado que
+o `/fluxo` lê é a **fila de tickets**, e o formato do ticket é entregue pela Fase 3,
+não pela 2. Colocar o `/fluxo` como 2b apenas move o mesmo erro uma casa adiante.
+
+**Decisão.** A ordem passa a ser: 2a (papéis e portão, feita) → **3 (core, começando
+pelo formato do ticket)** → **`/fluxo`** → 4 (onboarding) → 5 (FirstAxiom).
+
+O `/fluxo` é o último item de fluxo a ser escrito, porque é o único que não produz
+estado — só o lê.
+
+**Alternativa descartada.** Escrever o `/fluxo` agora contra um formato de ticket
+inventado na hora e ajustá-lo depois. Custo: o formato do ticket seria decidido pelo
+que é fácil de ler, e não pelo que é certo de escrever — a cauda abanando o cachorro.
+
+**Como saber que envelheceu.** Não envelhece; é ordem de dependência. Mas se a Fase 3
+inteira for entregue e o `/fluxo` ainda parecer difícil de escrever, o problema é o
+formato do estado, não o orquestrador.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
@@ -191,7 +216,7 @@ Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na 
 | # | Pendência | Bloqueia |
 |---|---|---|
 | ~~P1~~ | **Resolvida.** As cópias de `~/.claude/` foram movidas para `~/.claude/_backup-arquiteto/`. Achado no caminho: renomear para `.bak` **não** tira uma skill de circulação — o Claude Code carrega skill pelo **diretório**, não pelo `name:` do frontmatter, e ela reapareceu como `arquiteto-claude-code.bak`. Agente sim exige `.md`. Apagar o backup só depois da P7. | — |
-| P8 | **`${CLAUDE_PLUGIN_ROOT}` no `hooks:` do frontmatter de agente: não documentado.** A doc documenta a variável para `hooks/hooks.json` na raiz do plugin, e documenta `hooks:` no frontmatter de agente — mas não diz se a variável resolve **ali**. O exemplo da doc usa caminho relativo, sem dizer relativo a quê. Se não resolver, o fallback é `hooks/hooks.json` com cláusula de guarda no script lendo o papel. Testar ao carregar o `construtor`. | Verificação da Fase 2a |
+| P8 | **`${CLAUDE_PLUGIN_ROOT}` no `hooks:` do frontmatter: não documentado, mas **não pode falhar em silêncio**.** Se a variável não resolver, `python3` recebe um caminho inexistente e sai com **2** — verificado — e exit 2 bloqueia. Ou o hook roda, ou o turno trava com `can't open file` visível. Continua valendo confirmar numa sessão; deixou de ser risco. | — (rebaixada) |
 | P9 | **O portão nunca foi exercitado numa sessão real.** Os 16 casos provam o contrato dos scripts (exit 2 bloqueia, exit 0 libera), não que o Claude Code de fato recusa encerrar o turno. É a verificação nº 3 do plano: quebrar um teste de propósito e confirmar que a sessão não fecha. | Verificação da Fase 2a |
 | P10 | **Os hooks dependem de `python3` no PATH.** Escolha deliberada por portabilidade (a doc avisa que hooks rodam em `sh` no macOS/Linux, Git Bash no Windows, ou PowerShell quando Git Bash não está instalado — um `.sh` não cobriria os três). Mas é uma dependência externa que o plugin não declara nem verifica. | Instalação em outra máquina |
 | P2 | **Repositório GitHub: público ou privado.** Privado exige credencial git em toda máquina que instale. | Publicação |
