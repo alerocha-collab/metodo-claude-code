@@ -1,0 +1,14 @@
+{
+  "$comentario": "Configuração da metodologia para este projeto. Copie para .claude/metodo.json na raiz do repositório. É JSON, e não Markdown, de propósito: o modelo reescreve Markdown com facilidade, e este arquivo governa um portão.",
+
+  "verificacao": {
+    "comando": "SUBSTITUA-ME",
+    "$comentario_comando": "O comando que decide verde/vermelho, com exit code confiável. Ex.: 'pytest -q', 'npm test -- --ci', 'cargo test', 'python scripts/testar_tudo.py'. O portão do papel construtor roda exatamente isto ao fim do turno.",
+
+    "timeout_segundos": 600,
+    "$comentario_timeout": "Acima disso o portão trata como falha. Suíte que não termina não é suíte que passa.",
+
+    "descricao": "suíte completa",
+    "$comentario_descricao": "Aparece na mensagem de bloqueio. Escreva o que um humano precisaria saber para rodar isto à mão."
+  }
+}

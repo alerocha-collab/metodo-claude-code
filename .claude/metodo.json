@@ -1,0 +1,7 @@
+{
+  "verificacao": {
+    "comando": "python3 tests/testar_hooks.py",
+    "timeout_segundos": 300,
+    "descricao": "suite dos hooks do plugin (16 casos, conjunto balanceado)"
+  }
+}

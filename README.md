@@ -4,9 +4,22 @@ Repositório que carrega a metodologia entre projetos. O que vive aqui são as s
 os agentes e os hooks que codificam nove decisões de método já fechadas — não código
 de aplicação.
 
-**Estado:** Fase 1 (esqueleto). Só o agente `arquiteto` e a skill
-`arquiteto-claude-code` estão migrados. `/fluxo`, os agentes de papel e o core
-adaptado entram nas fases seguintes.
+**Estado:** Fase 2a. Os papéis `construtor` e `operador` existem, com o portão de
+verificação e a proteção dos testes como hooks do papel. O `/fluxo` (Fase 2b) e o
+core adaptado (Fase 3) entram depois.
+
+## Verificação
+
+```bash
+python3 tests/testar_hooks.py
+```
+
+16 casos, conjunto balanceado: metade verifica que o hook bloqueia quando deve, metade
+que ele **não** bloqueia quando não deve. Uma suíte só com casos positivos aprova um
+hook que bloqueia tudo.
+
+Este repositório usa o próprio portão da metodologia: `.claude/metodo.json` aponta
+para essa suíte.
 
 ## Estrutura
 
