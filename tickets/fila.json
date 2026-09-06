@@ -51,6 +51,42 @@
       "bloqueado_por": [],
       "modulo": "hooks",
       "brief": "tickets/006-hooks-para-hooks-json.md"
+    },
+    {
+      "id": "007",
+      "titulo": "Escrever `onboarding-entender`: o mapa do que existe",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "skills",
+      "brief": "tickets/007-onboarding-entender.md"
+    },
+    {
+      "id": "008",
+      "titulo": "Escrever `onboarding-modelar`: o glossario extraido do codigo",
+      "estado": "pronto",
+      "bloqueado_por": [
+        "007"
+      ],
+      "modulo": "skills",
+      "brief": "tickets/008-onboarding-modelar.md"
+    },
+    {
+      "id": "009",
+      "titulo": "Escrever `onboarding-lacunas`: a distancia ate o alvo, como fila",
+      "estado": "pronto",
+      "bloqueado_por": [
+        "008"
+      ],
+      "modulo": "skills",
+      "brief": "tickets/009-onboarding-lacunas.md"
+    },
+    {
+      "id": "010",
+      "titulo": "As skills de entrada: adaptar, depender ou dispensar",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "skills",
+      "brief": "tickets/010-skills-de-entrada.md"
     }
   ]
 }
