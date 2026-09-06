@@ -131,6 +131,30 @@ Tudo que o plugin distribui carrega o prefixo `metodo:`. Skills se invocam como
 `/metodo:arquiteto-claude-code`; agentes aparecem no typeahead como
 `metodo:arquiteto`.
 
+### A assimetria que pega quem instala
+
+**Skills de plugin coexistem com as locais.** Elas são namespaced, então
+`/metodo:fatiar` e um `/fatiar` seu vivem lado a lado; nenhuma sobrescreve a outra.
+
+**Agentes de plugin, não.** Uma definição em `.claude/agents/` do projeto, ou em
+`~/.claude/agents/`, **sobrepõe silenciosamente** a do plugin com o mesmo nome — e o
+plugin só volta a valer quando a local sai. Se você já tem um `construtor`, um
+`operador` ou um `arquiteto` locais, é a sua versão que roda, e nada avisa.
+
+As duas regras estão documentadas, em páginas diferentes, e nenhuma menciona a outra.
+Se o agente do plugin parecer não ter carregado, procure um homônimo local antes de
+procurar bug.
+
+### Custo de contexto
+
+As descrições das skills carregam em **todo request** — hoje ~4.500 caracteres,
+~1.100 tokens, somando `metodo` e `doutrina`. `tests/testar_orcamento.py` mantém isso
+sob teto: passar dele exige podar uma descrição ou registrar uma decisão para subir o
+teto, e não subir em silêncio.
+
+O motivo não é só espaço. Quando a listagem estoura o orçamento, as descrições são
+**encurtadas** — e o que se perde são as palavras-chave que fazem a skill disparar.
+
 ## Publicar
 
 Ainda não há marketplace — ele só se paga ao instalar num segundo projeto.

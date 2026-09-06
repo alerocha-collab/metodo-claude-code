@@ -482,6 +482,45 @@ notar, o relato não bastou e a pergunta volta — provavelmente como aviso em
 
 ---
 
+## 015 — O `doutrina` revisou o `metodo`, e o custo de contexto foi medido
+
+**Data:** 2026-09-06 · **SHA:** `ticket 018-020`
+
+**Contexto.** O `doutrina` foi construído para um agente decidir arquitetura. O
+primeiro uso real dele foi revisar o `metodo` — e é o teste honesto: se a destilação
+não muda uma decisão, ela não serve.
+
+**Mudou quatro.** Três defeitos e uma medição, e nenhum deles eu tinha visto sozinho,
+apesar de ter escrito o código dos dois hooks.
+
+| Achado | De qual ficha veio | Fatia |
+|---|---|---|
+| Config não encontrada em monorepo | `distribuir` — settings não são herdadas de pai | 018 |
+| Hooks agindo em repositório que não adotou | `precedencias` — hooks se fundem, não se sobrescrevem | 018 |
+| Nenhuma camada de garantia dura | `onde-colocar` — três níveis de autoridade | 019 |
+| Descrição ocupando 20% do orçamento | `escrever-skill` — descrição gorda empurra as vizinhas | 020 |
+
+**Decisão sobre o orçamento de contexto.** As descrições das skills dos dois plugins
+somavam **4.970 caracteres**; passaram a **4.462** depois de estreitar a da
+`arquiteto-claude-code`, de 994 para 486. Medido, não estimado — é a verificação nº 4
+do plano original, que até aqui só tinha sido citada.
+
+Tetos declarados em `tests/testar_orcamento.py`: **5.000 no total** e **520 por
+skill**. O segundo importa mais: o total avisa que o conjunto cresceu, o por-skill pega
+a próxima que nascer gorda **na hora**, e não daqui a seis skills quando o dano já
+está distribuído.
+
+**Alternativa descartada.** Só encurtar o texto. O que se fez foi **estreitar o
+escopo**: com o `doutrina` instalado, as frases-gatilho daquela skill competiam com
+skills mais específicas — "hook ou CLAUDE.md?" tem resposta melhor e mais barata em
+`onde-colocar`. Encurtar sem desconflitar teria mantido as duas disputando o mesmo
+pedido.
+
+**Como saber que envelheceu.** Se o teto for atingido, a resposta certa quase nunca é
+subi-lo. É perguntar qual skill deixou de se pagar.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.

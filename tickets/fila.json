@@ -169,7 +169,7 @@
     {
       "id": "020",
       "titulo": "metodo: custo de contexto das descricoes e precedencia de agente",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "skills",
       "brief": "tickets/020-metodo-contexto-e-precedencia.md"

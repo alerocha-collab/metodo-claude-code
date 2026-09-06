@@ -1,7 +1,7 @@
 ---
 name: arquiteto-claude-code
-description: Projeta a arquitetura de sistemas construídos com Claude Code e com o Claude Agent SDK, segundo a doutrina publicada pela Anthropic. Use ao desenhar um harness de agente, decidir entre workflow e agente autônomo, escolher entre CLAUDE.md, rules, skills, subagents, hooks, MCP e plugins, dimensionar orçamento de contexto, projetar o loop de verificação e os evals, ou definir o modelo de permissão e sandbox de uma operação autônoma. Use também para auditar e simplificar um setup de Claude Code que já existe.
-when_to_use: Dispare quando o pedido envolver "projetar/arquitetar um agente", "montar um harness", "como estruturar meu setup do Claude Code", "devo usar skill ou subagente?", "isso deveria ser hook ou CLAUDE.md?", "meu CLAUDE.md está grande demais", "como paralelizar agentes", "vale a pena multiagente?", "como avaliar meu agente", "revisar minha configuração do .claude". Não dispare para implementar uma feature de aplicação comum, nem para escrever código que apenas chama a API do Claude.
+description: Projeta a arquitetura de um sistema com agentes e devolve um documento defensavel: escada de complexidade, alocacao de mecanismos, verificacao, evals e fronteira de seguranca. Use ao desenhar um harness inteiro, ou auditar um setup .claude existente.
+when_to_use: Dispare em "arquitete um agente", "monte um harness", "revise minha configuracao do .claude", "vale a pena multiagente?". Para escolher UM mecanismo ha resposta mais direta que um documento. Nao dispare para implementar feature comum.
 allowed-tools: Read, Glob, Grep
 ---
 
