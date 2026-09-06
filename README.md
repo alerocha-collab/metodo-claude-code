@@ -57,6 +57,7 @@ quem já instalou continua com a cópia em cache.
 | Arquivo | O que é |
 |---|---|
 | [docs/plano-metodologia.md](docs/plano-metodologia.md) | O plano que este repositório executa, fase a fase |
+| [docs/fase-0-mecanismos.md](docs/fase-0-mecanismos.md) | O que a plataforma já entrega, e o que isso muda no plano |
 | [docs/decisoes-metodologia.md](docs/decisoes-metodologia.md) | As nove decisões de método, com alternativas e modos de falha |
 | [docs/analise-cruzada-metodologias.md](docs/analise-cruzada-metodologias.md) | XP × engenharia clássica × set do Matt Pocock × doutrina Anthropic |
 | [docs/melhores-praticas-anthropic-claude-code.md](docs/melhores-praticas-anthropic-claude-code.md) | Doutrina Anthropic consolidada |
