@@ -20,7 +20,7 @@
     {
       "id": "003",
       "titulo": "Exercitar o portao numa sessao real e registrar o resultado",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "hooks",
       "brief": "tickets/003-exercitar-portao.md"
@@ -43,6 +43,14 @@
       ],
       "modulo": "skills",
       "brief": "tickets/005-fluxo.md"
+    },
+    {
+      "id": "006",
+      "titulo": "Mover os hooks para hooks/hooks.json, com clausula de guarda",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "hooks",
+      "brief": "tickets/006-hooks-para-hooks-json.md"
     }
   ]
 }

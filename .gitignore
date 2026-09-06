@@ -15,3 +15,7 @@ desktop.ini
 # Python
 __pycache__/
 *.py[cod]
+
+# Falha deliberada usada para exercitar o portao (docs/exercitar-portao.md).
+# Ignorada de proposito: se for commitada por engano, o CI fica vermelho.
+tests/testar_zzz_proposital.py

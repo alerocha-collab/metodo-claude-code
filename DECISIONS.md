@@ -247,6 +247,57 @@ escrito. Também envelhece se workflows deixarem de ser gated por plano.
 
 ---
 
+## 010 — Hooks no frontmatter de agente **não funcionam** para agentes de plugin
+
+**Data:** 2026-09-06 · **SHA:** `ticket 003`
+
+**Contexto.** O ticket 003 exercitou o portão numa sessão real, no papel `construtor`
+carregado por `--plugin-dir`. **Resultado negativo nos dois casos que deveriam
+bloquear:** o turno encerrou normalmente com a suíte deliberadamente vermelha, e uma
+edição em `tests/testar_hooks.py` passou sem qualquer mensagem de hook.
+
+**A causa não são os scripts.** Ambos foram exercitados na mesma sessão com o evento
+real e responderam certo — `proteger_testes` saiu 2 com a mensagem de bloqueio, e
+`verificar_suite` saiu 2 citando o comando da suíte. `python3` está disponível fora do
+Git Bash (3.14.2 em PowerShell e cmd), o que descarta a hipótese do ticket 004.
+
+**E não é `${CLAUDE_PLUGIN_ROOT}` sem resolver.** Se fosse, `python3` receberia um
+caminho inexistente e sairia com **2**, e o turno teria sido *barrado*. Não foi barrado
+nem executado: os hooks nunca foram invocados.
+
+**A causa, na doc, verbatim** ([sub-agents](https://code.claude.com/docs/en/sub-agents.md),
+tabela de frontmatter):
+
+> `hooks` | No | Lifecycle hooks scoped to this subagent. **Ignored for plugin
+> subagents**
+
+A mesma página afirma que frontmatter hooks disparam quando o agente roda como sessão
+principal via `--agent` — mas a exceção da tabela é mais específica e prevalece: **o
+agente vem de um plugin, então seu `hooks:` é ignorado.**
+
+**Decisão.** Os hooks saem do frontmatter dos agentes e vão para
+`plugins/metodo/hooks/hooks.json`, que é o local documentado para hooks de plugin, com
+**cláusula de guarda** no script para que a regra do papel não valha para todo mundo.
+
+É exatamente o escape que a decisão de método nº 8 previa e preferia evitar —
+*"funciona, mas é remendo"*. O remendo deixou de ser opcional.
+
+**Consequência para a decisão de método nº 8.** O escopo do meio — "por papel, no
+frontmatter do agente" — **não existe para agentes distribuídos por plugin**. Os
+escopos viáveis passam a ser dois: universal (`settings.json` ou `hooks/hooks.json` do
+plugin) e por fluxo (frontmatter da skill). O escopo por papel volta a depender de
+guarda no script, e portanto de o script conseguir descobrir o papel — que é o que o
+ticket 006 precisa determinar.
+
+**Como saber que envelheceu.** Se a doc deixar de listar "Ignored for plugin
+subagents". Revisar a cada atualização relevante do Claude Code.
+
+**O que este resultado vale.** A P9 fecha pelo negativo, que é o desfecho mais útil
+possível: os scripts estavam certos, a fiação estava errada, e sem exercitar ninguém
+saberia — as 45 verificações passavam, e passariam para sempre.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
@@ -254,11 +305,11 @@ Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na 
 | # | Pendência | Bloqueia |
 |---|---|---|
 | ~~P1~~ | **Resolvida.** As cópias de `~/.claude/` foram movidas para `~/.claude/_backup-arquiteto/`. Achado no caminho: renomear para `.bak` **não** tira uma skill de circulação — o Claude Code carrega skill pelo **diretório**, não pelo `name:` do frontmatter, e ela reapareceu como `arquiteto-claude-code.bak`. Agente sim exige `.md`. Apagar o backup só depois da P7. | — |
-| P8 | **`${CLAUDE_PLUGIN_ROOT}` no `hooks:` do frontmatter: não documentado, mas **não pode falhar em silêncio**.** Se a variável não resolver, `python3` recebe um caminho inexistente e sai com **2** — verificado — e exit 2 bloqueia. Ou o hook roda, ou o turno trava com `can't open file` visível. Continua valendo confirmar numa sessão; deixou de ser risco. | — (rebaixada) |
-| P9 | **O portão nunca foi exercitado numa sessão real.** Os 16 casos provam o contrato dos scripts (exit 2 bloqueia, exit 0 libera), não que o Claude Code de fato recusa encerrar o turno. É a verificação nº 3 do plano: quebrar um teste de propósito e confirmar que a sessão não fecha. | Verificação da Fase 2a |
-| P10 | **Os hooks dependem de `python3` no PATH.** Escolha deliberada por portabilidade (a doc avisa que hooks rodam em `sh` no macOS/Linux, Git Bash no Windows, ou PowerShell quando Git Bash não está instalado — um `.sh` não cobriria os três). Mas é uma dependência externa que o plugin não declara nem verifica. | Instalação em outra máquina |
+| ~~P8~~ | **Resolvida por eliminação.** A questão perdeu objeto: o `hooks:` do frontmatter nem é lido para agentes de plugin (decisão 010), então a resolução da variável ali nunca importou. Ela volta a importar em `hooks/hooks.json`, onde é documentada. | — |
+| ~~P9~~ | **Fechada pelo negativo.** O portão não barrou: hooks no frontmatter são ignorados para agentes de plugin. Ver decisão 010; correção no ticket 006. | — |
 | P2 | **Repositório GitHub: público ou privado.** Privado exige credencial git em toda máquina que instale. | Publicação |
 | P3 | **`gh` não instalado** (ausente do PATH). Sem ele, requisições não autenticadas com rate limit. | Criação do repo remoto |
+| ~~P10~~ | **Descartada como causa.** O ticket 003 confirmou `python3` 3.14.2 disponível em PowerShell e cmd, fora do Git Bash. A dependência segue não declarada — isso é o ticket 004, não uma pendência solta. | — |
 | P4 | **Bump de `version` a cada release.** Sem isso, quem instalou fica com a cópia em cache. Candidato a item de checklist ou hook. | Publicação |
 | P5 | **CI: `claude plugin validate --strict` no GitHub Actions a cada push.** `--strict` promove avisos a erros; é a forma pensada para CI. Fecha na metodologia uma lacuna identificada na auditoria do projeto de referência. | Fase 2+ |
 | ~~P7~~ | **Resolvida com ressalva** — ver decisão 006. Nome puro funciona. Ressalva: o teste rodou num repo que contém o plugin; confirmação definitiva na Fase 5. | — |
