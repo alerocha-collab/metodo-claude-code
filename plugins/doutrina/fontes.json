@@ -42,7 +42,10 @@
       "prioridade": "nucleo",
       "hash": "30758f2ce7d306277e3587329033d17656993b4643ae83f69308d02ace197dde",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md",
+        "duravel/compaction.md"
+      ]
     },
     {
       "id": "features-overview",
@@ -52,7 +55,11 @@
       "prioridade": "nucleo",
       "hash": "f02145dc806e3f2160c243a75f32c04243a2a1ef85237a2e6fe6a9ed4fc4e6a8",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md",
+        "duravel/matriz.md",
+        "duravel/precedencias.md"
+      ]
     },
     {
       "id": "claude-directory",
@@ -62,7 +69,11 @@
       "prioridade": "nucleo",
       "hash": "74ee4a33d8f2703a04aa0946290f8aac58b92aa928a2217bdedb2a56dce0db00",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md",
+        "duravel/matriz.md",
+        "duravel/precedencias.md"
+      ]
     },
     {
       "id": "context-window",
@@ -72,7 +83,10 @@
       "prioridade": "nucleo",
       "hash": "2ec3416e0d693a90c397aecf46fdefa0808a8a2b45ffa3a39da18fbd2f6468a8",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md",
+        "duravel/compaction.md"
+      ]
     },
     {
       "id": "prompt-caching",
@@ -92,7 +106,11 @@
       "prioridade": "nucleo",
       "hash": "20fc80cfc8a59ed983f36887690e609bda37db74692ff8fff5ea57b0ddb8e69d",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md",
+        "duravel/compaction.md",
+        "duravel/precedencias.md"
+      ]
     },
     {
       "id": "sessions",
@@ -132,7 +150,10 @@
       "prioridade": "nucleo",
       "hash": "43682a0568aae99707d7ff5bc29e9fba6bb5e1bd62168e17b7bcc53fd2f361e4",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md",
+        "duravel/compaction.md"
+      ]
     },
     {
       "id": "platforms",
@@ -402,7 +423,10 @@
       "prioridade": "nucleo",
       "hash": "9c04817ac2da54facb24635398c28bafe77c222dc6f23946284fbdf98cf09f74",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md",
+        "duravel/matriz.md"
+      ]
     },
     {
       "id": "sub-agents",
@@ -412,7 +436,11 @@
       "prioridade": "nucleo",
       "hash": "641e28dea991fa747c250944308f1d4fe86785345992c2da3254394d6cd4b982",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md",
+        "duravel/matriz.md",
+        "duravel/precedencias.md"
+      ]
     },
     {
       "id": "agent-view",
@@ -432,7 +460,9 @@
       "prioridade": "nucleo",
       "hash": "d746d5be8e828ad123a07dc1342100d81c211064a84e794c024cdea64d68138e",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md"
+      ]
     },
     {
       "id": "cross-session-messaging",
@@ -452,7 +482,9 @@
       "prioridade": "nucleo",
       "hash": "f95bdda81473d9289e7f3784c741b7b28a9fb9a119810c4f53878db15c12f2c8",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "duravel/matriz.md"
+      ]
     },
     {
       "id": "worktrees",
@@ -482,7 +514,9 @@
       "prioridade": "nucleo",
       "hash": "d6e9c343f0e9f2ec03ad71da16a810a39e578c04768cbad189317f86018ce84a",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "duravel/matriz.md"
+      ]
     },
     {
       "id": "skills",
@@ -492,7 +526,11 @@
       "prioridade": "nucleo",
       "hash": "db1889b7202f027251ffaceef80e889941f6bf6110d1d80a75f89d6cb39f13fa",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md",
+        "duravel/compaction.md",
+        "duravel/matriz.md"
+      ]
     },
     {
       "id": "discover-plugins",
@@ -512,7 +550,9 @@
       "prioridade": "nucleo",
       "hash": "d64f8d772d4cf3780a4af8aa0042e7f65b6dc8a5ceeb1ba70ea440946514fc48",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "duravel/matriz.md"
+      ]
     },
     {
       "id": "artifacts",
@@ -532,7 +572,9 @@
       "prioridade": "nucleo",
       "hash": "72a1eed90101d2107d7843c990f7b1b77fb4bdb67b36e45202e9ee23f8546f35",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md"
+      ]
     },
     {
       "id": "channels",
@@ -1032,7 +1074,9 @@
       "prioridade": "nucleo",
       "hash": "307cc8f152bc67fbd347bf834f012fe1dbf8774d4ebc9f10b36cb0ea632cc789",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "duravel/precedencias.md"
+      ]
     },
     {
       "id": "settings-reference",
@@ -1062,7 +1106,9 @@
       "prioridade": "nucleo",
       "hash": "f647cdef89d1714a92d57517808e9a0e1cb1b933be9ab6bd204c986e18f50c4b",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "duravel/matriz.md"
+      ]
     },
     {
       "id": "permission-modes",
@@ -1082,7 +1128,9 @@
       "prioridade": "nucleo",
       "hash": "5c28e9a9c0bc1b9cc9f906851f326e6800acec2197d94ef085ac84a95889f0bd",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "duravel/matriz.md"
+      ]
     },
     {
       "id": "sandbox-environments",
@@ -1212,7 +1260,9 @@
       "prioridade": "nucleo",
       "hash": "0254e1d95b71365a64cc241a6675fbd25a75300ca316900ac1c713cb2052a4e5",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "duravel/matriz.md"
+      ]
     },
     {
       "id": "terminal-config",
@@ -1342,7 +1392,11 @@
       "prioridade": "nucleo",
       "hash": "c30a50b8192dadf4e6ba016e451685f57a6d1d2c360d268887a9a94022d29f3e",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "armadilhas.md",
+        "duravel/matriz.md",
+        "duravel/precedencias.md"
+      ]
     },
     {
       "id": "plugins-reference",
