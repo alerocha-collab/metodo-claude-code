@@ -65,6 +65,11 @@ def casos_estrutura(base):
              "# Schema\n\nurl: https://code.claude.com/docs/en/skills.md\n"
              "Verificado em 2026-09-06.\n")
     escrever(os.path.join(ref, "volatil", "sem-carimbo.md"), "# Schema solto\n")
+    # Carimbo pela metade: tem a fonte, nao tem a data. E o caso mais provavel de
+    # acontecer de verdade — quem copia um schema lembra de citar a origem e esquece
+    # de datar, e sem data ninguem sabe se a copia ainda vale.
+    escrever(os.path.join(ref, "volatil", "sem-data.md"),
+             "# Schema\n\nurl: https://code.claude.com/docs/en/hooks.md\n")
     escrever(os.path.join(ref, "duravel", "orfa.md"), "# Ninguem me declarou\n")
     escrever(os.path.join(com_ficha, "skills", "uma", "SKILL.md"), "# Uma skill\n")
 
@@ -97,9 +102,12 @@ def casos_estrutura(base):
         ("ficha declarada que nao existe",
          {"paginas": [pag(fichas=["referencias/duravel/nao-existe.md"])]}, vazio,
          True, "nao existe"),
-        ("ficha volatil sem carimbo",
+        ("ficha volatil sem carimbo nenhum",
          {"paginas": [pag(fichas=["referencias/volatil/sem-carimbo.md"])]}, com_ficha,
          True, "sem url de origem"),
+        ("ficha volatil com fonte mas sem data",
+         {"paginas": [pag(fichas=["referencias/volatil/sem-data.md"])]}, com_ficha,
+         True, "sem data de verificacao"),
         ("ficha orfa em disco",
          {"paginas": [pag(fichas=["referencias/duravel/onde.md"])]}, com_ficha,
          True, "orfa"),
@@ -107,6 +115,7 @@ def casos_estrutura(base):
          {"paginas": [pag(fichas=["referencias/duravel/onde.md",
                                   "referencias/duravel/orfa.md",
                                   "referencias/volatil/schema.md",
+                                  "referencias/volatil/sem-data.md",
                                   "referencias/volatil/sem-carimbo.md"])]},
          com_ficha, True, "skills/uma/SKILL.md"),
         # --- NAO deve reprovar ---

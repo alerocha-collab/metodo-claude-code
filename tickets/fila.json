@@ -133,7 +133,7 @@
     {
       "id": "016",
       "titulo": "doutrina: os quatro schemas volateis, carimbados",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "doutrina",
       "brief": "tickets/016-doutrina-schemas-volateis.md"

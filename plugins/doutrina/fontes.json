@@ -556,6 +556,7 @@
         "referencias/armadilhas.md",
         "referencias/duravel/compaction.md",
         "referencias/duravel/matriz.md",
+        "referencias/volatil/frontmatter-de-skill.md",
         "skills/escrever-skill/SKILL.md"
       ]
     },
@@ -1141,6 +1142,7 @@
       "verificada_em": "2026-09-06",
       "fichas": [
         "referencias/duravel/matriz.md",
+        "referencias/volatil/regras-de-permissao.md",
         "skills/distribuir/SKILL.md",
         "skills/garantir/SKILL.md",
         "skills/onde-colocar/SKILL.md"
@@ -1401,7 +1403,9 @@
       "prioridade": "nucleo",
       "hash": "00e6bfdf1ff5e1155a0161cac52b9f079b86dc0a97c68d92aa118b2959d1c74f",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "referencias/volatil/regras-de-permissao.md"
+      ]
     },
     {
       "id": "interactive-mode",
@@ -1435,6 +1439,7 @@
         "referencias/armadilhas.md",
         "referencias/duravel/matriz.md",
         "referencias/duravel/precedencias.md",
+        "referencias/volatil/hooks-eventos-e-codigos.md",
         "skills/garantir/SKILL.md"
       ]
     },
@@ -1447,6 +1452,7 @@
       "hash": "3c017b65b48b6884b47882ffcf931dc77dead2048c624ffd76b039de8082bac8",
       "verificada_em": "2026-09-06",
       "fichas": [
+        "referencias/volatil/plugin-json.md",
         "skills/distribuir/SKILL.md"
       ]
     },
