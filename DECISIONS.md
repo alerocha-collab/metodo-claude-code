@@ -154,6 +154,36 @@ sinal de que o campo parou de resolver, e ele é silencioso: procure ativamente.
 
 ---
 
+## 007 — A Fase 2 se parte em duas fatias; os papéis vêm antes do `/fluxo`
+
+**Data:** 2026-09-05 · **SHA:** `9bd23e2`
+
+**Contexto.** O plano define a Fase 2 como `/fluxo` + `construtor` + `operador` + o
+`Stop` de verificação, numa fatia só. Isso contraria a decisão de método nº 1 —
+fatia dimensionada pela janela, sessão = um ticket + commit. Uma fatia que entrega
+quatro artefatos independentes não cabe numa sessão, e o handoff cai no meio.
+
+Há também uma dependência real entre eles: o `/fluxo` é um leitor de estado, e o
+estado que ele lê (tickets, commits por fatia, artefatos em disco) só passa a existir
+quando os papéis estiverem operando.
+
+**Decisão.** Duas fatias.
+
+- **2a — os papéis e o portão.** `construtor` e `operador`, o `Stop` de verificação e
+  o `PreToolUse` deny sobre os testes. É o que fecha o loop de verificação e converte
+  sessão assistida em sessão da qual se pode sair.
+- **2b — o `/fluxo`.** O orquestrador que lê estado, escrito depois que houver estado
+  real para ler.
+
+**Alternativa descartada.** Executar a Fase 2 como o plano a define, numa fatia só.
+Custo: a fatia não cabe na sessão, e o `/fluxo` seria escrito contra estado
+imaginado — projetando o leitor antes de existir o que ler.
+
+**Como saber que envelheceu.** Se a 2a terminar e o formato do estado ainda estiver
+em aberto, a 2b precisa de mais uma fatia antes dela, não menos.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
