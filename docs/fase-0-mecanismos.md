@@ -25,9 +25,12 @@ Para a condição "a suíte passou", isso significaria confiar no que o agente
 eliminar. A doutrina é explícita: sem verificação executável, "parece pronto" é o
 único sinal disponível, e é o sinal errado.
 
-**Consequência.** O hook universal da Fase 2 é `type: "command"`, executando a suíte.
-`/goal` permanece útil para condição demonstrável pela saída do próprio turno — não
-para verificação.
+**Consequência.** O `Stop` de verificação é `type: "command"`, executando a suíte de
+verdade. `/goal` permanece útil para condição demonstrável pela saída do próprio
+turno — não para verificação.
+
+*(Onde esse hook mora — no papel `construtor`, não no `settings.json` — está resolvido
+no adendo, que corrige a classificação de "universal" feita pelo plano.)*
 
 Condição do `/goal`: até 4.000 caracteres. Três vereditos: não atendida (continua),
 atendida (limpa), impossível (falha). Se não houver progresso por vários turnos, o
