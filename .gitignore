@@ -19,3 +19,6 @@ __pycache__/
 # Falha deliberada usada para exercitar o portao (docs/exercitar-portao.md).
 # Ignorada de proposito: se for commitada por engano, o CI fica vermelho.
 tests/testar_zzz_proposital.py
+
+# Diagnostico do portao, ligado por METODO_DIAGNOSTICO=1
+.claude/metodo-diagnostico.json

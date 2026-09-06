@@ -39,6 +39,78 @@ def liberar():
     sys.exit(0)
 
 
+def diagnosticar(evento):
+    """Registra o que o hook recebeu, quando METODO_DIAGNOSTICO=1.
+
+    A doc nao diz quais campos chegam numa sessao `--agent` de plugin, e a
+    clausula de guarda abaixo foi desenhada justamente para nao depender disso.
+    Este dump existe para responder a pergunta empiricamente, sem custar outra
+    rodada de teste manual: rode o roteiro com a variavel ligada e olhe o
+    arquivo. Fica desligado por padrao para nao criar arquivo de surpresa no
+    repositorio de ninguem.
+    """
+    if os.environ.get("METODO_DIAGNOSTICO") != "1":
+        return
+    try:
+        destino = os.path.join(".claude", "metodo-diagnostico.json")
+        os.makedirs(os.path.dirname(destino), exist_ok=True)
+        with open(destino, "w", encoding="utf-8") as f:
+            json.dump(
+                {
+                    "campos_recebidos": sorted(evento.keys()),
+                    "evento": evento,
+                    "variaveis_claude": {
+                        k: v for k, v in os.environ.items()
+                        if k.startswith("CLAUDE_")
+                    },
+                },
+                f,
+                ensure_ascii=False,
+                indent=2,
+            )
+    except OSError:
+        pass  # diagnostico nunca deve atrapalhar o portao
+
+
+def sessao_mudou_codigo(raiz):
+    """A arvore de trabalho tem mudanca nao commitada?
+
+    **Esta e a clausula de guarda**, e ela nao pergunta "qual e o meu papel" —
+    pergunta "ha algo a verificar". A troca e deliberada:
+
+    Hooks de plugin disparam em toda sessao, em todo papel. Barrar uma sessao do
+    papel `operador` porque a suite esta vermelha seria regra de construcao
+    barrando operacao — o inverso exato do sintoma que motivou separar papeis. E
+    descobrir o papel pelo stdin nao e possivel: a doc nao cobre quais campos
+    chegam.
+
+    Mas o papel nunca foi a pergunta certa. O portao existe para impedir que uma
+    MUDANCA quebrada seja dada por pronta. Arvore limpa significa que esta sessao
+    nao produziu mudanca nenhuma — nao ha o que verificar, e verificar assim
+    mesmo so faria o operador pagar por vermelho que nao foi ele quem criou.
+
+    "Verifique o que voce mudou" e regra melhor que "verifique por causa de quem
+    voce e": nao depende de campo indocumentado, e vale igual para papeis que
+    ainda nao existem.
+
+    Na duvida — git ausente, comando falhando, repositorio nao versionado —
+    devolve True. Fail-closed: nao conseguir olhar nao e licenca para liberar.
+    """
+    try:
+        proc = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=no"],
+            cwd=raiz,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return True
+    if proc.returncode != 0:
+        return True
+    return bool((proc.stdout or "").strip())
+
+
 def main():
     bruto = sys.stdin.read()
     try:
@@ -52,7 +124,14 @@ def main():
     if evento.get("stop_hook_active") is True:
         liberar()
 
+    diagnosticar(evento)
+
     raiz = evento.get("cwd") or os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
+
+    # Clausula de guarda: nada mudou, nada a verificar. Ver docstring.
+    if not sessao_mudou_codigo(raiz):
+        liberar()
+
     caminho = os.path.join(raiz, CONFIG)
 
     if not os.path.isfile(caminho):

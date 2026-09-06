@@ -27,6 +27,10 @@ HOOKS = os.path.join(RAIZ, "plugins", "metodo", "hooks")
 BLOQUEIA = 2
 LIBERA = 0
 
+# Nome do caso que exercita a clausula de guarda; o laco em main() o trata
+# a parte, porque e o unico que precisa da arvore limpa.
+ARVORE_LIMPA = "arvore limpa: nada a verificar"
+
 
 def rodar(hook, evento):
     proc = subprocess.run(
@@ -39,6 +43,10 @@ def rodar(hook, evento):
     return proc.returncode
 
 
+def git(proj, *args):
+    subprocess.run(["git", *args], cwd=proj, capture_output=True, text=True, timeout=60)
+
+
 def projeto_temporario(base):
     proj = os.path.join(base, "proj")
     os.makedirs(os.path.join(proj, ".claude"))
@@ -49,7 +57,26 @@ def projeto_temporario(base):
         f.write("it('x', () => {})\n")
     with open(os.path.join(proj, "src.py"), "w") as f:
         f.write("print(1)\n")
+
+    # Repo git de verdade: a clausula de guarda do portao decide por
+    # `git status`, e um diretorio sem git responderia "na duvida, verifique",
+    # mascarando justamente o caso de arvore limpa.
+    git(proj, "init", "-q", "-b", "main")
+    git(proj, "config", "user.email", "teste@exemplo.invalido")
+    git(proj, "config", "user.name", "teste")
+    git(proj, "add", "-A")
+    git(proj, "commit", "-q", "-m", "base")
     return proj
+
+
+def sujar(proj):
+    """Deixa a arvore com mudanca nao commitada."""
+    with open(os.path.join(proj, "src.py"), "a", encoding="utf-8") as f:
+        f.write("print(2)\n")
+
+
+def limpar(proj):
+    git(proj, "checkout", "--", ".")
 
 
 def escrever_config(proj, conteudo):
@@ -91,6 +118,11 @@ def casos(proj):
         ("suite verde", "verificar_suite.py", {"cwd": proj}, LIBERA, verde),
         ("stop_hook_active (teto de 8)", "verificar_suite.py",
          {"cwd": proj, "stop_hook_active": True}, LIBERA, vermelha),
+        # A cláusula de guarda, e o que ela protege: sem ela, uma sessão do papel
+        # `operador` seria barrada por suíte vermelha que não foi ela quem
+        # quebrou — regra de construção barrando operação, o inverso exato do
+        # sintoma que motivou separar papéis.
+        (ARVORE_LIMPA, "verificar_suite.py", {"cwd": proj}, LIBERA, vermelha),
         # --- proteger_testes DEVE bloquear ---
         ("Edit em teste existente", "proteger_testes.py",
          {"tool_name": "Edit", "tool_input": {"file_path": t("tests", "test_a.py")}}, BLOQUEIA, None),
@@ -126,6 +158,13 @@ def main():
                     os.remove(caminho_config)
             else:
                 escrever_config(proj, config)
+            # Todo caso do portão pressupõe árvore suja, salvo o que testa
+            # explicitamente a árvore limpa. `.claude/metodo.json` está fora do
+            # git, então escrevê-lo não suja nada por si.
+            if nome == ARVORE_LIMPA:
+                limpar(proj)
+            else:
+                sujar(proj)
             obtido = rodar(hook, evento)
             marca = "ok  " if obtido == esperado else "FALHA"
             print(f"  {marca} {nome} (exit {obtido})")

@@ -23,11 +23,27 @@ commitá-lo por engano.
 printf 'import sys\nprint("falha proposital")\nsys.exit(1)\n' > tests/testar_zzz_proposital.py
 ```
 
-Confirme que a suíte ficou vermelha antes de abrir a sessão:
+Confirme **duas** coisas antes de abrir a sessão — a suíte vermelha e a árvore suja:
 
 ```bash
 python3 tests/testar_tudo.py
+git status --porcelain --untracked-files=no
 ```
+
+O `git status` **não pode sair vazio**. O portão tem cláusula de guarda: com a árvore
+limpa ele libera, porque não há mudança desta sessão a verificar. Se estiver limpa,
+altere qualquer arquivo rastreado antes de continuar — senão o caso 1 "passa" pelo
+motivo errado e você registra um falso negativo.
+
+Opcionalmente, ligue o diagnóstico para descobrir quais campos o hook recebe numa
+sessão de plugin, que a doc não cobre:
+
+```bash
+export METODO_DIAGNOSTICO=1
+```
+
+Em PowerShell: `$env:METODO_DIAGNOSTICO = "1"`. Ele grava
+`.claude/metodo-diagnostico.json` com os campos do evento e as variáveis `CLAUDE_*`.
 
 ## A sessão
 
@@ -49,9 +65,11 @@ duas formas funciona é parte do que este roteiro descobre** — anote.
 | 3 | Peça para criar um teste novo, num arquivo que não existe | **Permitido** |
 | 4 | Apague a falha: `rm tests/testar_zzz_proposital.py`. Peça algo trivial de novo | **Turno encerra normalmente.** O portão não bloqueia sempre |
 | 5 | Confirme que o caso 1 barrou por conta do portão, e não por outro motivo | A mensagem tem que ser a do `verificar_suite.py`, com o nome do comando |
+| 6 | Recrie a falha, **commite tudo** para a árvore ficar limpa, e peça algo trivial | **Turno encerra.** É a cláusula de guarda: sem mudança pendente, não há o que verificar |
 
-O caso 3 e o caso 4 são os que impedem o falso positivo: um hook que bloqueia **tudo**
-passaria nos casos 1 e 2 e seria inútil.
+Os casos 3, 4 e 6 são os que impedem o falso positivo: um hook que bloqueia **tudo**
+passaria nos casos 1 e 2 e seria inútil. O caso 6 é o que protege o papel `operador` —
+sem ele, uma sessão de operação seria barrada por vermelho que não foi ela quem criou.
 
 ## Registrar
 

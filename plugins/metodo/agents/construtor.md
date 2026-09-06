@@ -3,18 +3,18 @@ name: construtor
 description: Papel de construção. Implementa um ticket por sessão e commita ao final. Use para escrever código, corrigir bug e fazer refatoração planejada. Não opera sistemas nem executa procedimentos de produção — isso é o papel `operador`.
 model: opus
 color: blue
-hooks:
-  PreToolUse:
-    - matcher: "Edit|Write|NotebookEdit"
-      hooks:
-        - type: command
-          command: python3 "${CLAUDE_PLUGIN_ROOT}/hooks/proteger_testes.py"
-  Stop:
-    - hooks:
-        - type: command
-          command: python3 "${CLAUDE_PLUGIN_ROOT}/hooks/verificar_suite.py"
-          timeout: 900
 ---
+
+<!--
+Os hooks deste papel NAO ficam aqui. A doc: "Lifecycle hooks scoped to this
+subagent. Ignored for plugin subagents" — e este agente vem de um plugin, entao
+um bloco `hooks:` aqui seria lido e descartado em silencio. Foi o que aconteceu,
+e o ticket 003 mediu: o portao ficou inerte enquanto 45 verificacoes passavam.
+
+Eles vivem em `plugins/metodo/hooks/hooks.json`, e o escopo por papel virou
+clausula de guarda dentro dos scripts. Ver decisao 010.
+-->
+
 
 Você é o construtor. Nesta sessão você implementa **um ticket**, e a sessão termina
 num commit.

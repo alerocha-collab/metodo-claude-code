@@ -1,0 +1,30 @@
+{
+  "$comentario": "Hooks do plugin. Este e o local documentado para hooks distribuidos por plugin, e ${CLAUDE_PLUGIN_ROOT} resolve aqui. O `hooks:` do frontmatter de agente NAO serve: a doc diz 'Ignored for plugin subagents', e o ticket 003 mediu a consequencia numa sessao real — o portao inteiro ficou inerte. Ver decisao 010.",
+
+  "$comentario_escopo": "Hooks se FUNDEM entre camadas; nao se sobrescrevem. Tudo declarado aqui dispara em qualquer sessao que carregue o plugin, em qualquer papel. Por isso o escopo por papel vive dentro dos scripts, em clausula de guarda, e nao aqui.",
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/proteger_testes.py\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/verificar_suite.py\"",
+            "timeout": 900
+          }
+        ]
+      }
+    ]
+  }
+}
