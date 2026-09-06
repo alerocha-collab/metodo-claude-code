@@ -1,11 +1,10 @@
 {
   "$comentario": "Fila deste repositorio. Validar com: python3 plugins/metodo/scripts/validar_fila.py tickets/fila.json",
-
   "tickets": [
     {
       "id": "001",
       "titulo": "Escrever a skill `implementar` — o loop que o construtor segue",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "skills",
       "brief": "tickets/001-skill-implementar.md"
@@ -38,7 +37,10 @@
       "id": "005",
       "titulo": "Escrever o /fluxo — le estado, recomenda o proximo passo, sabe mandar pular",
       "estado": "pronto",
-      "bloqueado_por": ["001", "002"],
+      "bloqueado_por": [
+        "001",
+        "002"
+      ],
       "modulo": "skills",
       "brief": "tickets/005-fluxo.md"
     }
