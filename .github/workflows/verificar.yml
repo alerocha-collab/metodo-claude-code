@@ -36,6 +36,28 @@ jobs:
           fi
           echo "ok: runner reprovou, como deve."
 
+      # O plugin depende de python3. Sem tratamento, a AUSENCIA dele faz o shell
+      # sair com 127, que a doc classifica como nao bloqueante — o portao
+      # falharia aberto na maquina mal configurada. Este passo prova, no comando
+      # literal do hooks.json, que a rede converte isso em bloqueio.
+      - name: Provar que o portao bloqueia quando python3 falta
+        run: |
+          CMD=$(python3 -c "import json;print(json.load(open('plugins/metodo/hooks/hooks.json'))['hooks']['Stop'][0]['hooks'][0]['command'])")
+          echo "comando do hook: $CMD"
+          # Roda o comando literal com um PATH sem python3.
+          set +e
+          env -i PATH=/usr/bin:/bin CLAUDE_PLUGIN_ROOT="$PWD/plugins/metodo" \
+            sh -c "$(echo "$CMD" | sed 's/python3 /python3-que-nao-existe /')"
+          CODIGO=$?
+          set -e
+          echo "exit=$CODIGO"
+          if [ "$CODIGO" -ne 2 ]; then
+            echo "FALHA: esperava exit 2 (bloqueia); veio $CODIGO."
+            echo "Sem exit 2 o portao libera o turno numa maquina sem python3."
+            exit 1
+          fi
+          echo "ok: interpretador ausente bloqueia."
+
       - name: Validar a fila de tickets, se existir
         run: |
           if [ -f tickets/fila.json ]; then

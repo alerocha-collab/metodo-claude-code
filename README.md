@@ -58,6 +58,25 @@ O plugin fica em `plugins/metodo/`, não na raiz, para que
 `.claude-plugin/marketplace.json` possa ser adicionado depois com
 `"source": "./plugins/metodo"` sem mover nada.
 
+## Requisitos
+
+**`python3` 3.8 ou mais novo, no PATH.** Os hooks e os scripts do plugin são Python.
+
+A escolha é deliberada: a doc do Claude Code diz que hooks rodam em `sh` no
+macOS/Linux, em Git Bash no Windows, ou em PowerShell quando Git Bash não está
+instalado. Um script `.sh` não cobriria os três; Python cobre.
+
+**Se `python3` faltar, o portão de verificação bloqueia** — não libera. Sem tratamento
+ele falharia aberto, porque o shell sai com 127 e a doc classifica 127 como não
+bloqueante; por isso o comando no `hooks/hooks.json` termina em `|| exit 2`. A
+mensagem que aparece é a do shell, `python3: command not found`, que nomeia o que
+falta.
+
+**Risco residual:** `|| exit 2` é sintaxe POSIX. No caso restrito de Windows **sem**
+Git Bash, onde os hooks rodam em PowerShell, a rede não vale e a ausência de `python3`
+volta a poder falhar aberta. Não há contorno portátil conhecido; registrado aqui em
+vez de escondido.
+
 ## Usar em desenvolvimento
 
 Sem instalar, isolado por sessão:

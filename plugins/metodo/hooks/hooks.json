@@ -3,6 +3,10 @@
 
   "$comentario_escopo": "Hooks se FUNDEM entre camadas; nao se sobrescrevem. Tudo declarado aqui dispara em qualquer sessao que carregue o plugin, em qualquer papel. Por isso o escopo por papel vive dentro dos scripts, em clausula de guarda, e nao aqui.",
 
+  "$comentario_ou_exit_2": "O `|| exit 2` no Stop existe porque `python3` ausente faz o shell sair com 127, e a doc classifica 127 como nao bloqueante: o portao falharia ABERTO justamente na maquina mal configurada. Com ele, 0 continua 0, 2 continua 2, e qualquer outra coisa vira bloqueio. Nao esta no PreToolUse de proposito: aquele hook e uma trava estreita, desenhada para falhar aberto — um bug nele nao deve travar o trabalho inteiro.",
+
+  "$comentario_powershell": "`|| exit 2` e sintaxe POSIX. No Windows a doc diz que hooks rodam em Git Bash, ou em PowerShell quando Git Bash nao esta instalado — e o PowerShell 5.1 nao aceita `||`. Nesse caso restrito a rede nao vale, e a dependencia volta a poder falhar aberta. Risco residual registrado no README.",
+
   "hooks": {
     "PreToolUse": [
       {
@@ -20,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/verificar_suite.py\"",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/verificar_suite.py\" || exit 2",
             "timeout": 900
           }
         ]

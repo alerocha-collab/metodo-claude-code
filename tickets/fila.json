@@ -28,7 +28,7 @@
     {
       "id": "004",
       "titulo": "Declarar e verificar a dependencia de python3",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "hooks",
       "brief": "tickets/004-dependencia-python.md"
