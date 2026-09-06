@@ -73,7 +73,7 @@
     {
       "id": "009",
       "titulo": "Escrever `onboarding-lacunas`: a distancia ate o alvo, como fila",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [
         "008"
       ],

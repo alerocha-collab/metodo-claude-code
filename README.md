@@ -103,6 +103,15 @@ claude plugin validate ./plugins/metodo
 | `/metodo:revisar` | Revisa em dois eixos, Standards e Spec, em contextos separados |
 | `/metodo:fluxo` | Diz onde o projeto está e qual é o próximo passo |
 
+E o prefixo de reengenharia, para partir de um repositório que já existe. As três
+rodam em ordem, e depois a trilha converge com a de projeto novo:
+
+| Skill | Para quê |
+|---|---|
+| `/metodo:onboarding-entender` | Levanta o mapa: como roda, como verifica, fronteiras, e o que ficou sem entender |
+| `/metodo:onboarding-modelar` | Extrai o vocabulário do código e registra as divergências |
+| `/metodo:onboarding-lacunas` | Mede a distância até o alvo e a transforma em fila |
+
 ## Namespacing
 
 Tudo que o plugin distribui carrega o prefixo `metodo:`. Skills se invocam como
