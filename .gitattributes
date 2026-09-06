@@ -1,0 +1,8 @@
+# O repositorio e editado no Windows mas o plugin roda tambem em macOS, Linux e
+# WSL2. Scripts com CRLF falham la com "bad interpreter". Normaliza no repo.
+* text=auto eol=lf
+
+# Binarios, se algum dia entrarem
+*.png binary
+*.jpg binary
+*.pdf binary

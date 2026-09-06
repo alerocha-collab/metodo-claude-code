@@ -55,11 +55,16 @@ em uso e renomeá-lo quebra a invocação por nome.
 **Decisão.** Manter os dois nomes. O agente continua `arquiteto`.
 
 **Alternativa descartada.** Renomear o agente (para `arquiteto-harness`, por
-exemplo). Descartada por ser churn sem ganho enquanto não houver conflito observado.
+exemplo). Descartada por ser churn sem ganho: o namespacing garante unicidade, e o
+custo é estético.
 
-**Como saber que envelheceu.** Se a invocação do agente ficar ambígua na prática —
-namespacing do plugin colidindo com o `name:` do frontmatter. Verificar ao carregar
-o plugin com `--plugin-dir` pela primeira vez.
+**Consequência confirmada na doc.** Agentes de plugin são nomeados
+`plugin-name:agent-name` no typeahead ([plugins-reference](https://code.claude.com/docs/en/plugins-reference.md)).
+Este agente aparecerá como **`arquiteto:arquiteto`**. Funciona; lê mal.
+
+**Como saber que envelheceu.** Se `arquiteto:arquiteto` no typeahead incomodar o
+suficiente para justificar o rename — o momento barato de fazê-lo é antes de
+qualquer outro projeto instalar o plugin.
 
 ---
 
@@ -93,5 +98,6 @@ Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na 
 | P2 | **Repositório GitHub: público ou privado.** Privado exige credencial git em toda máquina que instale. | Publicação |
 | P3 | **`gh` não instalado** (ausente do PATH). Sem ele, requisições não autenticadas com rate limit. | Criação do repo remoto |
 | P4 | **Bump de `version` a cada release.** Sem isso, quem instalou fica com a cópia em cache. Candidato a item de checklist ou hook. | Publicação |
-| P5 | **CI: `claude plugin validate` no GitHub Actions a cada push.** Fecha na metodologia a lacuna de "sem CI" identificada no FirstAxiom. | Fase 2+ |
+| P5 | **CI: `claude plugin validate --strict` no GitHub Actions a cada push.** `--strict` promove avisos a erros; é a forma pensada para CI. Fecha na metodologia a lacuna de "sem CI" identificada no FirstAxiom. | Fase 2+ |
+| P7 | **`skills:` no frontmatter de agente de plugin: nome puro ou namespaced?** A doc diz que skills são referenciadas pelo `name`, mas **não cobre** o caso de agente e skill no mesmo plugin. O agente `arquiteto` declara `skills: [arquiteto-claude-code]`; se o correto for `arquiteto:arquiteto-claude-code`, ele carrega sem a doutrina. Resolver por teste empírico ao carregar com `--plugin-dir`. | Verificação da Fase 1 |
 | P6 | **Fase 0 incompleta** — falta ler: dynamic workflows, `/batch`, scheduled tasks, `context: fork` em skill, statusline, `/doctor`, checkpointing. Nenhum bloqueia a Fase 1; todos importam da Fase 2 em diante. | Fase 2 |
