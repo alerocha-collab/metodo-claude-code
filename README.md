@@ -4,9 +4,9 @@ Repositório que carrega a metodologia entre projetos. O que vive aqui são as s
 os agentes e os hooks que codificam nove decisões de método já fechadas — não código
 de aplicação.
 
-**Estado:** Fase 2a entregue (papéis e portão) e Fase 3 iniciada (formato do ticket).
-As skills de fluxo e o `/fluxo` vêm a seguir — o orquestrador é o último, porque é o
-único que só lê estado, sem produzi-lo.
+**Estado:** o pipeline está completo — seis skills, dois papéis, e o portão de
+verificação exercitado numa sessão real. Falta o prefixo de reengenharia, para partir
+de um repositório que já existe.
 
 ## Verificação
 
@@ -14,7 +14,7 @@ As skills de fluxo e o `/fluxo` vêm a seguir — o orquestrador é o último, p
 python3 tests/testar_tudo.py
 ```
 
-Duas suítes, 32 casos, ambas com **conjunto balanceado**: metade verifica que a trava
+Cinco suítes, 68 casos, todas com **conjunto balanceado**: metade verifica que a trava
 age quando deve, metade que ela **não** age quando não deve. Uma suíte só com casos
 positivos aprova uma trava que bloqueia tudo.
 
@@ -48,9 +48,10 @@ python3 plugins/metodo/scripts/validar_fila.py tickets/fila.json
 └── plugins/
     └── metodo/                 o plugin propriamente dito
         ├── .claude-plugin/plugin.json
-        ├── agents/              papéis (construtor, operador, arquiteto)
-        ├── skills/              fluxo, onboarding, core adaptado
-        ├── hooks/               hooks.json + scripts (Fase 2)
+        ├── agents/              papéis: construtor, operador, arquiteto
+        ├── skills/              as seis do pipeline
+        ├── hooks/               hooks.json + os dois hooks do portão
+        ├── scripts/             fila, estado, transição de ticket
         └── templates/           artefatos que o plugin instala em projetos
 ```
 
