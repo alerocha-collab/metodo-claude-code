@@ -1,0 +1,46 @@
+{
+  "$comentario": "Fila deste repositorio. Validar com: python3 plugins/metodo/scripts/validar_fila.py tickets/fila.json",
+
+  "tickets": [
+    {
+      "id": "001",
+      "titulo": "Escrever a skill `implementar` — o loop que o construtor segue",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "skills",
+      "brief": "tickets/001-skill-implementar.md"
+    },
+    {
+      "id": "002",
+      "titulo": "Escrever a revisao em dois eixos, Standards e Spec, em contextos separados",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "skills",
+      "brief": "tickets/002-revisao-dois-eixos.md"
+    },
+    {
+      "id": "003",
+      "titulo": "Exercitar o portao numa sessao real e registrar o resultado",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "hooks",
+      "brief": "tickets/003-exercitar-portao.md"
+    },
+    {
+      "id": "004",
+      "titulo": "Declarar e verificar a dependencia de python3",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "hooks",
+      "brief": "tickets/004-dependencia-python.md"
+    },
+    {
+      "id": "005",
+      "titulo": "Escrever o /fluxo — le estado, recomenda o proximo passo, sabe mandar pular",
+      "estado": "pronto",
+      "bloqueado_por": ["001", "002"],
+      "modulo": "skills",
+      "brief": "tickets/005-fluxo.md"
+    }
+  ]
+}
