@@ -47,7 +47,7 @@
     {
       "id": "006",
       "titulo": "Mover os hooks para hooks/hooks.json, com clausula de guarda",
-      "estado": "em-andamento",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "hooks",
       "brief": "tickets/006-hooks-para-hooks-json.md"

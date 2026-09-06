@@ -365,6 +365,48 @@ não o usa. Se a guarda por árvore suja liberar um caso que deveria barrar, `ag
 
 ---
 
+## 012 — O portão está verificado de ponta a ponta · completa a 011
+
+**Data:** 2026-09-06 · **SHA:** `ticket 006`
+
+A decisão 011 registrou os casos 4 e 6 como inconclusos, porque o bug de codificação
+derrubava o hook antes de ele avaliar qualquer coisa. Com a correção, a rodada nova
+fechou os dois — e com eles o roteiro inteiro.
+
+| Caso | O que prova | Resultado |
+|---|---|---|
+| 1 | suíte vermelha + árvore suja **barra** | ✅ |
+| 2 | editar teste existente é **negado** (`PreToolUse:Edit`) | ✅ |
+| 3 | criar teste novo é **permitido** | ✅ |
+| 4 | some o vermelho, o turno **encerra** | ✅ |
+| 5 | quem barrou foi o portão, com o comando citado | ✅ |
+| 6 | **árvore limpa + suíte vermelha encerra** — a cláusula de guarda | ✅ |
+
+O caso 6 chegou por um caminho diferente do previsto: o roteiro manda commitar para
+limpar a árvore, e o que houve foi um `git checkout --` descartando a única mudança
+pendente. O estado medido é o mesmo — suíte vermelha, árvore limpa — e o turno
+encerrou. **É a prova de que o `operador` não será barrado por vermelho que não criou.**
+
+### O que o exercício manual mede, e o que não mede
+
+Observação que vale guardar, porque delimita quando repeti-lo: os casos 3 e 6 já têm
+cobertura automatizada em `testar_hooks.py`. O roteiro manual não existe para provar
+que a **lógica** dos hooks está certa — isso a suíte faz melhor e mais barato. Ele
+existe para provar que os hooks estão **instalados e sendo chamados**.
+
+São falhas de natureza diferente, e só a segunda é invisível para a suíte. Foi
+exatamente ela que apareceu duas vezes: o `hooks:` do frontmatter sendo ignorado
+(decisão 010) e a queda por codificação no caminho real (decisão 011).
+
+**Quando repetir o roteiro:** ao mudar onde os hooks são declarados, ao atualizar o
+Claude Code, e ao rodar em plataforma nova. Não a cada mudança de lógica.
+
+**Cobertura registrada:** Windows 11, PowerShell 5.1, `claude --plugin-dir` com
+`--agent metodo:construtor`. macOS e Linux seguem não verificados, e lá o shell dos
+hooks é outro.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
