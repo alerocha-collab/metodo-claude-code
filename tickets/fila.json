@@ -83,7 +83,7 @@
     {
       "id": "010",
       "titulo": "As skills de entrada: adaptar, depender ou dispensar",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "skills",
       "brief": "tickets/010-skills-de-entrada.md"

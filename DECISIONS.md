@@ -407,6 +407,46 @@ hooks é outro.
 
 ---
 
+## 013 — As skills de entrada são escritas, não adaptadas de terceiro
+
+**Data:** 2026-09-06 · **SHA:** `ticket 010`
+
+**Contexto.** O plugin cobria da metade do pipeline em diante. As duas etapas de
+entrada — fechar decisões em aberto, e construir o vocabulário num projeto novo — só
+existiam como skills de terceiro instaladas em `~/.claude/skills/`, sob MIT. Instalado
+noutra máquina, o plugin começava no meio.
+
+**Decisão.** Escrever as duas: `decidir` e `dominio`.
+
+**Alternativa descartada.** Adaptar as skills de referência com atribuição MIT.
+Custo evitado: um repositório meio original e meio fork, com duas vozes e dois modelos
+de manutenção — o arquivo de procedência daquele set já registrava duas modificações
+locais cinco dias depois da instalação.
+
+**Honestidade sobre a influência.** Este set foi estudado a fundo, e a análise cruzada
+em `docs/` o cita com licença e commit. A mecânica de entrevistar em rodadas por
+fronteira é convergente o bastante para que qualquer um chegue nela partindo do mesmo
+problema — mas fingir origem independente seria desonesto, e registrar a influência
+custa uma linha.
+
+**O que as nossas fazem diferente, e por quê:**
+
+| Nossa | Diferença | De onde vem |
+|---|---|---|
+| `decidir` | Abre decidindo **se** entrevistar, por três gatilhos | Decisão de método nº 7: gatilho, não regra |
+| `decidir` | Usa `AskUserQuestion` em vez de rodadas em markdown | A ferramenta nativa devolve escolha estruturada |
+| `decidir` | Exige **custo declarado** em cada opção | Opção sem desvantagem é opção já escolhida, apresentada como pergunta |
+| `decidir` | Termina escrevendo no `DECISIONS.md` | Decisão de método nº 3 |
+| `dominio` | Duas camadas: `DECISIONS.md` **abaixo** da barra do ADR | Este repositório tem 13 decisões e **zero** ADRs — com a barra só de ADR, teria perdido as 13 |
+| `dominio` | Nomeia a divergência com a trilha de reengenharia como **achado** | O glossário do código quase nunca é o que as pessoas dizem |
+
+**Como saber que envelheceu.** Se a `decidir` na prática só confirmar o que já se
+sabia, o gatilho está frouxo demais. Se a `dominio` produzir glossário que ninguém
+lê, ela está aceitando termo demais — a regra do "aparece uma vez só não entra"
+existe para isso.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.

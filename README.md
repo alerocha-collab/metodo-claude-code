@@ -91,6 +91,17 @@ claude --plugin-dir ./plugins/metodo
 claude plugin validate ./plugins/metodo
 ```
 
+## As skills
+
+| Skill | Para quê |
+|---|---|
+| `/metodo:decidir` | Fecha decisões em aberto, em rodadas, antes de construir |
+| `/metodo:dominio` | Constrói e afia o vocabulário do projeto |
+| `/metodo:fatiar` | Transforma trabalho descrito em fila de tickets |
+| `/metodo:implementar` | Conduz uma fatia do ticket ao commit |
+| `/metodo:revisar` | Revisa em dois eixos, Standards e Spec, em contextos separados |
+| `/metodo:fluxo` | Diz onde o projeto está e qual é o próximo passo |
+
 ## Namespacing
 
 Tudo que o plugin distribui carrega o prefixo `metodo:`. Skills se invocam como
