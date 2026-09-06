@@ -4,22 +4,41 @@ Repositório que carrega a metodologia entre projetos. O que vive aqui são as s
 os agentes e os hooks que codificam nove decisões de método já fechadas — não código
 de aplicação.
 
-**Estado:** Fase 2a. Os papéis `construtor` e `operador` existem, com o portão de
-verificação e a proteção dos testes como hooks do papel. O `/fluxo` (Fase 2b) e o
-core adaptado (Fase 3) entram depois.
+**Estado:** Fase 2a entregue (papéis e portão) e Fase 3 iniciada (formato do ticket).
+As skills de fluxo e o `/fluxo` vêm a seguir — o orquestrador é o último, porque é o
+único que só lê estado, sem produzi-lo.
 
 ## Verificação
 
 ```bash
-python3 tests/testar_hooks.py
+python3 tests/testar_tudo.py
 ```
 
-16 casos, conjunto balanceado: metade verifica que o hook bloqueia quando deve, metade
-que ele **não** bloqueia quando não deve. Uma suíte só com casos positivos aprova um
-hook que bloqueia tudo.
+Duas suítes, 32 casos, ambas com **conjunto balanceado**: metade verifica que a trava
+age quando deve, metade que ela **não** age quando não deve. Uma suíte só com casos
+positivos aprova uma trava que bloqueia tudo.
 
-Este repositório usa o próprio portão da metodologia: `.claude/metodo.json` aponta
-para essa suíte.
+O runner é *fail-closed*: nenhuma suíte encontrada conta como **falha**. Sem isso,
+apagar os testes deixaria o runner verde — e o portão passaria a aprovar um
+repositório sem verificação nenhuma.
+
+Este repositório usa o próprio portão que distribui: `.claude/metodo.json` aponta
+para o runner.
+
+## O que o plugin instala num projeto
+
+| Artefato | Onde | Para quê |
+|---|---|---|
+| `metodo.json` | `.claude/` | Declara o comando que decide verde/vermelho. Sem ele, o portão bloqueia |
+| `fila.json` | `tickets/` | Estado dos tickets e o grafo de bloqueio. JSON porque muda toda sessão |
+| `ticket.md` | `tickets/NNN-*.md` | A spec de uma fatia. Markdown porque é prosa escrita uma vez |
+| `DECISIONS.md` | raiz | Decisões append-only, abaixo da barra de um ADR |
+
+Valide a fila com:
+
+```bash
+python3 plugins/metodo/scripts/validar_fila.py tickets/fila.json
+```
 
 ## Estrutura
 

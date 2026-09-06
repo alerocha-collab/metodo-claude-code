@@ -1,7 +1,7 @@
 {
   "verificacao": {
-    "comando": "python3 tests/testar_hooks.py",
+    "comando": "python3 tests/testar_tudo.py",
     "timeout_segundos": 300,
-    "descricao": "suite dos hooks do plugin (16 casos, conjunto balanceado)"
+    "descricao": "todas as suites (hooks + validador de fila)"
   }
 }

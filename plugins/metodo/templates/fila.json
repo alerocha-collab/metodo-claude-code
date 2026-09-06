@@ -1,0 +1,35 @@
+{
+  "$comentario": "Fila de tickets. Copie para tickets/fila.json na raiz do projeto. JSON e nao Markdown de proposito: este arquivo muda toda sessao, e o modelo reescreve Markdown com muito mais facilidade do que JSON. O que muda todo dia fica no formato que nao se reescreve por acidente.",
+
+  "$comentario_divisao": "A prosa de cada ticket vive no brief em Markdown, escrita uma vez. Aqui fica so o estado, que muda. Dois leitores, dois formatos: o agente le esta fila, o humano le o brief.",
+
+  "$comentario_validar": "python3 plugins/metodo/scripts/validar_fila.py tickets/fila.json",
+
+  "tickets": [
+    {
+      "id": "001",
+      "titulo": "Frase no imperativo dizendo o que esta fatia entrega",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "nome do modulo que esta fatia toca",
+      "brief": "tickets/001-slug.md"
+    },
+    {
+      "id": "002",
+      "titulo": "Fatia que so faz sentido depois da 001",
+      "estado": "pronto",
+      "bloqueado_por": ["001"],
+      "modulo": "nome do modulo",
+      "brief": "tickets/002-slug.md"
+    }
+  ],
+
+  "$estados": {
+    "pronto": "pode ser pego; todos os bloqueadores estao concluidos ou descartados",
+    "em-andamento": "alguem esta nele agora. No maximo UM por vez: sessao = um ticket",
+    "concluido": "criterios de aceitacao atendidos e verificados, commit feito",
+    "descartado": "nao vai ser feito. Fica na fila, com o motivo no brief, para nao ser reproposto"
+  },
+
+  "$campo_modulo": "Existe para a decisao no 5: todo smell aceito na revisao vira ticket com bloqueio para a proxima fatia que tocar o mesmo modulo. Sem esse campo, 'refatoro depois' vira 'nao refatoro'."
+}
