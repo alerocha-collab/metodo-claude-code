@@ -89,6 +89,46 @@ def projeto_temporario(base):
     return proj
 
 
+def monorepo(base):
+    """Monorepo com a config so na RAIZ e o trabalho dentro de um pacote.
+
+    E a forma que a doc recomenda para repositorio grande — iniciar a sessao dentro
+    do pacote — e a que quebrava o portao antes da busca subir ate a raiz.
+    """
+    proj = os.path.join(base, "mono")
+    pacote = os.path.join(proj, "packages", "api")
+    os.makedirs(os.path.join(proj, ".claude"))
+    os.makedirs(os.path.join(pacote, "tests"))
+    with open(os.path.join(pacote, "src.py"), "w") as f:
+        f.write("print(1)\n")
+    with open(os.path.join(pacote, "tests", "test_a.py"), "w") as f:
+        f.write("def test_x():\n    pass\n")
+    with open(os.path.join(proj, ".claude", "metodo.json"), "w") as f:
+        f.write('{"verificacao":{"comando":"exit 0","descricao":"suite"}}')
+    git(proj, "init", "-q", "-b", "main")
+    git(proj, "config", "user.email", "t@exemplo.invalido")
+    git(proj, "config", "user.name", "t")
+    git(proj, "add", "-A")
+    git(proj, "commit", "-q", "-m", "base")
+    with open(os.path.join(pacote, "src.py"), "a") as f:
+        f.write("print(2)\n")  # arvore suja, para o portao nao liberar por guarda
+    return proj, pacote
+
+
+def sem_adesao(base):
+    """Repositorio git SEM `.claude/metodo.json` — instalado, nao adotado."""
+    proj = os.path.join(base, "sem_adesao")
+    os.makedirs(os.path.join(proj, "tests"))
+    with open(os.path.join(proj, "tests", "test_a.py"), "w") as f:
+        f.write("def test_x():\n    pass\n")
+    git(proj, "init", "-q", "-b", "main")
+    git(proj, "config", "user.email", "t@exemplo.invalido")
+    git(proj, "config", "user.name", "t")
+    git(proj, "add", "-A")
+    git(proj, "commit", "-q", "-m", "base")
+    return proj
+
+
 def sujar(proj):
     """Deixa a arvore com mudanca nao commitada."""
     with open(os.path.join(proj, "src.py"), "a", encoding="utf-8") as f:
@@ -143,25 +183,30 @@ def casos(proj):
         # quebrou — regra de construção barrando operação, o inverso exato do
         # sintoma que motivou separar papéis.
         (ARVORE_LIMPA, "verificar_suite.py", {"cwd": proj}, LIBERA, vermelha),
-        # --- proteger_testes DEVE bloquear ---
+        # --- proteger_testes DEVE bloquear (projeto ADERENTE: config presente) ---
         ("Edit em teste existente", "proteger_testes.py",
-         {"tool_name": "Edit", "tool_input": {"file_path": t("tests", "test_a.py")}}, BLOQUEIA, None),
+         {"tool_name": "Edit", "tool_input": {"file_path": t("tests", "test_a.py")}}, BLOQUEIA, verde),
         ("Write sobre teste existente", "proteger_testes.py",
-         {"tool_name": "Write", "tool_input": {"file_path": t("tests", "test_a.py")}}, BLOQUEIA, None),
-        ("Edit em caminho irresolvivel", "proteger_testes.py",
-         {"tool_name": "Edit", "tool_input": {"file_path": "/nao/existe/tests/test_z.py"}}, BLOQUEIA, None),
+         {"tool_name": "Write", "tool_input": {"file_path": t("tests", "test_a.py")}}, BLOQUEIA, verde),
+        ("Edit em teste que nao resolve, dentro do projeto", "proteger_testes.py",
+         {"tool_name": "Edit", "tool_input": {"file_path": t("tests", "test_sumiu.py")}}, BLOQUEIA, verde),
         ("Edit em spec .ts", "proteger_testes.py",
-         {"tool_name": "Edit", "tool_input": {"file_path": t("tests", "a.spec.ts")}}, BLOQUEIA, None),
+         {"tool_name": "Edit", "tool_input": {"file_path": t("tests", "a.spec.ts")}}, BLOQUEIA, verde),
         ("Edit em conftest.py", "proteger_testes.py",
-         {"tool_name": "Edit", "tool_input": {"file_path": t("conftest.py")}}, BLOQUEIA, None),
+         {"tool_name": "Edit", "tool_input": {"file_path": t("conftest.py")}}, BLOQUEIA, verde),
         # --- proteger_testes NAO deve bloquear ---
         ("Write de teste NOVO", "proteger_testes.py",
-         {"tool_name": "Write", "tool_input": {"file_path": t("tests", "test_novo.py")}}, LIBERA, None),
+         {"tool_name": "Write", "tool_input": {"file_path": t("tests", "test_novo.py")}}, LIBERA, verde),
         ("Edit em codigo de producao", "proteger_testes.py",
-         {"tool_name": "Edit", "tool_input": {"file_path": t("src.py")}}, LIBERA, None),
+         {"tool_name": "Edit", "tool_input": {"file_path": t("src.py")}}, LIBERA, verde),
         ("Bash nao e ferramenta de edicao", "proteger_testes.py",
-         {"tool_name": "Bash", "tool_input": {"command": "rm tests/test_a.py"}}, LIBERA, None),
-        ("stdin vazio", "proteger_testes.py", None, LIBERA, None),
+         {"tool_name": "Bash", "tool_input": {"command": "rm tests/test_a.py"}}, LIBERA, verde),
+        ("stdin vazio", "proteger_testes.py", None, LIBERA, verde),
+        # Caminho fora de qualquer projeto aderente: o plugin nao opina. Antes da
+        # clausula de adesao este caso bloqueava — e bloquear ali era justamente o
+        # comportamento agressivo que a fatia 018 veio corrigir.
+        ("caminho fora de projeto aderente: nao age", "proteger_testes.py",
+         {"tool_name": "Edit", "tool_input": {"file_path": "/nao/existe/tests/test_z.py"}}, LIBERA, verde),
     ]
 
 
@@ -189,6 +234,36 @@ def main():
             marca = "ok  " if obtido == esperado else "FALHA"
             print(f"  {marca} {nome} (exit {obtido})")
             if obtido != esperado:
+                falhas.append(f"{nome}: esperava {esperado}, veio {obtido}")
+
+        # --- escopo de aplicacao ---
+        print()
+        proj_mono, pacote = monorepo(base)
+        proj_sem = sem_adesao(base)
+        escopo = [
+            # A sessao comeca DENTRO do pacote e a config so existe na raiz. Antes da
+            # busca subir, isto bloqueava todo turno dizendo "nao ha verificacao".
+            ("monorepo: acha a config da raiz a partir do pacote",
+             "verificar_suite.py", {"cwd": pacote}, LIBERA),
+            # Com adesao, o proteger_testes segue barrando como antes.
+            ("com adesao: editar teste existente e negado",
+             "proteger_testes.py",
+             {"tool_name": "Edit",
+              "tool_input": {"file_path": os.path.join(pacote, "tests", "test_a.py")}},
+             BLOQUEIA),
+            # E o caso que a guarda existe para produzir: instalado nao e adotado.
+            ("sem adesao: nao age, nem comenta",
+             "proteger_testes.py",
+             {"tool_name": "Edit",
+              "tool_input": {"file_path": os.path.join(proj_sem, "tests", "test_a.py")}},
+             LIBERA),
+        ]
+        for nome, hook, evento, esperado in escopo:
+            obtido = rodar(hook, evento)
+            ok = obtido == esperado
+            print(f"  {'ok  ' if ok else 'FALHA'} {nome} (exit {obtido})")
+            lista.append(nome)
+            if not ok:
                 falhas.append(f"{nome}: esperava {esperado}, veio {obtido}")
 
         # --- codificacao ---

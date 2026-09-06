@@ -20,6 +20,9 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import comum  # noqa: E402
+
 # Convencoes de nome de teste dos ecossistemas mais comuns. Deliberadamente
 # conservador: falso negativo aqui custa menos que falso positivo, porque falso
 # positivo em hook nao se negocia.
@@ -84,6 +87,19 @@ def main():
     entrada = evento.get("tool_input") or {}
     caminho = entrada.get("file_path") or entrada.get("notebook_path") or ""
     if not caminho or not e_teste(caminho):
+        sys.exit(0)
+
+    # CLAUSULA DE ADESAO. Hooks de plugin disparam em toda sessao que carrega o
+    # plugin, e se fundem em vez de se sobrescrever — nao ha como desliga-los por
+    # escopo. Sem esta guarda, instalar o `metodo` impediria editar teste existente
+    # em QUALQUER repositorio, tenha ele adotado a metodologia ou nao.
+    #
+    # Um plugin instalado nao deve mudar o comportamento de projeto que nao pediu por
+    # isso: a pessoa desinstala em vez de configurar, e ai perde tambem o que era util.
+    #
+    # A adesao e procurada a partir do caminho DO ARQUIVO, nao do diretorio da sessao:
+    # num monorepo os dois divergem, e quem manda e onde o arquivo mora.
+    if not comum.aderiu(os.path.dirname(caminho)):
         sys.exit(0)
 
     # Escrever teste NOVO e o trabalho, e nao pode ser barrado. Mas so `Write`

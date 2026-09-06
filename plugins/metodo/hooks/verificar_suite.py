@@ -25,7 +25,10 @@ import os
 import subprocess
 import sys
 
-CONFIG = os.path.join(".claude", "metodo.json")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import comum  # noqa: E402
+
+CONFIG = comum.CONFIG
 LIMITE_SAIDA = 60  # linhas da cauda que entram na mensagem de bloqueio
 
 
@@ -153,9 +156,13 @@ def main():
     if not sessao_mudou_codigo(raiz):
         liberar()
 
-    caminho = os.path.join(raiz, CONFIG)
+    # Sobe ate a raiz do repositorio. Configuracao de projeto nao e herdada de
+    # diretorio pai, e a doc recomenda iniciar a sessao DENTRO do pacote num
+    # monorepo — entao olhar so o `cwd` bloqueia todo turno la, dizendo que nao ha
+    # verificacao declarada. Medido em arvore de teste antes de existir esta busca.
+    caminho = comum.achar_config(raiz)
 
-    if not os.path.isfile(caminho):
+    if not caminho:
         bloquear(
             "PORTAO DE VERIFICACAO: nao ha verificacao declarada neste projeto.\n"
             f"Esperava {CONFIG} na raiz do repositorio.\n\n"
@@ -190,11 +197,16 @@ def main():
     timeout = verificacao.get("timeout_segundos", 600)
     descricao = verificacao.get("descricao") or comando
 
+    # O comando declarado e relativo a ONDE A CONFIG MORA, nao a onde a sessao
+    # comecou. Num monorepo, `python3 tests/testar_tudo.py` escrito na raiz nao
+    # resolve a partir de `packages/api/`.
+    raiz_config = os.path.dirname(os.path.dirname(caminho))
+
     try:
         proc = subprocess.run(
             comando,
             shell=True,
-            cwd=raiz,
+            cwd=raiz_config,
             capture_output=True,
             text=True,
             timeout=timeout,
