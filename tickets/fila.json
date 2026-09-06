@@ -36,7 +36,7 @@
     {
       "id": "005",
       "titulo": "Escrever o /fluxo — le estado, recomenda o proximo passo, sabe mandar pular",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [
         "001",
         "002"
