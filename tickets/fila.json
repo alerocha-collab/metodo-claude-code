@@ -63,7 +63,7 @@
     {
       "id": "008",
       "titulo": "Escrever `onboarding-modelar`: o glossario extraido do codigo",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [
         "007"
       ],
