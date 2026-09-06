@@ -37,6 +37,27 @@ PADROES = [
 FERRAMENTAS = {"Edit", "Write", "NotebookEdit", "MultiEdit"}
 
 
+
+# O Claude Code manda UTF-8 no stdin, mas o Python do Windows decodifica com a
+# codificacao do console (cp1252). Qualquer caractere fora dela — as tabelas e
+# setas que um agente imprime estao cheias deles — derruba `sys.stdin.read()`.
+# Ler bytes e decodificar explicitamente elimina a dependencia do locale.
+def ler_stdin():
+    try:
+        return sys.stdin.buffer.read().decode("utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        return sys.stdin.read()
+
+
+# Pelo mesmo motivo, escrever a mensagem de bloqueio em stderr falha quando ela
+# tem caractere fora do cp1252. Sem isto, o hook cai ao tentar explicar por que
+# bloqueou.
+if hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
 def e_teste(caminho):
     normalizado = caminho.replace("\\", "/")
     return any(re.search(p, normalizado) for p in PADROES)
@@ -48,7 +69,7 @@ def negar(motivo):
 
 
 def main():
-    bruto = sys.stdin.read()
+    bruto = ler_stdin()
     try:
         evento = json.loads(bruto) if bruto.strip() else {}
     except json.JSONDecodeError:

@@ -43,6 +43,26 @@ def rodar(hook, evento):
     return proc.returncode
 
 
+def rodar_cp1252(hook, evento, proj):
+    """Roda o hook forcando a codificacao de console do Windows.
+
+    Sem forcar, este caso passa em qualquer maquina cujo locale ja seja UTF-8 —
+    e passaria sem provar nada, que e a pior propriedade de um teste. O evento
+    vai como bytes UTF-8, que e o que o Claude Code manda de verdade.
+    """
+    env = dict(os.environ)
+    env["PYTHONIOENCODING"] = "cp1252"
+    proc = subprocess.run(
+        [sys.executable, os.path.join(HOOKS, hook)],
+        input=json.dumps(evento, ensure_ascii=False).encode("utf-8"),
+        capture_output=True,
+        timeout=120,
+        env=env,
+        cwd=proj,
+    )
+    return proc.returncode, proc.stderr.decode("utf-8", "replace")
+
+
 def git(proj, *args):
     subprocess.run(["git", *args], cwd=proj, capture_output=True, text=True, timeout=60)
 
@@ -170,6 +190,29 @@ def main():
             print(f"  {marca} {nome} (exit {obtido})")
             if obtido != esperado:
                 falhas.append(f"{nome}: esperava {esperado}, veio {obtido}")
+
+        # --- codificacao ---
+        # O Claude Code manda UTF-8 no stdin; o Python do Windows decodifica com
+        # cp1252. A mensagem do assistente vem no evento e costuma ter tabela,
+        # seta e emoji — tudo fora do cp1252. Sem tratamento, `sys.stdin.read()`
+        # cai, e o hook bloqueia dizendo "erro inesperado": falso positivo, que
+        # e caro porque com hook nao se negocia.
+        sujar(proj)
+        escrever_config(proj, '{"verificacao":{"comando":"exit 0","descricao":"s"}}')
+        for rotulo, texto in [
+            ("box-drawing", "tabela ┌───┐ seta →"),
+            ("emoji", "pronto 👋"),
+            ("travessao", "texto — com travessao"),
+        ]:
+            evento = {"cwd": proj, "hook_event_name": "Stop",
+                      "last_assistant_message": texto}
+            codigo, err = rodar_cp1252("verificar_suite.py", evento, proj)
+            ok = codigo == LIBERA and "Unicode" not in err
+            nome = f"stdin cp1252 com {rotulo}: suite verde libera"
+            print(f"  {'ok  ' if ok else 'FALHA'} {nome} (exit {codigo})")
+            lista.append(nome)  # so para a contagem final
+            if not ok:
+                falhas.append(f"{nome}: exit={codigo} stderr={err[:120]!r}")
     finally:
         shutil.rmtree(base, ignore_errors=True)
 

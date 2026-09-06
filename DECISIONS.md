@@ -298,6 +298,73 @@ saberia — as 45 verificações passavam, e passariam para sempre.
 
 ---
 
+## 011 — O portão funciona; e o exercício encontrou um bug que os testes não pegavam
+
+**Data:** 2026-09-06 · **SHA:** `ticket 006`
+
+**O que foi verificado numa sessão real** (Windows 11, PowerShell,
+`claude --plugin-dir ./plugins/metodo --agent metodo:construtor` — esta forma do
+`--agent`, com o nome namespaced, **funciona**):
+
+| Caso | Resultado |
+|---|---|
+| 1 — suíte vermelha, árvore suja | **Barrado** pelo `verificar_suite.py` |
+| 2 — editar teste existente | **Negado** pelo `proteger_testes.py` em `PreToolUse:Edit` |
+| 3 — criar teste novo | **Permitido** |
+| 5 — a mensagem é a do portão | Confere, citando `python3 tests/testar_tudo.py` |
+| 4 e 6 | **Inconclusos** — ver o bug abaixo |
+
+`${CLAUDE_PLUGIN_ROOT}` **resolve** em `hooks/hooks.json`, confirmado pelo caminho que
+apareceu no erro do hook e pela variável de ambiente:
+`CLAUDE_PLUGIN_ROOT=C:/Users/alero/Downloads/Projetos/plugin/plugins/metodo`.
+
+### O bug: codificação do stdin
+
+O caso 4 ficou inconcluso porque o hook **caiu**, e caiu por culpa própria:
+
+> `UnicodeDecodeError('charmap', ..., 'character maps to <undefined>')`
+
+O Claude Code manda **UTF-8** no stdin. O Python do Windows decodifica com a
+codificação do console, **cp1252**. O evento carrega `last_assistant_message`, e a
+mensagem de um agente é cheia de tabela, seta e emoji — tudo fora do cp1252. Qualquer
+resposta com uma tabela derrubava o portão.
+
+**A rede de segurança segurou.** O `except BaseException` converteu a queda em exit 2,
+então o portão *bloqueou* em vez de liberar — fail-open evitado. Mas virou **falso
+positivo**, que é caro justamente porque com hook não se negocia.
+
+Correção: ler `sys.stdin.buffer` e decodificar UTF-8 explicitamente, e reconfigurar
+`stderr` para UTF-8 com `errors="replace"`. Três casos novos na suíte, rodando com
+`PYTHONIOENCODING=cp1252` forçado — sem forçar, eles passariam em qualquer máquina
+com locale UTF-8 e não provariam nada.
+
+**O que isso diz.** As 45 verificações passavam porque o arnês de teste rodava com o
+locale UTF-8 do Git Bash. O bug só existia no caminho real, com o shell real, com
+conteúdo real. É a mesma lição do ticket 003, agora numa camada mais funda: **testar o
+script não é testar o sistema.**
+
+### Descoberta que muda uma decisão anterior
+
+O diagnóstico revelou que o hook **recebe o papel**:
+
+```
+"agent_type": "metodo:construtor"
+CLAUDE_CODE_AGENT=metodo:construtor
+```
+
+Ou seja, a cláusula de guarda **poderia** ter sido por papel, ao contrário do que a
+decisão 010 supôs. Mantenho a guarda por árvore suja mesmo assim: *"verifique o que
+você mudou"* continua sendo regra melhor que *"verifique por causa de quem você é"* —
+vale para papéis que ainda não existem e não depende de campo que a doc não documenta.
+Mas o campo existe, está registrado aqui, e é o caminho se a guarda atual se mostrar
+grosseira demais.
+
+**Como saber que envelheceu.** Se `agent_type` sumir do evento, nada quebra — a guarda
+não o usa. Se a guarda por árvore suja liberar um caso que deveria barrar, `agent_type`
+é o refinamento disponível.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
