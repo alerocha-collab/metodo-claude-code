@@ -12,7 +12,7 @@
     {
       "id": "002",
       "titulo": "Escrever a revisao em dois eixos, Standards e Spec, em contextos separados",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "skills",
       "brief": "tickets/002-revisao-dois-eixos.md"

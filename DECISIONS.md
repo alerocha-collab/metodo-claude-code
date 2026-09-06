@@ -209,6 +209,44 @@ formato do estado, não o orquestrador.
 
 ---
 
+## 009 — A revisão em dois eixos é **skill com subagentes**, não workflow de plugin
+
+**Data:** 2026-09-06 · **SHA:** `ticket 002`
+
+**Contexto.** A Fase 0 registrou workflow de plugin como candidato natural para a
+revisão em dois eixos, porque workflows orquestram subagentes deterministicamente e
+mantêm os resultados intermediários **fora da janela de contexto**. A decisão ficou
+para o momento de olhar o problema.
+
+**Decisão.** Skill que despacha dois subagentes em paralelo.
+
+**O argumento que decidiu, e não é elegância: portabilidade.** Workflows são
+oferecidos em planos pagos, API, Bedrock, Vertex e Foundry. Uma metodologia
+distribuída como plugin que só funciona em parte dos ambientes falha no propósito que
+motivou empacotá-la — viajar entre projetos e máquinas. Skill funciona em todos.
+
+Dois argumentos de apoio:
+
+- **Escada de complexidade.** Dois subagentes paralelos é o degrau mais baixo que
+  entrega isolamento de contexto, que é o requisito real. Workflow é o degrau de
+  orquestração determinística em escala — dezenas de agentes, resultados que não cabem
+  na janela. Duas revisões de um diff não são isso.
+- **O que o workflow compraria já se compra mais barato.** A garantia de não mesclar
+  os eixos vem do contrato de retorno com teto de 400 palavras e de um formato de
+  saída fixo — não da linguagem de orquestração.
+
+**Alternativa descartada.** Workflow em `workflows/` do plugin, namespaced como
+`/metodo:revisar`. Ganho real: a não-mesclagem passa a ser estrutural, garantida pelo
+script, em vez de instruída. Custo: o plugin deixa de funcionar em parte dos
+ambientes, e ganha um script para manter.
+
+**Como saber que envelheceu.** Se os relatórios começarem a chegar mesclados ou
+reordenados entre eixos na prática, a instrução não bastou e o argumento de "se compra
+mais barato" caiu — aí o workflow se paga, com o custo de portabilidade assumido por
+escrito. Também envelhece se workflows deixarem de ser gated por plano.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
