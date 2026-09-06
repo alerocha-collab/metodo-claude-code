@@ -117,7 +117,7 @@
     {
       "id": "014",
       "titulo": "doutrina: fichas `paralelizar` e `garantir`",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "doutrina",
       "brief": "tickets/014-doutrina-paralelizar-garantir.md"

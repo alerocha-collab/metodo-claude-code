@@ -56,13 +56,27 @@ def casos_estrutura(base):
     vazio = os.path.join(base, "vazio")
     os.makedirs(vazio, exist_ok=True)
 
+    # Espelha a estrutura real: fichas sao relativas a RAIZ DO PLUGIN, e podem estar
+    # tanto em `referencias/` quanto em `skills/`.
     com_ficha = os.path.join(base, "com_ficha")
-    escrever(os.path.join(com_ficha, "duravel", "onde.md"), "# Onde colocar\n")
-    escrever(os.path.join(com_ficha, "volatil", "schema.md"),
+    ref = os.path.join(com_ficha, "referencias")
+    escrever(os.path.join(ref, "duravel", "onde.md"), "# Onde colocar\n")
+    escrever(os.path.join(ref, "volatil", "schema.md"),
              "# Schema\n\nurl: https://code.claude.com/docs/en/skills.md\n"
              "Verificado em 2026-09-06.\n")
-    escrever(os.path.join(com_ficha, "volatil", "sem-carimbo.md"), "# Schema solto\n")
-    escrever(os.path.join(com_ficha, "duravel", "orfa.md"), "# Ninguem me declarou\n")
+    escrever(os.path.join(ref, "volatil", "sem-carimbo.md"), "# Schema solto\n")
+    escrever(os.path.join(ref, "duravel", "orfa.md"), "# Ninguem me declarou\n")
+    escrever(os.path.join(com_ficha, "skills", "uma", "SKILL.md"), "# Uma skill\n")
+
+    # Fixture separada e impecavel: tudo que existe esta declarado, e o que e volatil
+    # esta carimbado. E o caso que impede um verificador que reprova sempre — sem ele,
+    # os sete acima aprovariam um validador quebrado.
+    tudo_ok = os.path.join(base, "tudo_ok")
+    escrever(os.path.join(tudo_ok, "referencias", "duravel", "onde.md"), "# Onde\n")
+    escrever(os.path.join(tudo_ok, "referencias", "volatil", "schema.md"),
+             "# Schema\n\nurl: https://code.claude.com/docs/en/skills.md\n"
+             "Verificado em 2026-09-06.\n")
+    escrever(os.path.join(tudo_ok, "skills", "uma", "SKILL.md"), "# Uma skill\n")
 
     def pag(**kw):
         d = {"id": "skills", "titulo": "S", "secao": "skills",
@@ -81,20 +95,27 @@ def casos_estrutura(base):
         ("prioridade invalida",
          {"paginas": [pag(prioridade="talvez")]}, vazio, True, "prioridade invalida"),
         ("ficha declarada que nao existe",
-         {"paginas": [pag(fichas=["duravel/nao-existe.md"])]}, vazio,
+         {"paginas": [pag(fichas=["referencias/duravel/nao-existe.md"])]}, vazio,
          True, "nao existe"),
         ("ficha volatil sem carimbo",
-         {"paginas": [pag(fichas=["volatil/sem-carimbo.md"])]}, com_ficha,
+         {"paginas": [pag(fichas=["referencias/volatil/sem-carimbo.md"])]}, com_ficha,
          True, "sem url de origem"),
         ("ficha orfa em disco",
-         {"paginas": [pag(fichas=["duravel/onde.md"])]}, com_ficha,
+         {"paginas": [pag(fichas=["referencias/duravel/onde.md"])]}, com_ficha,
          True, "orfa"),
+        ("corpo de skill orfo tambem acusa",
+         {"paginas": [pag(fichas=["referencias/duravel/onde.md",
+                                  "referencias/duravel/orfa.md",
+                                  "referencias/volatil/schema.md",
+                                  "referencias/volatil/sem-carimbo.md"])]},
+         com_ficha, True, "skills/uma/SKILL.md"),
         # --- NAO deve reprovar ---
         ("indice sem ficha nenhuma", doc_minimo(), vazio, False, None),
-        ("ficha volatil carimbada",
-         {"paginas": [pag(fichas=["volatil/schema.md", "duravel/onde.md",
-                                  "duravel/orfa.md", "volatil/sem-carimbo.md"])]},
-         com_ficha, True, "sem url de origem"),
+        ("tudo declarado e carimbado: nao acusa",
+         {"paginas": [pag(fichas=["referencias/duravel/onde.md",
+                                  "referencias/volatil/schema.md",
+                                  "skills/uma/SKILL.md"])]},
+         tudo_ok, False, None),
     ]
 
 

@@ -31,7 +31,11 @@ import sys
 
 RAIZ_PLUGIN = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FONTES = os.path.join(RAIZ_PLUGIN, "fontes.json")
-REFERENCIAS = os.path.join(RAIZ_PLUGIN, "referencias")
+
+# Caminhos de ficha sao relativos a RAIZ DO PLUGIN, nao a `referencias/`: uma ficha
+# tanto pode ser o corpo de uma skill quanto um arquivo de referencia, e as duas
+# precisam ser rastreaveis ate a pagina de origem.
+PASTAS_DE_FICHA = ("referencias", "skills")
 
 # Uma ficha volátil copia schema, campo e número — coisas que envelhecem em semanas.
 # Sem carimbo, ninguém sabe se ainda vale, e um agente responde com confiança a partir
@@ -63,7 +67,7 @@ def sha(dados):
     return hashlib.sha256(dados).hexdigest()
 
 
-def verificar_estrutura(doc, raiz_referencias=REFERENCIAS):
+def verificar_estrutura(doc, raiz_plugin=RAIZ_PLUGIN):
     """Coerência do índice. Devolve a lista de problemas; vazia significa íntegro."""
     problemas = []
     paginas = doc.get("paginas")
@@ -94,23 +98,27 @@ def verificar_estrutura(doc, raiz_referencias=REFERENCIAS):
 
         for ficha in fichas:
             fichas_declaradas.add(ficha)
-            caminho = os.path.join(raiz_referencias, ficha)
+            caminho = os.path.join(raiz_plugin, ficha)
             if not os.path.isfile(caminho):
                 problemas.append(f"{pid}: ficha declarada nao existe: {ficha}")
                 continue
-            if os.path.basename(os.path.dirname(caminho)) == "volatil":
+            if "volatil" in ficha.split("/"):
                 problemas.extend(conferir_carimbo(caminho, ficha))
 
     # O inverso: ficha em disco que ninguem declarou e ficha orfa — ninguem sabe de
     # onde ela veio, e portanto ninguem sabe quando ela ficou velha.
-    for pasta, _, arquivos in os.walk(raiz_referencias):
-        for nome in arquivos:
-            if not nome.endswith(".md"):
-                continue
-            rel = os.path.relpath(os.path.join(pasta, nome), raiz_referencias)
-            rel = rel.replace(os.sep, "/")
-            if rel not in fichas_declaradas and not rel.startswith("_"):
-                problemas.append(f"ficha orfa, sem fonte declarada: {rel}")
+    for topo in PASTAS_DE_FICHA:
+        base = os.path.join(raiz_plugin, topo)
+        if not os.path.isdir(base):
+            continue
+        for pasta, _, arquivos in os.walk(base):
+            for nome in arquivos:
+                if not nome.endswith(".md"):
+                    continue
+                rel = os.path.relpath(os.path.join(pasta, nome), raiz_plugin)
+                rel = rel.replace(os.sep, "/")
+                if rel not in fichas_declaradas and not rel.startswith("_"):
+                    problemas.append(f"ficha orfa, sem fonte declarada: {rel}")
 
     return problemas
 
