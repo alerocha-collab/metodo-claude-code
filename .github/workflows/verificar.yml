@@ -58,6 +58,11 @@ jobs:
           fi
           echo "ok: interpretador ausente bloqueia."
 
+      # Estrutura do indice da doutrina: SEM rede. Drift depende da doc mudar, que
+      # nao e falha de build — quem verifica drift e uma pessoa, deliberadamente.
+      - name: Validar a integridade do indice de fontes
+        run: python3 plugins/doutrina/scripts/verificar_fontes.py
+
       - name: Validar a fila de tickets, se existir
         run: |
           if [ -f tickets/fila.json ]; then
@@ -75,7 +80,8 @@ jobs:
       - name: Instalar o Claude Code
         run: curl -fsSL https://claude.ai/install.sh | bash
 
-      - name: Validar o plugin em modo estrito
+      - name: Validar os plugins em modo estrito
         run: |
           export PATH="$HOME/.local/bin:$PATH"
           claude plugin validate ./plugins/metodo --strict
+          claude plugin validate ./plugins/doutrina --strict

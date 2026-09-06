@@ -95,6 +95,24 @@
       "bloqueado_por": [],
       "modulo": "docs",
       "brief": "tickets/011-documento-de-arquitetura.md"
+    },
+    {
+      "id": "012",
+      "titulo": "doutrina: esqueleto do plugin, indice das fontes e detector de drift",
+      "estado": "concluido",
+      "bloqueado_por": [],
+      "modulo": "doutrina",
+      "brief": "tickets/012-doutrina-esqueleto-e-indice.md"
+    },
+    {
+      "id": "013",
+      "titulo": "doutrina: a matriz `onde colocar` e as armadilhas da doc",
+      "estado": "pronto",
+      "bloqueado_por": [
+        "012"
+      ],
+      "modulo": "doutrina",
+      "brief": "tickets/013-doutrina-nucleo-duravel.md"
     }
   ]
 }
