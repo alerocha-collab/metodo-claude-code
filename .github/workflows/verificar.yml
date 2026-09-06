@@ -1,0 +1,59 @@
+name: verificar
+
+# Fecha, na propria metodologia, a lacuna "sem CI" que a auditoria identificou:
+# um hook pre-commit local e contornavel com --no-verify. Isto nao e.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  suites:
+    name: suites (fail-closed)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Rodar todas as suites
+        run: python3 tests/testar_tudo.py
+
+      # O runner e fail-closed: suite ausente conta como falha. Este passo prova
+      # que a propriedade vale de verdade, em vez de confiar no comentario do
+      # codigo — move as suites para fora e exige que o runner reprove.
+      - name: Provar que o runner reprova quando nao ha suite
+        run: |
+          mkdir -p /tmp/vazio/tests
+          cp tests/testar_tudo.py /tmp/vazio/tests/
+          if python3 /tmp/vazio/tests/testar_tudo.py; then
+            echo "FALHA: o runner aprovou um repositorio sem suite nenhuma."
+            exit 1
+          fi
+          echo "ok: runner reprovou, como deve."
+
+      - name: Validar a fila de tickets, se existir
+        run: |
+          if [ -f tickets/fila.json ]; then
+            python3 plugins/metodo/scripts/validar_fila.py tickets/fila.json
+          else
+            echo "sem tickets/fila.json neste repositorio; nada a validar."
+          fi
+
+  plugin:
+    name: manifesto do plugin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar o Claude Code
+        run: curl -fsSL https://claude.ai/install.sh | bash
+
+      - name: Validar o plugin em modo estrito
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          claude plugin validate ./plugins/metodo --strict
