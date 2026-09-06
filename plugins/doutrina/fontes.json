@@ -44,7 +44,8 @@
       "verificada_em": "2026-09-06",
       "fichas": [
         "referencias/armadilhas.md",
-        "referencias/duravel/compaction.md"
+        "referencias/duravel/compaction.md",
+        "skills/contexto/SKILL.md"
       ]
     },
     {
@@ -59,6 +60,8 @@
         "referencias/armadilhas.md",
         "referencias/duravel/matriz.md",
         "referencias/duravel/precedencias.md",
+        "skills/contexto/SKILL.md",
+        "skills/escrever-skill/SKILL.md",
         "skills/onde-colocar/SKILL.md"
       ]
     },
@@ -74,6 +77,8 @@
         "referencias/armadilhas.md",
         "referencias/duravel/matriz.md",
         "referencias/duravel/precedencias.md",
+        "skills/distribuir/SKILL.md",
+        "skills/escrever-skill/SKILL.md",
         "skills/onde-colocar/SKILL.md"
       ]
     },
@@ -87,7 +92,9 @@
       "verificada_em": "2026-09-06",
       "fichas": [
         "referencias/armadilhas.md",
-        "referencias/duravel/compaction.md"
+        "referencias/duravel/compaction.md",
+        "skills/contexto/SKILL.md",
+        "skills/escrever-skill/SKILL.md"
       ]
     },
     {
@@ -112,6 +119,8 @@
         "referencias/armadilhas.md",
         "referencias/duravel/compaction.md",
         "referencias/duravel/precedencias.md",
+        "skills/contexto/SKILL.md",
+        "skills/distribuir/SKILL.md",
         "skills/onde-colocar/SKILL.md"
       ]
     },
@@ -156,6 +165,8 @@
       "fichas": [
         "referencias/armadilhas.md",
         "referencias/duravel/compaction.md",
+        "skills/contexto/SKILL.md",
+        "skills/escrever-skill/SKILL.md",
         "skills/onde-colocar/SKILL.md"
       ]
     },
@@ -544,7 +555,8 @@
       "fichas": [
         "referencias/armadilhas.md",
         "referencias/duravel/compaction.md",
-        "referencias/duravel/matriz.md"
+        "referencias/duravel/matriz.md",
+        "skills/escrever-skill/SKILL.md"
       ]
     },
     {
@@ -566,7 +578,8 @@
       "hash": "d64f8d772d4cf3780a4af8aa0042e7f65b6dc8a5ceeb1ba70ea440946514fc48",
       "verificada_em": "2026-09-06",
       "fichas": [
-        "referencias/duravel/matriz.md"
+        "referencias/duravel/matriz.md",
+        "skills/distribuir/SKILL.md"
       ]
     },
     {
@@ -650,7 +663,9 @@
       "prioridade": "nucleo",
       "hash": "2119e2a0200fa627d151b6bfc5567b9f2339c7b7cb9ca47ab02a2f93423ddecd",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "skills/distribuir/SKILL.md"
+      ]
     },
     {
       "id": "troubleshoot-install",
@@ -1000,7 +1015,9 @@
       "prioridade": "nucleo",
       "hash": "ed1d6ff6bd440957c09f3a2ba937ff6901b83e9cdfee9cfc8b73e5573ad2665e",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "skills/distribuir/SKILL.md"
+      ]
     },
     {
       "id": "plugin-dependencies",
@@ -1124,6 +1141,7 @@
       "verificada_em": "2026-09-06",
       "fichas": [
         "referencias/duravel/matriz.md",
+        "skills/distribuir/SKILL.md",
         "skills/garantir/SKILL.md",
         "skills/onde-colocar/SKILL.md"
       ]
@@ -1428,7 +1446,9 @@
       "prioridade": "nucleo",
       "hash": "3c017b65b48b6884b47882ffcf931dc77dead2048c624ffd76b039de8082bac8",
       "verificada_em": "2026-09-06",
-      "fichas": []
+      "fichas": [
+        "skills/distribuir/SKILL.md"
+      ]
     },
     {
       "id": "channels-reference",
