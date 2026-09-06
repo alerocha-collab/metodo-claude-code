@@ -1,7 +1,7 @@
 # Decisões — repositório da metodologia
 
 > Append-only. Entradas novas vão no fim; uma decisão se revoga com outra que a cite,
-> nunca por edição. Formato em `plugins/arquiteto/templates/DECISIONS.md`.
+> nunca por edição. Formato em `plugins/metodo/templates/DECISIONS.md`.
 
 ---
 
@@ -88,16 +88,45 @@ Mas as cópias em `~/.claude/` agora são duplicatas: ver "Pendências".
 
 ---
 
+## 005 — O plugin passa a se chamar `metodo` · revoga a 001
+
+**Data:** 2026-09-05 · **SHA:** `ccf7887`
+
+**Contexto.** A decisão 001 escolheu `arquiteto` e registrou como custo assumido a
+colisão com o agente de mesmo nome. A doc então confirmou que agentes de plugin são
+namespaced (`plugin:agente`), o que tornou o custo concreto e visível:
+`arquiteto:arquiteto` no typeahead. Além disso, `arquiteto` nomeia **uma parte** do
+plugin — o agente de arquitetura de harness — enquanto o plugin é a metodologia
+inteira. O nome descrevia o componente, não o conjunto.
+
+**Decisão.** O plugin se chama `metodo`. Skills passam a ser `/metodo:<skill>`; o
+agente passa a ser `metodo:arquiteto`. Diretório renomeado para `plugins/metodo/`.
+
+**Alternativa descartada.** Manter `arquiteto` (decisão 001) e conviver com
+`arquiteto:arquiteto`. Descartada porque o custo de renomear só cresce: hoje é
+`git mv` mais quatro arquivos; depois de publicar, é quebrar toda instalação
+existente e todo caminho já escrito por terceiros.
+
+**Consequências.** A colisão que motivou a decisão 003 deixa de existir — 003 fica
+sem objeto, e o agente mantém o nome `arquiteto` sem custo. As decisões 001 a 004
+seguem registradas com os caminhos `plugins/arquiteto/` que eram verdade quando
+foram escritas; o caminho atual é `plugins/metodo/`.
+
+**Como saber que envelheceu.** Se o plugin deixar de ser uma metodologia e virar
+outra coisa. Enquanto for método, o nome descreve.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
 
 | # | Pendência | Bloqueia |
 |---|---|---|
-| P1 | **Duplicata do `arquiteto`** — agente e skill existem agora em `~/.claude/` **e** no plugin. Definições de usuário sobrescrevem as de plugin com mesmo nome, então a cópia de `~/.claude` é a que vale. Remover de lá só depois de confirmar o plugin carregando. | Verificação da Fase 1 |
+| P1 | **Duplicata do agente `arquiteto` e da skill `arquiteto-claude-code`** — agente e skill existem agora em `~/.claude/` **e** no plugin. Definições de usuário sobrescrevem as de plugin com mesmo nome, então a cópia de `~/.claude` é a que vale. Remover de lá só depois de confirmar o plugin carregando. | Verificação da Fase 1 |
 | P2 | **Repositório GitHub: público ou privado.** Privado exige credencial git em toda máquina que instale. | Publicação |
 | P3 | **`gh` não instalado** (ausente do PATH). Sem ele, requisições não autenticadas com rate limit. | Criação do repo remoto |
 | P4 | **Bump de `version` a cada release.** Sem isso, quem instalou fica com a cópia em cache. Candidato a item de checklist ou hook. | Publicação |
 | P5 | **CI: `claude plugin validate --strict` no GitHub Actions a cada push.** `--strict` promove avisos a erros; é a forma pensada para CI. Fecha na metodologia a lacuna de "sem CI" identificada no FirstAxiom. | Fase 2+ |
-| P7 | **`skills:` no frontmatter de agente de plugin: nome puro ou namespaced?** A doc diz que skills são referenciadas pelo `name`, mas **não cobre** o caso de agente e skill no mesmo plugin. O agente `arquiteto` declara `skills: [arquiteto-claude-code]`; se o correto for `arquiteto:arquiteto-claude-code`, ele carrega sem a doutrina. Resolver por teste empírico ao carregar com `--plugin-dir`. | Verificação da Fase 1 |
+| P7 | **`skills:` no frontmatter de agente de plugin: nome puro ou namespaced?** A doc diz que skills são referenciadas pelo `name`, mas **não cobre** o caso de agente e skill no mesmo plugin. O agente `arquiteto` declara `skills: [arquiteto-claude-code]`; se o correto for `metodo:arquiteto-claude-code`, ele carrega sem a doutrina. Resolver por teste empírico ao carregar com `--plugin-dir`. | Verificação da Fase 1 |
 | P6 | **Fase 0 incompleta** — falta ler: dynamic workflows, `/batch`, scheduled tasks, `context: fork` em skill, statusline, `/doctor`, checkpointing. Nenhum bloqueia a Fase 1; todos importam da Fase 2 em diante. | Fase 2 |

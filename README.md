@@ -1,4 +1,4 @@
-# arquiteto — metodologia de engenharia com agentes, como plugin
+# metodo — metodologia de engenharia com agentes, como plugin
 
 Repositório que carrega a metodologia entre projetos. O que vive aqui são as skills,
 os agentes e os hooks que codificam nove decisões de método já fechadas — não código
@@ -14,7 +14,7 @@ adaptado entram nas fases seguintes.
 .
 ├── docs/                        doutrina e decisões que fundamentam a metodologia
 └── plugins/
-    └── arquiteto/               o plugin propriamente dito
+    └── metodo/                 o plugin propriamente dito
         ├── .claude-plugin/plugin.json
         ├── agents/              papéis (construtor, operador, arquiteto)
         ├── skills/              fluxo, onboarding, core adaptado
@@ -22,28 +22,29 @@ adaptado entram nas fases seguintes.
         └── templates/           artefatos que o plugin instala em projetos
 ```
 
-O plugin fica em `plugins/arquiteto/`, não na raiz, para que
+O plugin fica em `plugins/metodo/`, não na raiz, para que
 `.claude-plugin/marketplace.json` possa ser adicionado depois com
-`"source": "./plugins/arquiteto"` sem mover nada.
+`"source": "./plugins/metodo"` sem mover nada.
 
 ## Usar em desenvolvimento
 
 Sem instalar, isolado por sessão:
 
 ```bash
-claude --plugin-dir ./plugins/arquiteto
+claude --plugin-dir ./plugins/metodo
 ```
 
 `/reload-plugins` recarrega sem reiniciar. Para validar antes de publicar:
 
 ```bash
-claude plugin validate ./plugins/arquiteto
+claude plugin validate ./plugins/metodo
 ```
 
 ## Namespacing
 
-Skills do plugin são sempre invocadas com o prefixo do plugin:
-`/arquiteto:arquiteto-claude-code`.
+Tudo que o plugin distribui carrega o prefixo `metodo:`. Skills se invocam como
+`/metodo:arquiteto-claude-code`; agentes aparecem no typeahead como
+`metodo:arquiteto`.
 
 ## Publicar
 
