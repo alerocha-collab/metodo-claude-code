@@ -55,7 +55,7 @@
     {
       "id": "007",
       "titulo": "Escrever `onboarding-entender`: o mapa do que existe",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "skills",
       "brief": "tickets/007-onboarding-entender.md"
