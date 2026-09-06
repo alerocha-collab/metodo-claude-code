@@ -33,6 +33,19 @@ para o runner.
 | `fila.json` | `tickets/` | Estado dos tickets e o grafo de bloqueio. JSON porque muda toda sessão |
 | `ticket.md` | `tickets/NNN-*.md` | A spec de uma fatia. Markdown porque é prosa escrita uma vez |
 | `DECISIONS.md` | raiz | Decisões append-only, abaixo da barra de um ADR |
+| `settings.exemplo.json` | `.claude/settings.json` | A camada de **garantia dura**. Copie e adapte — o plugin não instala sozinho |
+
+### A camada de permissões
+
+As skills e os agentes são **pedido**: o modelo lê e decide. Os hooks são garantia
+**condicional**: disparam sempre, mas dão timeout, saem com código que não bloqueia, e
+não rodam em pasta não confiada. `permissions` é a única camada **dura** — aplicada
+pelo cliente antes de o modelo agir.
+
+O plugin **não** a instala sozinho, de propósito: regra de permissão que aparece sem
+alguém ter escolhido é a forma mais rápida de perder a confiança de quem instalou.
+Copie `templates/settings.exemplo.json`, adapte, e **apague as chaves que começam com
+`$`** — elas são comentário, e `settings.json` não aceita comentário de verdade.
 
 Valide a fila com:
 

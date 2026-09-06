@@ -1,0 +1,44 @@
+{
+  "$LEIA_PRIMEIRO": "Exemplo para COPIAR e ADAPTAR para .claude/settings.json do seu projeto. Ao copiar, APAGUE todas as chaves que comecam com $ — elas sao comentario, e settings.json nao aceita comentario de verdade. O plugin nao instala nada disto sozinho, de proposito: regra de permissao que aparece sem alguem ter escolhido e a forma mais rapida de perder a confianca de quem instalou.",
+
+  "$por_que_existe": "As skills e os agentes do `metodo` sao PEDIDO: o modelo le e decide. Os hooks sao garantia CONDICIONAL: disparam sempre, mas dao timeout, saem com codigo que nao bloqueia, e nao rodam em pasta nao confiada. Isto aqui e a unica camada de garantia DURA — aplicada pelo cliente antes de o modelo agir. Para 'isto nunca pode acontecer', so ela serve.",
+
+  "$ordem_de_avaliacao": "deny -> ask -> allow, e a PRIMEIRA regra que casa vence. Uma negacao nao e sobreponivel por permissao em escopo mais forte: ela e consultada primeiro.",
+
+  "permissions": {
+    "$deny": "Negar LEITURA e a regra mais forte disponivel, e economiza duas: negar Read num caminho tambem bloqueia Edit e Write ali. Uma regra, nao tres.",
+
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./**/.env)",
+      "Read(./**/*.pem)",
+      "Read(./**/id_rsa*)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+
+      "Read(./**/dist/**)",
+      "Read(./**/build/**)",
+      "Read(./**/*.generated.*)",
+      "Read(./vendor/**)"
+    ],
+
+    "$deny_segredo": "As sete primeiras sao segredo. O motivo nao e so vazamento para fora: transcricao de sessao NAO e cifrada em repouso, entao um segredo que entra no contexto fica escrito em disco. A negacao impede que ele entre.",
+
+    "$deny_gerado": "As quatro ultimas sao saida de build e codigo gerado. Aqui o motivo e contexto, nao seguranca: sao arquivos enormes que ninguem quer ler, e que uma busca traz sem querer. Caminho ja listado no .gitignore nao precisa entrar aqui — busca de conteudo respeita gitignore por padrao. Estes sao para o que E versionado.",
+
+    "$allow": "Permitir o comando de verificacao NAO e afrouxar. Aprovar o mesmo comando a cada execucao treina a pessoa a aprovar sem ler, e fadiga de aprovacao reduz seguranca em vez de aumentar. Allowlist estreita para o que se repete, prompt para o resto.",
+
+    "allow": [
+      "Bash(python3 tests/testar_tudo.py)"
+    ],
+
+    "$allow_substitua": "SUBSTITUA a linha acima pelo comando que voce declarou em .claude/metodo.json. Ela e o exemplo deste repositorio.",
+
+    "$allow_nunca": "Nunca `Bash(*)`, `Bash`, `Edit(**)` nem equivalente. Um allow largo desliga a camada inteira e ensina o oposto do que ela existe para ensinar — e a suite deste plugin reprova exemplo assim."
+  },
+
+  "$sandbox": "Sandbox de SO seria a camada seguinte — isolamento de filesystem e rede para o processo, nao para o agente. Importa porque rodar a suite E executar codigo arbitrario do repositorio e das dependencias, e nada disso herda as permissoes do Claude Code. Nao esta neste exemplo porque nao roda em Windows nativo, que e onde este plugin foi construido. Se voce esta em macOS, Linux ou WSL2, ligue.",
+
+  "$o_que_nao_por_aqui": "Hooks. Eles vem do plugin, em hooks/hooks.json, e se fundem com os que voce declarar — nao se sobrescrevem. Declarar aqui um hook igual ao do plugin faz os dois dispararem."
+}

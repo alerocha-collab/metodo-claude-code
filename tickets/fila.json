@@ -161,7 +161,7 @@
     {
       "id": "019",
       "titulo": "metodo: a camada de garantia dura que nunca foi construida",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "templates",
       "brief": "tickets/019-metodo-camada-de-permissions.md"
