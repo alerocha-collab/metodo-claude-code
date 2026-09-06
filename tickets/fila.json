@@ -113,6 +113,42 @@
       ],
       "modulo": "doutrina",
       "brief": "tickets/013-doutrina-nucleo-duravel.md"
+    },
+    {
+      "id": "014",
+      "titulo": "doutrina: fichas `paralelizar` e `garantir`",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "doutrina",
+      "brief": "tickets/014-doutrina-paralelizar-garantir.md"
+    },
+    {
+      "id": "015",
+      "titulo": "doutrina: fichas `escrever-skill`, `contexto` e `distribuir`",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "doutrina",
+      "brief": "tickets/015-doutrina-skill-contexto-distribuir.md"
+    },
+    {
+      "id": "016",
+      "titulo": "doutrina: os quatro schemas volateis, carimbados",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "doutrina",
+      "brief": "tickets/016-doutrina-schemas-volateis.md"
+    },
+    {
+      "id": "017",
+      "titulo": "doutrina: a bateria de perguntas que verifica a destilacao",
+      "estado": "pronto",
+      "bloqueado_por": [
+        "014",
+        "015",
+        "016"
+      ],
+      "modulo": "doutrina",
+      "brief": "tickets/017-doutrina-bateria-de-perguntas.md"
     }
   ]
 }
