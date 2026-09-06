@@ -143,3 +143,60 @@ Fontes: [statusline](https://code.claude.com/docs/en/statusline.md),
 | Revisão em dois eixos | Candidata a **workflow** de plugin, não a skill. Decidir na Fase 3 |
 | Estado do projeto na statusline | **Sem respaldo.** Não documentado para plugin |
 | `/rewind` como rede de segurança | **Não serve.** Não cobre Bash nem subagente. A rede é git |
+
+---
+
+## Adendo — achados do primeiro uso real do agente
+
+O agente `metodo:arquiteto` foi exercitado duas vezes ao verificar a Fase 1. As duas
+respostas produziram consequências de desenho que não estavam no plano.
+
+### O hook normalmente **substitui** a entrada no `CLAUDE.md`, não convive com ela
+
+Um hook que nega devolve a mensagem de negação ao modelo, que continua trabalhando a
+partir dela — o padrão *deny-and-continue*. Logo, **a regra se escreve dentro da
+mensagem de negação**, não no `CLAUDE.md`:
+
+```
+ERROR: arquivos em migrations/ são imutáveis após o merge.
+Crie uma nova migration em vez de editar esta.
+```
+
+A regra é ensinada no instante exato em que é relevante, a custo de contexto **zero**
+nos requests em que não se aplica — contra ~15–25 tokens por linha, em todo request,
+para sempre, se morar no `CLAUDE.md`.
+
+A exceção que justifica ter os dois: quando descobrir a regra tarde custa trabalho
+jogado fora (o agente escreve 200 linhas e só então bate no bloqueio). Aí a linha no
+`CLAUDE.md` é prevenção e o hook é garantia — uma linha, não um parágrafo.
+
+**Consequência para a Fase 2.** Todo hook que o plugin distribuir carrega a própria
+regra na mensagem de negação. Duplicar no `CLAUDE.md` sem a exceção acima é pagar
+contexto recorrente por algo que o hook já garante.
+
+### O `Stop` de verificação pertence ao **papel**, não ao `settings.json`
+
+O plano previa *"o `Stop` de verificação como primeiro e único hook universal"*. O
+agente levantou a assimetria que desfaz isso: o portão duro é a resposta certa para o
+agente que **conserta** o código, e errada para o agente que apenas **reporta** —
+bloquear alguém por reportar corretamente uma suíte vermelha é bloquear a verdade.
+
+**Consequência para a Fase 2.** O `Stop` mora no frontmatter do `construtor`, que
+conserta. Não no `settings.json`. É a decisão nº 8 (três escopos) aplicada — e uma
+correção ao plano, que o classificava como universal.
+
+### Falta um mecanismo que o plano não tinha: `PreToolUse` deny sobre os testes
+
+Um agente medido por "suíte verde" tem um caminho trivial de trapaça: apagar o teste.
+Pedido em prompt não segura isso — vira `PreToolUse` deny em `Edit|Write` sobre os
+globs de teste (`**/test_*.py`, `**/*.test.ts`, `tests/**`).
+
+É o par duro da decisão nº 6. A decisão nº 6 protege os **critérios de aceitação** de
+serem editados durante a implementação; este hook protege os **testes**. Mesma
+lógica, mecanismo que faltava.
+
+### Cautela registrada
+
+O formato de hooks distribuídos por plugin mudou entre versões. Confirmar contra a
+doc instalada antes de depender do campo — não contra memória nem contra este
+documento.

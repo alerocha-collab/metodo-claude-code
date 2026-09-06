@@ -117,6 +117,43 @@ outra coisa. Enquanto for método, o nome descreve.
 
 ---
 
+## 006 — Agente de plugin referencia skill do mesmo plugin pelo **nome puro**
+
+**Data:** 2026-09-05 · **SHA:** `0ef60e0`
+
+**Contexto.** A doc diz que skills são referenciadas pelo `name` no campo `skills:`,
+mas não cobre o caso de agente e skill virem do mesmo plugin — onde as skills
+aparecem namespaced (`metodo:arquiteto-claude-code`). Se o campo exigisse o prefixo,
+o agente carregaria **sem** a doutrina, e a falha seria silenciosa: uma resposta
+competente e genérica em vez de uma resposta ancorada.
+
+**Decisão.** `skills:` usa o nome puro (`arquiteto-claude-code`). É como o agente
+`arquiteto` está escrito, e é como os agentes das próximas fases serão escritos.
+
+**Evidência.** O agente foi invocado como `metodo:arquiteto` com um prompt que **não
+mencionava a skill nem caminho algum** — apenas "uma regra do meu projeto deve virar
+hook ou entrada no CLAUDE.md?". A resposta exibiu quatro comportamentos que só
+existem naquele `SKILL.md`: abriu por uma seção "Bloqueios" de uma pergunta com o
+delta por resposta (a exceção prescrita quando falta enquadramento); citou "regra 3
+das invioláveis" e as seções §2/§4/§8 por número; recusou o template de 10 seções
+invocando o viés antisuperengenharia; e fechou por "Suposições e quando revisar".
+
+**Alternativa descartada.** Prefixar (`metodo:arquiteto-claude-code`) por precaução.
+Descartada porque a evidência aponta para o nome puro, e prefixar "por garantia" um
+campo cujo comportamento agora conhecemos seria construir sobre superstição.
+
+**Ressalva registrada.** O teste rodou num repositório que **contém** o plugin, e o
+agente tem `Read`/`Glob`/`Grep` — não dá para excluir com certeza absoluta que tenha
+encontrado a doutrina em disco. A evidência é forte porque o comportamento é
+estrutural e imediato, não resultado de busca. O teste definitivo é invocar o agente
+de um repositório que não contenha o plugin, o que acontece naturalmente na Fase 5.
+
+**Como saber que envelheceu.** Se um agente do plugin passar a responder de forma
+competente mas genérica — sem as marcas da doutrina — em outro repositório. É o
+sinal de que o campo parou de resolver, e ele é silencioso: procure ativamente.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
@@ -128,5 +165,5 @@ Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na 
 | P3 | **`gh` não instalado** (ausente do PATH). Sem ele, requisições não autenticadas com rate limit. | Criação do repo remoto |
 | P4 | **Bump de `version` a cada release.** Sem isso, quem instalou fica com a cópia em cache. Candidato a item de checklist ou hook. | Publicação |
 | P5 | **CI: `claude plugin validate --strict` no GitHub Actions a cada push.** `--strict` promove avisos a erros; é a forma pensada para CI. Fecha na metodologia a lacuna de "sem CI" identificada no FirstAxiom. | Fase 2+ |
-| P7 | **`skills:` no frontmatter de agente de plugin: nome puro ou namespaced?** A doc diz que skills são referenciadas pelo `name`, mas **não cobre** o caso de agente e skill no mesmo plugin. O agente `arquiteto` declara `skills: [arquiteto-claude-code]`; se o correto for `metodo:arquiteto-claude-code`, ele carrega sem a doutrina. Resolver por teste empírico ao carregar com `--plugin-dir`. | Verificação da Fase 1 |
+| ~~P7~~ | **Resolvida com ressalva** — ver decisão 006. Nome puro funciona. Ressalva: o teste rodou num repo que contém o plugin; confirmação definitiva na Fase 5. | — |
 | ~~P6~~ | **Resolvida.** Fase 0 fechada; achados e consequências em [docs/fase-0-mecanismos.md](docs/fase-0-mecanismos.md). | — |
