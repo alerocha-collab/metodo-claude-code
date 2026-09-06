@@ -447,6 +447,41 @@ existe para isso.
 
 ---
 
+## 014 — O detector de desatualização **reporta**; não bloqueia
+
+**Data:** 2026-09-06 · **SHA:** `ticket 011`
+
+**Contexto.** A decisão de método nº 3 diz, sobre o documento de arquitetura
+carimbado: *"o hook roda `git diff <sha>..HEAD --stat` e avisa ou bloqueia. Faça."* E
+adiante: *"O hook detecta e bloqueia. Nunca atualiza."*
+
+**Decisão.** Implementado como **script que reporta**, não como hook que bloqueia.
+`verificar_documento.py` mede a distância e sai 1 quando há distância. Nada no
+repositório o dispara automaticamente.
+
+**A parte da decisão nº 3 que foi preservada é a que importa: ele nunca atualiza.** A
+ênfase daquele texto está no contraste entre *detectar* e *curar sozinho* — e essa
+metade está inteira, com caso de teste provando que o script não altera o documento
+que lê.
+
+**Alternativa descartada.** `Stop` hook bloqueando o fim do turno enquanto o
+documento estiver atrasado. Custo, e é alto: o documento fica legitimamente atrasado
+durante toda uma fase — é para isso que ele serve, descrever o fim da fase anterior.
+Bloquear por isso seria bloquear semanas seguidas de trabalho correto. Falso positivo
+em hook é caro porque **com hook não se negocia**, e um portão que barra todo dia
+ensina a desligar portões.
+
+**A distinção que sustenta a divergência.** Suíte vermelha e documento atrasado não
+são a mesma classe de coisa. A primeira diz que **o que você acabou de fazer está
+errado**; a segunda, que **um artefato descreve um estado anterior** — o que é
+normal, esperado, e às vezes correto. Só a primeira justifica portão.
+
+**Como saber que envelheceu.** Se o documento ficar meses atrasado sem ninguém
+notar, o relato não bastou e a pergunta volta — provavelmente como aviso em
+`SessionStart`, que é visível sem ser bloqueante, e não como `Stop`.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.

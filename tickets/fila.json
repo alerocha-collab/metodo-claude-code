@@ -87,6 +87,14 @@
       "bloqueado_por": [],
       "modulo": "skills",
       "brief": "tickets/010-skills-de-entrada.md"
+    },
+    {
+      "id": "011",
+      "titulo": "Documento de arquitetura da fase, carimbado, com detector de desatualizacao",
+      "estado": "concluido",
+      "bloqueado_por": [],
+      "modulo": "docs",
+      "brief": "tickets/011-documento-de-arquitetura.md"
     }
   ]
 }
