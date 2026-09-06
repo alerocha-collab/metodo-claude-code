@@ -353,8 +353,8 @@ Nenhum corpo ágil/agêntico oferece substituto. Ou você importa o registro de 
 
 ### Documentos fornecidos
 
-- `C:\Users\alero\Downloads\guia-aplicacao-xp (1).md` — baseado em Kent Beck, *Extreme Programming Explained: Embracing Change and Managing Risk*
-- `C:\Users\alero\Downloads\guia-engenharia-software.md` — baseado em Ian Sommerville, *Engenharia de Software* (10ª ed.) e Roger Pressman, *Engenharia de Software: Uma Abordagem Profissional* (8ª ed.)
+- `guia-aplicacao-xp.md` (documento local) — baseado em Kent Beck, *Extreme Programming Explained: Embracing Change and Managing Risk*
+- `guia-engenharia-software.md` (documento local) — baseado em Ian Sommerville, *Engenharia de Software* (10ª ed.) e Roger Pressman, *Engenharia de Software: Uma Abordagem Profissional* (8ª ed.)
 
 ### Skills lidas na íntegra (instaladas localmente)
 

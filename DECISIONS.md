@@ -11,8 +11,8 @@
 
 **Contexto.** O nome vira prefixo de toda skill (`/<nome>:<skill>`) e será digitado
 para sempre. Candidatos discutidos na sessão de planejamento: `fx` (curtíssimo,
-opaco), `metodo` (equilíbrio), `axiom` (amarra à marca, mas sugere especificidade ao
-FirstAxiom que a metodologia não tem).
+opaco), `metodo` (equilíbrio), `axiom` (amarra à marca, mas sugere uma
+especificidade que a metodologia não tem).
 
 **Decisão.** `arquiteto`.
 
@@ -194,7 +194,7 @@ o `/fluxo` lê é a **fila de tickets**, e o formato do ticket é entregue pela 
 não pela 2. Colocar o `/fluxo` como 2b apenas move o mesmo erro uma casa adiante.
 
 **Decisão.** A ordem passa a ser: 2a (papéis e portão, feita) → **3 (core, começando
-pelo formato do ticket)** → **`/fluxo`** → 4 (onboarding) → 5 (FirstAxiom).
+pelo formato do ticket)** → **`/fluxo`** → 4 (onboarding) → 5 (projeto de referência).
 
 O `/fluxo` é o último item de fluxo a ser escrito, porque é o único que não produz
 estado — só o lê.
@@ -222,6 +222,6 @@ Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na 
 | P2 | **Repositório GitHub: público ou privado.** Privado exige credencial git em toda máquina que instale. | Publicação |
 | P3 | **`gh` não instalado** (ausente do PATH). Sem ele, requisições não autenticadas com rate limit. | Criação do repo remoto |
 | P4 | **Bump de `version` a cada release.** Sem isso, quem instalou fica com a cópia em cache. Candidato a item de checklist ou hook. | Publicação |
-| P5 | **CI: `claude plugin validate --strict` no GitHub Actions a cada push.** `--strict` promove avisos a erros; é a forma pensada para CI. Fecha na metodologia a lacuna de "sem CI" identificada no FirstAxiom. | Fase 2+ |
+| P5 | **CI: `claude plugin validate --strict` no GitHub Actions a cada push.** `--strict` promove avisos a erros; é a forma pensada para CI. Fecha na metodologia uma lacuna identificada na auditoria do projeto de referência. | Fase 2+ |
 | ~~P7~~ | **Resolvida com ressalva** — ver decisão 006. Nome puro funciona. Ressalva: o teste rodou num repo que contém o plugin; confirmação definitiva na Fase 5. | — |
 | ~~P6~~ | **Resolvida.** Fase 0 fechada; achados e consequências em [docs/fase-0-mecanismos.md](docs/fase-0-mecanismos.md). | — |
