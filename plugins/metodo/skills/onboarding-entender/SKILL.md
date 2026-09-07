@@ -34,9 +34,10 @@ Esta separação é o coração do artefato.
 ### Metade durável — o que continua verdade depois de uma refatoração
 
 - **O que o sistema faz**, em uma ou duas frases, do ponto de vista de quem usa.
-- **Como se roda**, e **como se verifica**. Os comandos. Se não houver comando que
-  produza verde/vermelho, isso é o achado mais importante do mapa — registre em
-  destaque, porque bloqueia tudo que vem depois.
+- **Como se roda**, e **como se verifica**. Não basta achar o comando: **rode-o**, e
+  registre a saída real. Se não houver comando que produza verde/vermelho, isso é o
+  achado mais importante do mapa — registre em destaque, porque bloqueia tudo que vem
+  depois.
 - **Capacidades e contratos**: o que o sistema expõe e com que forma. "Aceita um
   arquivo de configuração em JSON e produz um relatório HTML" sobrevive a qualquer
   reorganização de pastas.
@@ -56,6 +57,35 @@ e **com o SHA do commit em que foi levantada**.
 A alternativa — escrever caminhos junto com o resto — produz um documento que parece
 todo confiável e é metade mentira em dois meses. A separação é o que permite ao mapa
 envelhecer **em público**.
+
+## Prove que a verificação roda — não que ela existe
+
+Achar o comando não é achar a verificação. Um repositório pode ter portão declarado,
+script correto, suíte verde **e o portão desligado** — e é o pior caso possível, porque
+tudo aparenta estar certo.
+
+**Você é cego para isso por construção.** Falha de hook que não bloqueia manda a
+mensagem para a tela do usuário, e **não para o seu contexto**: só `exit 2` devolve
+stderr ao modelo. Ausência de erro na sua frente não é evidência de nada.
+
+Então prove, em vez de supor. Para cada hook declarado em `.claude/settings.json`:
+
+1. **O comando resolve no shell em que os hooks rodam?** Execute-o do mesmo jeito que o
+   harness executaria. `command not found` ali é achado de destaque, não nota de rodapé.
+2. **Rodar o script à mão não conta como prova da ligação.** Um caminho pode funcionar
+   quando você o digita e falhar quando o harness o dispara — no Windows isso é o caso
+   comum, não a exceção.
+
+Registre cada verificação em um de **três** estados, nunca dois:
+
+| Estado | Significa |
+|---|---|
+| **Verificado rodando** | você executou e viu a saída |
+| **Declarado, não provado** | existe na configuração e você não conseguiu confirmar que dispara |
+| **Ausente** | não há |
+
+Um mapa que só distingue "existe" de "não existe" transforma portão desligado em
+aprovação.
 
 ## Escreva o que você não entendeu
 

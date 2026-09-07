@@ -236,6 +236,14 @@
       "bloqueado_por": [],
       "modulo": "hooks",
       "brief": "tickets/027-portao-em-projeto-que-nao-adotou.md"
+    },
+    {
+      "id": "028",
+      "titulo": "A verificacao precisa ser executada, nao localizada",
+      "estado": "concluido",
+      "bloqueado_por": [],
+      "modulo": "skills",
+      "brief": "tickets/028-verificacao-executada-nao-localizada.md"
     }
   ]
 }

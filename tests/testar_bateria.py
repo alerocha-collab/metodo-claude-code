@@ -150,6 +150,19 @@ PERGUNTAS = [
      "referencias/duravel/evals.md",
      ["transcript", "calibr"],
      [["grader"], ["balanceado", "negativ"]], True),
+
+    # Medidas num projeto de terceiro, cujos cinco hooks estavam inertes sem
+    # ninguem saber — inclusive o agente que escreveu o mapa daquele projeto.
+    ("Meu hook falhou. Eu consigo ver isso?",
+     "referencias/armadilhas.md",
+     ["exit 2"],
+     [["não bloqueante", "nao bloqueante"], ["usuario", "usuário"],
+      ["cego", "nunca"]], True),
+
+    ("Que caminho uso num hook no Windows?",
+     "referencias/armadilhas.md",
+     ["Git Bash", "cmd"],
+     [["python3"], ["contrabarra", "barra"]], True),
 ]
 
 

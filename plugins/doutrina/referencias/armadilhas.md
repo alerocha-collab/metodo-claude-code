@@ -221,6 +221,57 @@ skill mal escrita, e é fronteira de diretório.
 
 ---
 
+### 16. Você não vê o seu próprio hook falhar
+
+> *"Stderr from a hook that exits 0 goes to the debug log only, never the transcript,
+> and Claude never sees it."*
+
+Falha **não bloqueante** — exit 1, exit 127, qualquer código que não seja 2 — mostra a
+primeira linha do stderr **ao usuário**, no transcript da interface. O modelo não recebe
+nada.
+
+**Exit 2 é o único código que devolve o stderr ao modelo.** É por isso que a doc
+recomenda `exit 2` quando um `PostToolUse` quer avisar o Claude de algo, mesmo com a
+ferramenta já executada: sem isso, o aviso não chega em quem deveria agir.
+
+A consequência prática, medida em sessão real: **um agente não consegue diagnosticar os
+próprios hooks.** Ele pode passar uma sessão inteira com o portão desligado, ver os cinco
+hooks falharem na tela do usuário, e escrever com sinceridade que o portão funciona.
+
+Corolário para quem escreve procedimento: **"não apareceu erro" não é evidência de
+nada.** Se importa saber que um hook rodou, o procedimento tem que **provar** que rodou —
+executando o comando, ou observando o efeito colateral dele.
+
+### 17. No Windows não existe caminho de hook que funcione nos dois shells
+
+O Claude Code roda hooks em Git Bash quando ele está instalado, e em PowerShell/cmd
+quando não está. **Quem decide é a máquina, não você** — e o mesmo repositório troca de
+shell quando alguém instala o Git.
+
+Medido nas quatro combinações:
+
+| Comando declarado | Git Bash | cmd / PowerShell |
+|---|---|---|
+| `.claude\hooks\x.cmd` | **quebra** — o bash come as contrabarras e sobra `.claudehooksx.cmd` | funciona |
+| `.claude/hooks/x.cmd` | funciona | **quebra** — `'.claude' não é reconhecido` |
+| `cmd /c "...\x.cmd"` | **quebra** — o MSYS traduz `/c` em `C:\` e abre um cmd interativo | funciona |
+| `cmd //c "...\x.cmd"` | funciona (`//` escapa a tradução) | **quebra** |
+
+**Nenhuma linha funciona nas duas colunas.** E como a falha é não bloqueante (armadilha
+16), ela é invisível para o agente e quase invisível para a pessoa.
+
+**O que funciona:** invocar um interpretador que aceite barra normal como argumento —
+`python3 .claude/hooks/x.py`. `python3` resolve como comando nos dois shells, e o Python
+normaliza o caminho no Windows. É o mesmo motivo pelo qual hook em Python cobre os três
+shells que a doc lista, e `.sh` não cobre.
+
+**A troca:** um wrapper `.cmd` bem feito resolve coisas que `python3` puro não resolve —
+achar o venv, preferir o launcher `py -3`, conferir a versão mínima, e eliminar o alias
+da Microsoft Store que se passa por `python.exe` e abre a loja em vez de executar.
+Trocá-lo por `python3` joga essa proteção fora. Decida com o custo na mesa, e registre.
+
+---
+
 ## Como usar esta lista
 
 Ela não substitui a documentação; ela diz **onde não confiar na leitura rápida**. Antes
@@ -232,5 +283,6 @@ comportamento que esta ficha afirma, confira a data no topo — a doc muda toda 
 
 *Fontes: `features-overview`, `memory`, `context-window`, `claude-directory`,
 `how-claude-code-works`, `sub-agents`, `agents`, `agent-teams`, `hooks`, `hooks-guide`,
-`skills`, `best-practices`. Os itens 6, 7 e 14 foram medidos em sessão real, não só lidos. O 15 corrige uma
+`skills`, `best-practices`. Os itens 6, 7, 14, 16 e 17 foram medidos em sessão real, não só lidos — o 16 e o 17
+num projeto de terceiro, cujos cinco hooks estavam inertes sem ninguém saber. O 15 corrige uma
 afirmação que estava errada na nossa própria documentação — ver DECISIONS 020.*
