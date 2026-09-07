@@ -86,7 +86,11 @@ Prove, em vez de supor. Para cada hook declarado em `.claude/settings.json`:
    `command not found` ali é achado de destaque, não nota de rodapé.
 2. **Rodar o script à mão não conta como prova da ligação.** Um caminho pode funcionar
    quando você o digita e falhar quando o harness o dispara.
-3. **Se você testou num shell e o harness usa outro, o estado é `declarado, não
+3. **Provoque o hook a agir, e veja se a ação chega.** É o que fecha a cegueira: você
+   não vê o hook falhar, mas **vê** o hook barrar. Se ele nega escrita num caminho, tente
+   escrever um arquivo descartável nesse caminho. Negou, está vivo; passou, está morto — e
+   você provou sem nunca ver a mensagem de erro. Apague a sonda depois.
+4. **Se você testou num shell e o harness usa outro, o estado é `declarado, não
    provado`** — não `verificado rodando`. Escrever a segunda coisa quando você fez a
    primeira é o erro que este trecho existe para impedir.
 

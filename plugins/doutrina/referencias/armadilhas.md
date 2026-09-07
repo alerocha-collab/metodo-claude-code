@@ -239,8 +239,27 @@ próprios hooks.** Ele pode passar uma sessão inteira com o portão desligado, 
 hooks falharem na tela do usuário, e escrever com sinceridade que o portão funciona.
 
 Corolário para quem escreve procedimento: **"não apareceu erro" não é evidência de
-nada.** Se importa saber que um hook rodou, o procedimento tem que **provar** que rodou —
-executando o comando, ou observando o efeito colateral dele.
+nada.** Se importa saber que um hook rodou, o procedimento tem que **provar** que rodou.
+
+### A cegueira tem saída: provoque o hook a NEGAR
+
+O que você não vê é a **falha** do hook. O que você **vê** é a negativa dele — porque
+`exit 2` chega até você como resultado da ferramenta. A assimetria é a saída:
+
+> **Faça a ação que o hook deveria barrar, e veja se a barreira chega.**
+
+Se o `PreToolUse` nega escrita em `dados.json`, tente escrever um `dados.json`
+descartável. **Negou** — o hook está vivo. **Passou** — está morto, e você acabou de
+provar isso sem nunca ver a mensagem de erro.
+
+Vale para qualquer hook cujo efeito seja observável: o que nega, o que injeta contexto,
+o que devolve JSON de controle. Para os que só têm efeito colateral em disco — um
+`PostToolUse` que roda um linter —, provoque **um caso que o linter reprovaria** e veja
+se o retorno chega; e confirme, separadamente, que o caso era mesmo sujo, senão o
+silêncio não prova nada.
+
+Testar o comando à mão prova que o **script** funciona. Provocar prova que a **ligação**
+funciona. São perguntas diferentes, e só a segunda é a que importa.
 
 ### 17. No Windows não existe caminho de hook que funcione nos dois shells
 
