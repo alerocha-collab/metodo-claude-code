@@ -104,7 +104,7 @@ Nomear isto evita quatro perguntas erradas:
 
 Três confusões de nome que produzem escolha errada — `/agents` não é `claude agents`,
 e habilitar agent teams muda o comportamento de subagentes nomeados sem avisar — estão
-em [referencias/armadilhas.md](../../referencias/armadilhas.md).
+em [referencias/armadilhas.md](${CLAUDE_PLUGIN_ROOT}/referencias/armadilhas.md).
 
 Para *onde a instrução mora* em vez de *quem executa*, veja a skill `onde-colocar`.
 

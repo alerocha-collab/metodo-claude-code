@@ -94,7 +94,7 @@ corpo carregar **sem metadados**, então `/nome` funciona e a escolha automátic
 ## Detalhes que envelhecem
 
 Os campos exatos do frontmatter, com o que cada um aceita, ficam em
-[referencias/volatil/](../../referencias/volatil/) quando existirem — são o tipo de
+[referencias/volatil/](${CLAUDE_PLUGIN_ROOT}/referencias/volatil/) quando existirem — são o tipo de
 coisa que muda entre versões. Aqui ficou só o que não muda.
 
 ---

@@ -173,6 +173,14 @@
       "bloqueado_por": [],
       "modulo": "skills",
       "brief": "tickets/020-metodo-contexto-e-precedencia.md"
+    },
+    {
+      "id": "021",
+      "titulo": "O marketplace, e a portabilidade provada num repositorio limpo",
+      "estado": "concluido",
+      "bloqueado_por": [],
+      "modulo": "distribuicao",
+      "brief": "tickets/021-marketplace-e-portabilidade.md"
     }
   ]
 }

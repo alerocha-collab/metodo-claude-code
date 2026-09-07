@@ -85,3 +85,30 @@ jobs:
           export PATH="$HOME/.local/bin:$PATH"
           claude plugin validate ./plugins/metodo --strict
           claude plugin validate ./plugins/doutrina --strict
+
+      # Validar a raiz valida o MARKETPLACE, nao os plugins: schema, nomes
+      # duplicados, travessia de caminho, e se a `version` de cada entrada bate com
+      # o plugin.json de destino. `--strict` importa: divergencia de version e so
+      # AVISO, e sem ele o manifesto errado passa.
+      - name: Validar o marketplace em modo estrito
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          claude plugin validate . --strict
+
+      # Prova que a validacao acima morde de verdade, em vez de confiar no
+      # comentario: divergir a version tem que reprovar.
+      - name: Provar que o validador do marketplace reprova version divergente
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          cp .claude-plugin/marketplace.json /tmp/mkt.bak
+          python3 -c "import json;d=json.load(open('.claude-plugin/marketplace.json'));d['plugins'][0]['version']='9.9.9';json.dump(d,open('.claude-plugin/marketplace.json','w'))"
+          set +e
+          claude plugin validate . --strict >/dev/null 2>&1
+          CODIGO=$?
+          set -e
+          cp /tmp/mkt.bak .claude-plugin/marketplace.json
+          if [ "$CODIGO" -eq 0 ]; then
+            echo "FALHA: o validador aprovou um marketplace com version divergente."
+            exit 1
+          fi
+          echo "ok: version divergente reprova (exit $CODIGO)."

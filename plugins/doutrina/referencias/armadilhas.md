@@ -127,6 +127,36 @@ mesmo**. Como filtro de desempenho serve; como fronteira de segurança, não.
 Os built-ins pulam `CLAUDE.md` e git status para ter contexto menor. Um subagente
 Explore não conhece as convenções do projeto — e vai relatar como se conhecesse.
 
+### 14. Os arquivos de referência de um plugin ficam FORA do diretório de trabalho
+
+A progressive disclosure de uma skill de plugin depende de o agente **ler** um arquivo
+empacotado. Enquanto tudo roda dentro do repositório que produziu o plugin, isso parece
+funcionar. Instalado, o plugin mora em outro lugar — no cache
+(`~/.claude/plugins/cache/<marketplace>/<plugin>/<versão>/`) ou, para fonte do tipo
+`directory`, na pasta de origem. Nos dois casos, **fora dos diretórios de trabalho da
+sessão**.
+
+Duas consequências medidas ao instalar num repositório limpo:
+
+- **Link relativo (`](../../referencias/x.md)`) não dá base para resolver.** O agente
+  precisa adivinhar a raiz do plugin. Use `${CLAUDE_PLUGIN_ROOT}/referencias/x.md`, que
+  a plataforma substitui e que vale nos dois modos, `--plugin-dir` e instalado.
+- **O caminho certo ainda pode ser barrado.** A recusa não é regra de permissão, é a
+  fronteira de diretório de trabalho: *"Claude Code may only list files in the allowed
+  working directories for this session"*. Em sessão não interativa (`-p`) isso não vira
+  prompt: falha e pronto. `allowed-tools: Read(${CLAUDE_PLUGIN_ROOT}/**)` na skill
+  **não** derrubou a barreira no teste; `--add-dir` derrubou.
+- **E o conserto permanente tem uma condição escondida.** `additionalDirectories` no
+  `settings.json` do projeto é **ignorado enquanto o workspace não é confiado**, e a
+  mensagem é literal: *"Ignoring 2 permissions.additionalDirectories entries from
+  .claude/settings.json: this workspace has not been trusted."* A confiança vem do
+  diálogo interativo — que num clone novo, numa sessão headless ou em CI **nunca
+  aconteceu**. Ou seja: a configuração versionada que deveria resolver o problema é
+  justamente a que não vale onde o problema aparece.
+
+O sintoma engana: a skill dispara, roteia certo, nomeia o arquivo — e não entrega. Parece
+skill mal escrita, e é fronteira de diretório.
+
 ---
 
 ## Como usar esta lista
@@ -140,4 +170,4 @@ comportamento que esta ficha afirma, confira a data no topo — a doc muda toda 
 
 *Fontes: `features-overview`, `memory`, `context-window`, `claude-directory`,
 `how-claude-code-works`, `sub-agents`, `agents`, `agent-teams`, `hooks`, `hooks-guide`,
-`skills`, `best-practices`. Os itens 6 e 7 foram medidos em sessão real, não só lidos.*
+`skills`, `best-practices`. Os itens 6, 7 e 14 foram medidos em sessão real, não só lidos.*

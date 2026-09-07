@@ -83,7 +83,7 @@ Instrução ignorada raramente é falta de ênfase. Costuma ser excesso de vizin
 
 Saídas de ferramenta são limpas primeiro; depois a conversa é sumarizada. O que volta
 do disco, o que não volta, e as três regras de projeto que saem disso estão em
-[referencias/duravel/compaction.md](../../referencias/duravel/compaction.md).
+[referencias/duravel/compaction.md](${CLAUDE_PLUGIN_ROOT}/referencias/duravel/compaction.md).
 
 A que mais importa: **regra que precisa durar não usa `paths:`.** A mais econômica em
 contexto é a mais frágil em sessão longa.

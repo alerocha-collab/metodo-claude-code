@@ -1,0 +1,29 @@
+{
+  "name": "metodo-claude-code",
+  "owner": {
+    "name": "Alerocha",
+    "url": "https://github.com/alerocha-collab/metodo-claude-code"
+  },
+  "description": "Dois plugins independentes: a metodologia de engenharia com agentes, e a documentação do Claude Code destilada para o agente decidir arquitetura sem ir à web.",
+
+  "plugins": [
+    {
+      "name": "metodo",
+      "source": "./plugins/metodo",
+      "version": "0.1.0",
+      "description": "Metodologia de engenharia com agentes: fluxo dimensionado pela janela de contexto, separação por papel, estado em git + tickets, e o portão de verificação que bloqueia o turno quando a suíte está vermelha.",
+      "license": "MIT",
+      "category": "workflow",
+      "keywords": ["metodologia", "verificacao", "tickets", "hooks"]
+    },
+    {
+      "name": "doutrina",
+      "source": "./plugins/doutrina",
+      "version": "0.1.0",
+      "description": "A documentação do Claude Code destilada para o agente: onde colocar uma instrução, com que autoridade ela vale, como paralelizar, e como escrever uma skill que dispara. Separa o que dura do que envelhece.",
+      "license": "MIT",
+      "category": "reference",
+      "keywords": ["documentacao", "arquitetura", "referencia"]
+    }
+  ]
+}

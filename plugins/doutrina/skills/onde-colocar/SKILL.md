@@ -73,13 +73,13 @@ Este corpo fica curto de propósito — ele entra em contexto e não sai. O deta
 em arquivos que carregam sob demanda:
 
 - **A matriz completa**, uma linha por mecanismo com os quatro eixos:
-  [referencias/duravel/matriz.md](../../referencias/duravel/matriz.md)
+  [referencias/duravel/matriz.md](${CLAUDE_PLUGIN_ROOT}/referencias/duravel/matriz.md)
 - **Precedência quando o mesmo nome existe em dois escopos** — e elas **não são
-  uniformes**: [referencias/duravel/precedencias.md](../../referencias/duravel/precedencias.md)
+  uniformes**: [referencias/duravel/precedencias.md](${CLAUDE_PLUGIN_ROOT}/referencias/duravel/precedencias.md)
 - **O que sobrevive ao `/compact`**, e o que a tabela oficial omite:
-  [referencias/duravel/compaction.md](../../referencias/duravel/compaction.md)
+  [referencias/duravel/compaction.md](${CLAUDE_PLUGIN_ROOT}/referencias/duravel/compaction.md)
 - **As armadilhas** — onde a documentação se contradiz, e onde o comportamento
-  surpreende: [referencias/armadilhas.md](../../referencias/armadilhas.md)
+  surpreende: [referencias/armadilhas.md](${CLAUDE_PLUGIN_ROOT}/referencias/armadilhas.md)
 
 ## Quando o Claude ignora uma regra
 

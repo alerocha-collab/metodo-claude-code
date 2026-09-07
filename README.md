@@ -14,7 +14,7 @@ de um repositório que já existe.
 python3 tests/testar_tudo.py
 ```
 
-Cinco suítes, 68 casos, todas com **conjunto balanceado**: metade verifica que a trava
+Onze suítes, ~149 casos, todas com **conjunto balanceado**: metade verifica que a trava
 age quando deve, metade que ela **não** age quando não deve. Uma suíte só com casos
 positivos aprova uma trava que bloqueia tudo.
 
@@ -58,19 +58,24 @@ python3 plugins/metodo/scripts/validar_fila.py tickets/fila.json
 ```
 .
 ├── docs/                        doutrina e decisões que fundamentam a metodologia
+├── .claude-plugin/
+│   └── marketplace.json         anuncia os dois plugins para instalação
 └── plugins/
-    └── metodo/                 o plugin propriamente dito
-        ├── .claude-plugin/plugin.json
+    ├── doutrina/                a documentação do Claude Code destilada
+    │   ├── skills/              as seis fichas, por pergunta
+    │   ├── referencias/         durável × volátil, carregado sob demanda
+    │   └── fontes.json          as 191 páginas indexadas, com hash
+    └── metodo/                  a metodologia propriamente dita
         ├── agents/              papéis: construtor, operador, arquiteto
-        ├── skills/              as seis do pipeline
+        ├── skills/              as do pipeline, mais o onboarding
         ├── hooks/               hooks.json + os dois hooks do portão
         ├── scripts/             fila, estado, transição de ticket
         └── templates/           artefatos que o plugin instala em projetos
 ```
 
-O plugin fica em `plugins/metodo/`, não na raiz, para que
-`.claude-plugin/marketplace.json` possa ser adicionado depois com
-`"source": "./plugins/metodo"` sem mover nada.
+Os plugins ficam em `plugins/<nome>/`, não na raiz, para que
+`.claude-plugin/marketplace.json` — que existe, na raiz — os anuncie com
+`"source": "./plugins/<nome>"` sem nada precisar se mover.
 
 ## Requisitos
 
@@ -91,9 +96,61 @@ Git Bash, onde os hooks rodam em PowerShell, a rede não vale e a ausência de `
 volta a poder falhar aberta. Não há contorno portátil conhecido; registrado aqui em
 vez de escondido.
 
+## Instalar
+
+Os dois plugins são anunciados por `.claude-plugin/marketplace.json`, na raiz deste
+repositório. No projeto onde você quer usá-los:
+
+```bash
+claude plugin marketplace add alerocha-collab/metodo-claude-code --scope project
+```
+
+```bash
+claude plugin install doutrina@metodo-claude-code --scope project
+```
+
+`--scope project` grava em `.claude/settings.json` do projeto, versionado com ele, em vez
+de na configuração do seu usuário. Troque `doutrina` por `metodo` para o outro. Os dois
+são independentes: nenhum depende do outro.
+
+### O passo que quase todo mundo esquece
+
+As skills do `doutrina` são curtas de propósito e carregam o detalhe sob demanda, de
+arquivos empacotados no plugin. **Esses arquivos ficam fora do diretório de trabalho da
+sessão** — no cache de plugins, ou na pasta de origem. Sem acesso a eles a skill dispara,
+roteia certo, nomeia o arquivo e **não entrega**.
+
+Onde ficam depende de como você instalou: fonte remota vai para
+`~/.claude/plugins/cache/<marketplace>/<plugin>/<versão>/`; fonte `directory` (caminho
+local) resolve para a **pasta de origem**. Confira com `claude plugin list`.
+
+O que funciona de imediato, por sessão:
+
+```bash
+claude --add-dir ~/.claude/plugins/cache
+```
+
+O permanente é `permissions.additionalDirectories` no `.claude/settings.json` do projeto
+— **com uma condição medida aqui**:
+
+```json
+{ "permissions": { "additionalDirectories": ["~/.claude/plugins/cache"] } }
+```
+
+> ⚠️ Num workspace ainda **não confiado**, essa chave é **ignorada**, e a mensagem diz
+> isso: *"Ignoring 2 permissions.additionalDirectories entries from
+> `.claude/settings.json`: this workspace has not been trusted."* Rode `claude`
+> interativamente uma vez na pasta e aceite o diálogo de confiança. Em clone novo,
+> sessão headless ou CI, isso nunca aconteceu — e o único caminho é `--add-dir`.
+
+O sintoma sem nada disso engana: a skill **dispara**, roteia certo, nomeia o arquivo — e
+não entrega. Parece skill mal escrita, e é fronteira de diretório. Registrado como
+armadilha nº 14 em `plugins/doutrina/referencias/armadilhas.md`.
+
 ## Usar em desenvolvimento
 
-Sem instalar, isolado por sessão:
+Sem instalar, isolado por sessão — aponta para a pasta local e **não exercita nada do
+caminho de instalação**:
 
 ```bash
 claude --plugin-dir ./plugins/metodo
@@ -102,8 +159,18 @@ claude --plugin-dir ./plugins/metodo
 `/reload-plugins` recarrega sem reiniciar. Para validar antes de publicar:
 
 ```bash
-claude plugin validate ./plugins/metodo
+claude plugin validate ./plugins/metodo --strict
 ```
+
+E o manifesto do marketplace, validado a partir da raiz:
+
+```bash
+claude plugin validate . --strict
+```
+
+`--strict` não é opcional aqui: `version` divergente entre a entrada do marketplace e o
+`plugin.json` é **aviso**, não erro. E no install o `plugin.json` vence em silêncio — quem
+sobe só a entrada acha que publicou, e o cache continua servindo a versão antiga.
 
 ## As skills
 
@@ -157,9 +224,13 @@ O motivo não é só espaço. Quando a listagem estoura o orçamento, as descri�
 
 ## Publicar
 
-Ainda não há marketplace — ele só se paga ao instalar num segundo projeto.
-Quando existir, **todo release exige bump de `version` no `plugin.json`**: sem isso,
-quem já instalou continua com a cópia em cache.
+**Todo release exige bump de `version` no `plugin.json`** — sem isso, quem já instalou
+continua com a cópia em cache. E o bump é em **dois lugares**: `plugin.json` e a entrada
+correspondente no `marketplace.json`. `tests/testar_marketplace.py` reprova se os dois
+divergirem, porque o validador oficial só avisa.
+
+Continua sendo disciplina, não mecanismo: nada obriga a subir a versão. O que existe é
+detecção — subir errado é pego, esquecer de subir não.
 
 ## Documentos
 

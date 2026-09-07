@@ -521,6 +521,62 @@ subi-lo. É perguntar qual skill deixou de se pagar.
 
 ---
 
+## 016 — A portabilidade foi provada, e quebrou onde ninguém olhava
+
+**Data:** 2026-09-07 · **Ticket:** 021
+
+O documento de arquitetura dizia que nenhum dos dois plugins jamais rodara fora deste
+repositório, e chamava isso de *"a premissa do desenho inteiro"*. Ela agora foi
+exercitada, num repositório git descartável, com `.claude-plugin/marketplace.json` na
+raiz e instalação por `claude plugin install ... --scope project`.
+
+**O que funcionou de primeira.** O marketplace validou, a instalação completou, e as
+**seis** skills do `doutrina` apareceram namespaced (`doutrina:onde-colocar`, …) numa
+sessão que nunca viu este repositório. `--plugin-dir`, que era o único modo usado até
+aqui, não exercita nada disso: aponta para a pasta local e pula o caminho de instalação
+inteiro.
+
+**O que quebrou.** A pergunta da bateria — *qual a precedência de skills, e a de
+rules?* — **não foi respondida**. A skill disparou, roteou para o arquivo certo, nomeou
+o arquivo certo, e não conseguiu lê-lo. E se recusou a chutar, que é o comportamento
+desejado e foi o que tornou a falha visível em vez de silenciosa.
+
+A causa tem duas camadas, e só a primeira era nossa:
+
+1. **Link relativo.** As skills apontavam para `](../../referencias/x.md)`. Dentro
+   deste repositório isso resolve; instalado, o agente não tem base e precisa
+   **adivinhar** a raiz do plugin. Corrigido para `${CLAUDE_PLUGIN_ROOT}/referencias/…`,
+   que a plataforma substitui e vale nos dois modos.
+2. **Fronteira de diretório de trabalho.** Mesmo com o caminho certo, os arquivos do
+   plugin ficam **fora** dos diretórios da sessão — no cache, ou na pasta de origem. A
+   recusa não é regra de permissão; é a fronteira, e em sessão não interativa ela não
+   vira prompt: falha e pronto.
+
+**E a condição escondida do conserto.** `permissions.additionalDirectories` no
+`settings.json` do projeto é **ignorado enquanto o workspace não é confiado** — literal:
+*"Ignoring 2 permissions.additionalDirectories entries … this workspace has not been
+trusted."* A confiança vem do diálogo interativo, que num clone novo, numa sessão
+headless ou em CI nunca aconteceu. **A configuração versionada que deveria resolver o
+problema é justamente a que não vale onde o problema aparece.** Só `--add-dir` resolve
+lá. Está no README e como armadilha nº 14.
+
+**Alternativa descartada:** `allowed-tools: Read(${CLAUDE_PLUGIN_ROOT}/**)` no
+frontmatter da skill. Foi testada e **não** derrubou a barreira — `allowed-tools`
+concede ferramenta, não atravessa fronteira de diretório. Embarcar em seis skills um
+mecanismo que não foi observado funcionando seria o culto de carga que o próprio
+`settings.exemplo.json` condena. Revertida.
+
+**Medido, não lido:** o validador oficial trata `version` divergente entre a entrada do
+marketplace e o `plugin.json` como **aviso**, não erro — sem `--strict` o manifesto
+errado passa. E no install **o `plugin.json` vence, em silêncio**. Quem sobe só a
+entrada acha que publicou, e o cache continua servindo a versão antiga. Daí `--strict`
+no CI, mais um passo que prova que ele morde.
+
+**O que segue sem prova.** macOS e Linux. E o `metodo` foi instalado por ninguém ainda:
+a prova é do mecanismo, que os dois compartilham, não da instalação dele.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
@@ -533,7 +589,7 @@ Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na 
 | P2 | **Repositório GitHub: público ou privado.** Privado exige credencial git em toda máquina que instale. | Publicação |
 | P3 | **`gh` não instalado** (ausente do PATH). Sem ele, requisições não autenticadas com rate limit. | Criação do repo remoto |
 | ~~P10~~ | **Descartada como causa.** O ticket 003 confirmou `python3` 3.14.2 disponível em PowerShell e cmd, fora do Git Bash. A dependência segue não declarada — isso é o ticket 004, não uma pendência solta. | — |
-| P4 | **Bump de `version` a cada release.** Sem isso, quem instalou fica com a cópia em cache. Candidato a item de checklist ou hook. | Publicação |
-| P5 | **CI: `claude plugin validate --strict` no GitHub Actions a cada push.** `--strict` promove avisos a erros; é a forma pensada para CI. Fecha na metodologia uma lacuna identificada na auditoria do projeto de referência. | Fase 2+ |
+| P4 | **Bump de `version` a cada release.** Sem isso, quem instalou fica com a cópia em cache. Segue disciplina: agora em **dois** lugares (`plugin.json` e a entrada do marketplace), e `tests/testar_marketplace.py` reprova se divergirem — subir errado é pego, **esquecer de subir não**. | Publicação |
+| ~~P5~~ | **Resolvida.** `claude plugin validate --strict` roda em CI para os dois plugins e para o marketplace, mais um passo que prova que a validação do marketplace reprova `version` divergente. | — |
 | ~~P7~~ | **Resolvida com ressalva** — ver decisão 006. Nome puro funciona. Ressalva: o teste rodou num repo que contém o plugin; confirmação definitiva na Fase 5. | — |
 | ~~P6~~ | **Resolvida.** Fase 0 fechada; achados e consequências em [docs/fase-0-mecanismos.md](docs/fase-0-mecanismos.md). | — |
