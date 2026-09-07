@@ -68,13 +68,27 @@ tudo aparenta estar certo.
 mensagem para a tela do usuário, e **não para o seu contexto**: só `exit 2` devolve
 stderr ao modelo. Ausência de erro na sua frente não é evidência de nada.
 
-Então prove, em vez de supor. Para cada hook declarado em `.claude/settings.json`:
+### Primeiro descubra o shell. Depois teste nele.
 
-1. **O comando resolve no shell em que os hooks rodam?** Execute-o do mesmo jeito que o
-   harness executaria. `command not found` ali é achado de destaque, não nota de rodapé.
+**Não suponha qual shell o harness usa** — testar no shell errado produz um verde falso,
+e é o erro mais fácil de cometer aqui. A escolha não é sua: no Windows o Claude Code usa
+**Git Bash quando ele está instalado**, e PowerShell quando não está. Em macOS e Linux,
+`sh`.
+
+Então determine antes: **o Git Bash existe nesta máquina?** A resposta muda qual
+invocação é a real, e uma que funciona num shell falha no outro. Caminho com `\` morre
+no bash, que come as contrabarras; caminho com `/` morre no `cmd.exe`. Não há forma que
+sirva aos dois.
+
+Prove, em vez de supor. Para cada hook declarado em `.claude/settings.json`:
+
+1. **Execute o comando literal, no shell que você acabou de determinar.**
+   `command not found` ali é achado de destaque, não nota de rodapé.
 2. **Rodar o script à mão não conta como prova da ligação.** Um caminho pode funcionar
-   quando você o digita e falhar quando o harness o dispara — no Windows isso é o caso
-   comum, não a exceção.
+   quando você o digita e falhar quando o harness o dispara.
+3. **Se você testou num shell e o harness usa outro, o estado é `declarado, não
+   provado`** — não `verificado rodando`. Escrever a segunda coisa quando você fez a
+   primeira é o erro que este trecho existe para impedir.
 
 Registre cada verificação em um de **três** estados, nunca dois:
 
