@@ -201,7 +201,7 @@
     {
       "id": "024",
       "titulo": "doutrina: a ficha de arquitetura de sistemas agenticos",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [
         "023"
       ],

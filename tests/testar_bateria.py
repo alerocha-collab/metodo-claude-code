@@ -118,6 +118,23 @@ PERGUNTAS = [
      "referencias/volatil/regras-de-permissao.md",
      ["deny", "Read("],
      [["primeira que casa", "first match"], ["sandbox"]], False),
+
+    # A pergunta que vem ANTES de escolher mecanismo, e que o doutrina nao respondia:
+    # a doutrina de arquitetura de agentes nao esta na arvore de documentacao.
+    ("Isto deve ser agente ou workflow?",
+     "skills/arquitetar/SKILL.md",
+     ["workflow", "agente"],
+     [["degrau", "escada"], ["previsível", "previsivel", "predefinid"]], True),
+
+    ("Quanto custa montar multiagente?",
+     "referencias/duravel/arquitetura-de-agentes.md",
+     ["15", "90,2%"],
+     [["token"], ["1.000", "2.000"]], True),
+
+    ("Meu harness precisa mudar quando sai um modelo novo?",
+     "referencias/duravel/arquitetura-de-agentes.md",
+     ["remova", "meça"],
+     [["obsolesc", "envelhec"], ["suposição", "suposicao", "desconfian"]], True),
 ]
 
 

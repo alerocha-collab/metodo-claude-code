@@ -2025,7 +2025,10 @@
       "prioridade": "nucleo",
       "hash": "b0b33c15b7532560db5e51af91001510b4937b4ea11d020772df396cfa0619be",
       "verificada_em": "2026-09-07",
-      "fichas": []
+      "fichas": [
+        "skills/arquitetar/SKILL.md",
+        "referencias/duravel/arquitetura-de-agentes.md"
+      ]
     },
     {
       "id": "eng-multi-agent-research-system",
@@ -2036,7 +2039,10 @@
       "prioridade": "nucleo",
       "hash": "db8a049b5b3aa60da8d5f9df74f627097299e2979eb7ce13930ad20df945db49",
       "verificada_em": "2026-09-07",
-      "fichas": []
+      "fichas": [
+        "skills/arquitetar/SKILL.md",
+        "referencias/duravel/arquitetura-de-agentes.md"
+      ]
     },
     {
       "id": "eng-harness-design-long-running-apps",
@@ -2047,7 +2053,10 @@
       "prioridade": "nucleo",
       "hash": "f358e50e4ebc4d1810e7d7523e9b751f9f2791ff873c54de3dde36f966c3724b",
       "verificada_em": "2026-09-07",
-      "fichas": []
+      "fichas": [
+        "skills/arquitetar/SKILL.md",
+        "referencias/duravel/arquitetura-de-agentes.md"
+      ]
     },
     {
       "id": "eng-effective-harnesses-for-long-running-agents",
@@ -2058,7 +2067,9 @@
       "prioridade": "nucleo",
       "hash": "746d0d280f015dcd472d01fd55ef0940049c95b60e16c2b995d68dca2dd7ada9",
       "verificada_em": "2026-09-07",
-      "fichas": []
+      "fichas": [
+        "referencias/duravel/arquitetura-de-agentes.md"
+      ]
     },
     {
       "id": "eng-building-c-compiler",
@@ -2069,7 +2080,9 @@
       "prioridade": "nucleo",
       "hash": "b8c6e82d478ad3ab0f29c13184d5c57b3bbbcb68a0e480119a3b5a0896f93b0b",
       "verificada_em": "2026-09-07",
-      "fichas": []
+      "fichas": [
+        "referencias/duravel/arquitetura-de-agentes.md"
+      ]
     },
     {
       "id": "eng-demystifying-evals-for-ai-agents",
