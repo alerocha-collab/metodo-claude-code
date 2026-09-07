@@ -279,6 +279,18 @@ Medido nas quatro combinações:
 **Nenhuma linha funciona nas duas colunas.** E como a falha é não bloqueante (armadilha
 16), ela é invisível para o agente e quase invisível para a pessoa.
 
+**E a rede `|| exit 2` não é portátil como parece.** Ela converte interpretador ausente
+em bloqueio, e foi medida nos três shells:
+
+| Shell | `\|\| exit 2` |
+|---|---|
+| Git Bash | funciona |
+| `cmd.exe` | **funciona** — `||` é operador condicional do cmd, não exclusividade POSIX |
+| PowerShell **5.1** | **erro de parse** — chegou na 7 |
+
+Na 5.1 a rede é **pior que a ausência dela**: o hook passa a morrer sempre, e não só
+quando falta o interpretador. Só a ponha depois de saber qual shell o harness usa.
+
 **O que funciona:** invocar um interpretador que aceite barra normal como argumento —
 `python3 .claude/hooks/x.py`. `python3` resolve como comando nos dois shells, e o Python
 normaliza o caminho no Windows. É o mesmo motivo pelo qual hook em Python cobre os três

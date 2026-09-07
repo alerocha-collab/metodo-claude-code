@@ -9,7 +9,7 @@
     {
       "name": "metodo",
       "source": "./plugins/metodo",
-      "version": "0.9.0",
+      "version": "0.9.1",
       "description": "Metodologia de engenharia com agentes: fluxo dimensionado pela janela de contexto, separação por papel, estado em git + tickets, e o portão de verificação que bloqueia o turno quando a suíte está vermelha.",
       "license": "MIT",
       "category": "workflow",
@@ -23,7 +23,7 @@
     {
       "name": "doutrina",
       "source": "./plugins/doutrina",
-      "version": "0.8.0",
+      "version": "0.8.1",
       "description": "A documentação do Claude Code destilada para o agente: onde colocar uma instrução, com que autoridade ela vale, como paralelizar, e como escrever uma skill que dispara. Separa o que dura do que envelhece.",
       "license": "MIT",
       "category": "reference",

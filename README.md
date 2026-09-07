@@ -99,10 +99,21 @@ bloqueante; por isso o comando no `hooks/hooks.json` termina em `|| exit 2`. A
 mensagem que aparece é a do shell, `python3: command not found`, que nomeia o que
 falta.
 
-**Risco residual:** `|| exit 2` é sintaxe POSIX. No caso restrito de Windows **sem**
-Git Bash, onde os hooks rodam em PowerShell, a rede não vale e a ausência de `python3`
-volta a poder falhar aberta. Não há contorno portátil conhecido; registrado aqui em
-vez de escondido.
+**Risco residual, medido — e o motivo não é o que estava escrito aqui antes.** Esta
+seção dizia que `|| exit 2` é "sintaxe POSIX" e não valeria no Windows. Errado: o
+`cmd.exe` tem `||`, e a rede funciona lá. Medido nos três shells:
+
+| Shell dos hooks | `\|\| exit 2` |
+|---|---|
+| Git Bash | funciona |
+| `cmd.exe` | **funciona** |
+| PowerShell **5.1** | **erro de parse** — o hook morre inteiro, mesmo com `python3` presente |
+
+O caso restrito é **Windows sem Git Bash com PowerShell 5.1**, onde `||` não existe
+(chegou na 7). E lá a rede é **pior que a ausência dela**: sem ela o hook só morre
+quando falta o interpretador; com ela, morre sempre.
+
+Não há contorno portátil conhecido. Registrado com a medição, em vez do palpite.
 
 ## Instalar
 
