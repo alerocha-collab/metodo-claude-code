@@ -9,7 +9,7 @@
     {
       "name": "metodo",
       "source": "./plugins/metodo",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "description": "Metodologia de engenharia com agentes: fluxo dimensionado pela janela de contexto, separação por papel, estado em git + tickets, e o portão de verificação que bloqueia o turno quando a suíte está vermelha.",
       "license": "MIT",
       "category": "workflow",

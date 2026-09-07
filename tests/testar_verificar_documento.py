@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.join(RAIZ, "plugins", "metodo", "scripts"))
 import verificar_documento as vd  # noqa: E402
 
 DOC = os.path.join("docs", "arquitetura.md")
+PLANO = os.path.join("docs", "plano.md")
 
 
 def git(proj, *args):
@@ -110,6 +111,32 @@ def cenarios(base):
 
     proj = novo_repo(base, "ausente")
     out.append(("documento ausente acusa", proj, DOC, "documento-ausente"))
+
+    # Dois documentos carimbados no MESMO commit. Sem excluir o vizinho, cada um
+    # conta a mudanca do outro e os dois ficam eternamente "1 arquivo atras":
+    # recarimbar nunca converge, porque carimbar um mexe no que o outro mede.
+    # Achado ao carimbar arquitetura e plano juntos, na primeira execucao real.
+    proj = novo_repo(base, "dois_carimbados")
+    s = sha(proj)
+    escrever(proj, DOC, f"# Arquitetura\n\n**SHA:** `{s}`\n")
+    escrever(proj, PLANO, f"# Plano\n\n**SHA:** `{s}`\n")
+    git(proj, "add", "-A")
+    git(proj, "commit", "-q", "-m", "carimba os dois juntos")
+    out.append(("dois carimbados juntos: arquitetura em dia", proj, DOC, "em-dia"))
+    out.append(("dois carimbados juntos: plano em dia", proj, PLANO, "em-dia"))
+
+    # E o lado que impede a exclusao de virar cegueira: o criterio e ESTAR
+    # CARIMBADO, nao estar em docs/. Um documento sem carimbo nao e vigiado por
+    # ninguem, entao mudanca nele e mudanca de verdade e precisa contar.
+    proj = novo_repo(base, "vizinho_sem_carimbo")
+    s = sha(proj)
+    escrever(proj, DOC, f"# Arquitetura\n\n**SHA:** `{s}`\n")
+    git(proj, "add", "-A")
+    git(proj, "commit", "-q", "-m", "carimba")
+    escrever(proj, os.path.join("docs", "notas.md"), "# Notas\n\nsem carimbo\n")
+    git(proj, "add", "-A")
+    git(proj, "commit", "-q", "-m", "acrescenta nota sem carimbo")
+    out.append(("vizinho SEM carimbo ainda conta", proj, DOC, "desatualizado"))
 
     return out
 

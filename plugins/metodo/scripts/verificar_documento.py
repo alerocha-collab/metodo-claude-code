@@ -18,6 +18,7 @@ Saída: exit 0 se em dia; 1 se desatualizado ou indeterminado.
 """
 
 import argparse
+import io
 import os
 import re
 import subprocess
@@ -52,6 +53,28 @@ def git(raiz, *args):
 def extrair_sha(texto):
     achado = CARIMBO.search(texto)
     return achado.group(1) if achado else None
+
+
+def outros_carimbados(raiz, caminho):
+    """Caminhos, em estilo POSIX, a excluir do diff: o proprio e os vizinhos carimbados.
+
+    "Carimbado" e o criterio, nao "esta em docs/": um documento sem carimbo nao e
+    vigiado por ninguem, entao mudanca nele e mudanca de verdade e precisa contar.
+    """
+    fora = {caminho.replace(os.sep, "/")}
+    pasta = os.path.join(raiz, "docs")
+    if os.path.isdir(pasta):
+        for nome in os.listdir(pasta):
+            if not nome.endswith(".md"):
+                continue
+            try:
+                with io.open(os.path.join(pasta, nome), encoding="utf-8",
+                             errors="replace") as f:
+                    if extrair_sha(f.read()):
+                        fora.add("docs/" + nome)
+            except OSError:
+                continue
+    return sorted(fora)
 
 
 def avaliar(raiz, caminho):
@@ -89,8 +112,14 @@ def avaliar(raiz, caminho):
     # o carimbo aponta para o estado DESCRITO, e o documento e escrito depois.
     # Sem excluir o proprio arquivo, todo documento nasceria desatualizado, e um
     # alarme que toca desde o primeiro dia e um alarme que se desliga.
+    #
+    # Pela mesma razao, os OUTROS documentos carimbados tambem saem do diff.
+    # Cada um e vigiado pelo seu proprio carimbo; contar a mudanca do vizinho faz
+    # dois documentos carimbados no mesmo commit se acusarem mutuamente para
+    # sempre — recarimbar nunca converge, porque o ato de recarimbar um mexe no
+    # que o outro esta medindo.
     stat = git(raiz, "diff", f"{sha}..HEAD", "--stat", "--",
-               ".", f":(exclude){caminho.replace(os.sep, '/')}")
+               ".", *(f":(exclude){p}" for p in outros_carimbados(raiz, caminho)))
     if stat is None:
         return False, "git-indisponivel", [
             "Nao consegui rodar `git diff`. Tratando como desatualizado por precaucao."
