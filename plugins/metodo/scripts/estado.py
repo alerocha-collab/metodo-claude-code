@@ -20,6 +20,7 @@ Saída: relatório em texto. Exit 0 sempre que conseguir ler; 1 se não consegui
 """
 
 import argparse
+import io
 import json
 import os
 import subprocess
@@ -116,6 +117,48 @@ def verificacao_declarada(raiz):
     return comando or None
 
 
+def documentos_carimbados(raiz):
+    """Linhas sobre a distancia de cada documento carimbado ate o HEAD.
+
+    **Detecta, nunca bloqueia** — decisao de metodo no 3 e decisao 014. Isto nao
+    muda o cenario nem o passo recomendado: e informacao ao lado deles.
+
+    Por que aqui, e nao no CI: em CI o detector ficaria vermelho em quase todo
+    commit, porque quase todo commit muda algo depois do ultimo carimbo. Trava
+    que grita sempre e trava que se aprende a ignorar. Aqui ele aparece no lugar
+    onde alguem ja esta decidindo o proximo passo — que e exatamente quando a
+    pergunta "este documento ainda descreve o desenho?" importa.
+
+    Convencao: qualquer `docs/*.md` que traga uma linha de carimbo entra. Um
+    documento sem carimbo nao e cobrado; carimbar e o ato de aceitar a vigilancia.
+    """
+    try:
+        import verificar_documento as vd
+    except ImportError:
+        return []      # detector ausente nao e falha do relato
+
+    pasta = os.path.join(raiz, "docs")
+    if not os.path.isdir(pasta):
+        return []
+
+    linhas = []
+    for nome in sorted(os.listdir(pasta)):
+        if not nome.endswith(".md"):
+            continue
+        relativo = os.path.join("docs", nome)
+        try:
+            texto = io.open(os.path.join(pasta, nome), encoding="utf-8",
+                            errors="replace").read()
+        except OSError:
+            continue
+        if not vd.extrair_sha(texto):
+            continue
+        em_dia, rotulo, _ = vd.avaliar(raiz, relativo)
+        estado_txt = "em dia" if em_dia else f"DESATUALIZADO ({rotulo})"
+        linhas.append(f"DOCUMENTO   {relativo} — {estado_txt}")
+    return linhas
+
+
 def montar(raiz):
     """Devolve (linhas do relatorio, passo recomendado, rotulo do cenario).
 
@@ -136,6 +179,9 @@ def montar(raiz):
 
     comando = verificacao_declarada(raiz)
     linhas.append(f"VERIFICACAO {comando or 'NAO DECLARADA (.claude/metodo.json ausente)'}")
+
+    # Relato, nao trava: nao altera o cenario nem o passo recomendado abaixo.
+    linhas.extend(documentos_carimbados(raiz))
 
     # --- cenario: sem fila ---
     if fila is None and problemas is None:

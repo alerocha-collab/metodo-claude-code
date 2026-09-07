@@ -1,5 +1,16 @@
 # Plano — a metodologia como plugin
 
+**SHA:** `PLACEHOLDER` · **Data:** 2026-09-07
+
+> **O que este documento é, e o que ele não é.** Ele é a **intenção**, mais o registro
+> de como a execução se comportou contra ela. Não é o desenho em vigor — esse é
+> [arquitetura.md](arquitetura.md), que é carimbado e medido para isso. Onde os dois
+> falarem do mesmo assunto, o `arquitetura.md` manda.
+>
+> A doutrina abaixo — as nove decisões, o desenho do `/fluxo`, o prefixo de reengenharia
+> — fica **como foi escrita**. Intenção não se corrige por ter envelhecido; ela se
+> confere contra o resultado. É o que a seção *Onde a execução divergiu* faz.
+>
 > **Nota sobre esta versão.** O plano original nasceu junto com a auditoria de um
 > projeto privado, que é o primeiro caso de teste da metodologia. Esta versão contém
 > a metade que é método; a auditoria daquele projeto não é pública e vive fora deste
@@ -91,44 +102,73 @@ e que subiram para a metodologia:
 | **Gerador/avaliador com portão entre os dois** | Padrão validado em campo |
 | **Artefato imutável endereçado por hash** | O carimbo de aprovação aponta para o hash do que foi julgado |
 
-Os três primeiros já estão implementados: `testar_tudo.py` é o runner fail-closed,
-as duas suítes são conjuntos balanceados, e `validar_fila.py` é governança por script.
+**Os cinco foram implementados.** `testar_tudo.py` é o runner fail-closed; as **doze**
+suítes são conjuntos balanceados; `validar_fila.py` é governança por script; a revisão
+em dois eixos, em contextos separados, é o gerador/avaliador com portão; e o carimbo de
+SHA com `verificar_documento.py` é o artefato endereçado por hash.
+
+O quinto rendeu mais do que o plano previa: o mesmo contrato reaparece em
+`plugins/doutrina/fontes.json`, que guarda o hash de 191 páginas de documentação para
+detectar quando a fonte mudou.
 
 ## Fases
 
-**Fase 0 — Exaurir a doutrina que falta.** Concluída. Achados e consequências em
-[fase-0-mecanismos.md](fase-0-mecanismos.md).
+| Fase | Desfecho |
+|---|---|
+| **0 — Exaurir a doutrina que falta** | **Concluída**, e depois refeita: a primeira passada foi confirmação de hipóteses, não levantamento. Ver *Onde a execução divergiu*. Achados em [fase-0-mecanismos.md](fase-0-mecanismos.md) |
+| **1 — Esqueleto do repositório + plugin** | **Concluída** |
+| **2a — Os papéis e o portão** | **Concluída.** `construtor` e `operador`, o `Stop` de verificação e o `PreToolUse` que protege os testes |
+| **3 — Core adaptado** | **Concluída.** As skills de fluxo com as nove decisões aplicadas |
+| **2b — `/fluxo`** | **Concluída.** Reordenada para depois da 2a e da 3: o leitor de estado só podia ser escrito depois de existir estado real. Decisões 007 e 008 |
+| **4 — Prefixo de reengenharia** | **Concluída** como código: as três skills de onboarding existem. **Não exercitada:** nenhuma rodou contra uma base de código existente |
+| **5 — Reconciliação do projeto de referência** | **Aberta, e sem alvo.** O dono do projeto retirou o projeto privado do escopo e ofereceu "outro projeto se for o caso". Escolher o alvo é decisão dele, não deste plano |
 
-**Fase 1 — Esqueleto do repositório + plugin.** Concluída.
-
-**Fase 2a — Os papéis e o portão.** Concluída. `construtor` e `operador`, o `Stop`
-de verificação e o `PreToolUse` que protege os testes.
-
-**Fase 3 — Core adaptado.** Em andamento. As skills de fluxo, com as nove decisões
-aplicadas — sobretudo a nº 5 (achado vira ticket automático) e a nº 6 (critérios
-antes, não editados durante). Começou pelo formato do ticket.
-
-**Fase `/fluxo`** — o orquestrador, depois que houver estado real para ler. Reordenado
-em relação ao plano original; ver decisão 008 no `DECISIONS.md`.
-
-**Fase 4 — Prefixo de reengenharia.** As três skills de onboarding.
-
-**Fase 5 — Reconciliação do projeto de referência.** O primeiro caso de teste real, e
-o mais exigente.
+O plano não previa uma fase de distribuição, e ela aconteceu: `.claude-plugin/marketplace.json`,
+instalação num repositório limpo, e o portão exercitado a partir de um plugin instalado.
+Decisões 016 e 018.
 
 ## Verificação
 
-1. **Plugin instala e as skills aparecem**, com `/context` mostrando custo baixo.
-2. **`/fluxo` acerta o estado em quatro cenários montados**: repo vazio · spec sem
-   tickets · tickets prontos · diff pendente de revisão. Em cada um, deve nomear o
-   próximo passo certo e, no caso trivial, recomendar pular o rito.
-3. **O `Stop` hook barra de verdade.** Quebrar um teste de propósito e confirmar que
-   o turno não encerra.
-4. **Orçamento de contexto medido**, não estimado — `/doctor` já entrega isto.
-5. **O prefixo produz fila, não relatório** — tickets em ordem de bloqueio, com
-   critérios de aceitação escritos antes.
-6. **Nada do projeto existente é sobrescrito sem decisão explícita.** Toda
-   substituição de mecanismo entra no `DECISIONS.md` com a alternativa descartada.
+| # | O que o plano exigiu | Status |
+|---|---|---|
+| 1 | Plugin instala e as skills aparecem, com custo de contexto baixo | ✅ **Verificado.** Instalado por marketplace num repositório limpo; as seis skills do `doutrina` apareceram namespaced. Decisão 016 |
+| 2 | `/fluxo` acerta o estado em **quatro** cenários montados | ✅ **Verificado, e excedido:** `tests/testar_estado.py` cobre **doze**, incluindo os que o plano não previu — grafo de bloqueio mandando sobre ordem numérica, e ticket em andamento vencendo árvore suja |
+| 3 | O `Stop` hook barra de verdade | ✅ **Verificado duas vezes.** Local (ticket 003) e a partir de um plugin **instalado** (decisão 018), com o conjunto balanceado: bloqueia com suíte vermelha, **solta** com verde |
+| 4 | Orçamento de contexto medido, não estimado | ✅ **Verificado, por outro caminho.** Não por `/doctor`: `tests/testar_orcamento.py` mede com tetos declarados. O plano previa consulta manual; a execução construiu mecanismo |
+| 5 | O prefixo produz fila, não relatório | ⬜ **Não verificado.** As três skills existem e nunca rodaram contra uma base de código existente. É a lacuna aberta mais antiga deste plano |
+| 6 | Nada do projeto existente é sobrescrito sem decisão explícita | ⬜ **Sem objeto.** Depende da Fase 5, que não tem alvo. O `DECISIONS.md` cumpre a forma — 20 decisões com alternativa descartada — mas nunca contra um projeto existente |
+
+## Onde a execução divergiu do plano
+
+É o que só um plano executado pode entregar: se ele estava certo.
+
+**A Fase 0 foi feita duas vezes, e a primeira não valia.** Ela despachou subagentes com
+perguntas já formuladas e chamou aquilo de levantamento — era confirmação de hipóteses.
+Monorepo nunca apareceu porque ninguém perguntou, e ninguém perguntou por não saber que
+existia. O dono do projeto achou a lacuna com uma pesquisa simples. **Lição:** um
+levantamento que só responde ao que você já sabe perguntar não é levantamento.
+
+**Nasceu um segundo plugin que este plano não previu.** O `doutrina` — a documentação do
+Claude Code destilada para o agente — veio de outro plano, escrito depois da Fase 0
+refeita. Ele é separado de propósito: cadência de atualização diferente e propósito
+diferente. Bundlar seria *Divergent Change* — corrigir uma ficha obrigaria a subir a
+versão da metodologia.
+
+**A ordem das fases estava errada, e o erro era detectável antes.** A 2b (`/fluxo`) veio
+depois da 3 porque um leitor de estado não pode ser escrito antes de existir estado. O
+plano original a colocava antes. **Lição:** ordenar por dependência de dados, não por
+ordem de importância.
+
+**Três verificações do plano foram cumpridas por mecanismo, não por consulta.** O
+orçamento de contexto viraria `/doctor` na intenção, e virou suíte com teto declarado. A
+diferença importa: consulta manual se esquece; teto reprova. O mesmo aconteceu com o
+bump de `version`, que o plano nem listava e virou detector em CI.
+
+**A verificação mais valiosa não estava no plano.** Nenhum dos seis itens pedia o
+conjunto balanceado — *bloqueia quando deve* **e** *solta quando não deve*. Ele veio dos
+mecanismos absorvidos, e virou o hábito que mais achou defeito: o portão, o detector de
+referências e o detector de bump foram todos aprovados por um teste positivo antes de
+alguém perguntar se eles sabiam **não** agir.
 
 ## Fora de escopo
 

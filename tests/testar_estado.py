@@ -30,6 +30,16 @@ def git(proj, *args):
     subprocess.run(["git", *args], cwd=proj, capture_output=True, text=True, timeout=60)
 
 
+def escrever(caminho, texto):
+    with io.open(caminho, "w", encoding="utf-8", newline="\n") as f:
+        f.write(texto)
+
+
+def commitar(proj, mensagem):
+    git(proj, "add", "-A")
+    git(proj, "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-m", mensagem)
+
+
 def novo_projeto(base, nome):
     proj = os.path.join(base, nome)
     os.makedirs(os.path.join(proj, ".claude"))
@@ -160,6 +170,71 @@ def main():
         lista.append(("destrava na ordem", None, None))
         if not ok:
             falhas.append(f"apos fechar 001, devolveu {escolhido!r}, esperava '002'")
+
+        # --- o relato de documentos carimbados ---
+        # A propriedade que importa nao e "aparece a linha": e que a linha NAO
+        # muda o cenario nem o passo recomendado. Detecta, nao bloqueia.
+        proj = os.path.join(base, "prontos")
+        linhas_antes, passo_antes, rotulo_antes = estado.montar(proj)
+
+        docs = os.path.join(proj, "docs")
+        os.makedirs(docs, exist_ok=True)
+
+        # (a) documento SEM carimbo nao e cobrado. Carimbar e o ato de aceitar
+        # a vigilancia; cobrar quem nao pediu treina a pessoa a ignorar o aviso.
+        escrever(os.path.join(docs, "sem_carimbo.md"), "# nota solta\nsem carimbo\n")
+        linhas, _, _ = estado.montar(proj)
+        citadas = [l for l in linhas if "sem_carimbo.md" in l]
+        ok = not citadas
+        print(f"  {'ok  ' if ok else 'FALHA'} documento sem carimbo nao e cobrado")
+        lista.append(("sem carimbo", None, None))
+        if not ok:
+            falhas.append(f"cobrou documento sem carimbo: {citadas}")
+
+        # (b) documento carimbado no HEAD -> em dia
+        escrever(os.path.join(docs, "arq.md"), "# arquitetura\n\ncarimbo abaixo\n")
+        commitar(proj, "cria o documento")
+        sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=proj,
+                             capture_output=True, text=True).stdout.strip()
+        escrever(os.path.join(docs, "arq.md"),
+                 "# arquitetura\n\n**SHA:** `" + sha + "`\n")
+        commitar(proj, "carimba")
+        linhas, _, _ = estado.montar(proj)
+        citadas = [l for l in linhas if "arq.md" in l]
+        ok = bool(citadas) and "em dia" in citadas[0]
+        print(f"  {'ok  ' if ok else 'FALHA'} documento carimbado no HEAD -> em dia")
+        lista.append(("carimbo em dia", None, None))
+        if not ok:
+            falhas.append(f"esperava 'em dia' para arq.md, veio {citadas}")
+
+        # (c) o repositorio anda, o carimbo fica: tem que acusar
+        escrever(os.path.join(proj, "src.py"), "print(2)\n")
+        commitar(proj, "muda o codigo")
+        linhas, passo, rotulo = estado.montar(proj)
+        citadas = [l for l in linhas if "arq.md" in l]
+        ok = bool(citadas) and "DESATUALIZADO" in citadas[0]
+        print(f"  {'ok  ' if ok else 'FALHA'} carimbo velho -> DESATUALIZADO")
+        lista.append(("carimbo velho", None, None))
+        if not ok:
+            falhas.append(f"esperava DESATUALIZADO para arq.md, veio {citadas}")
+
+        # (d) E O CASO QUE JUSTIFICA OS TRES ACIMA: nada disso mudou o cenario
+        # nem o passo. Sem esta assercao, o relato poderia ter virado trava e os
+        # outros continuariam verdes.
+        ok = rotulo == rotulo_antes and passo == passo_antes
+        print(f"  {'ok  ' if ok else 'FALHA'} documento desatualizado NAO muda cenario nem passo")
+        lista.append(("relato nao bloqueia", None, None))
+        if not ok:
+            falhas.append(
+                f"o relato mudou a recomendacao: {rotulo_antes!r} -> {rotulo!r}")
+
+        # (e) projeto sem pasta docs/: nao pode quebrar nem inventar cobranca
+        linhas, _, _ = estado.montar(os.path.join(base, "sem_fila"))
+        ok = not [l for l in linhas if l.startswith("DOCUMENTO")]
+        print(f"  {'ok  ' if ok else 'FALHA'} projeto sem docs/ nao inventa cobranca")
+        lista.append(("sem docs", None, None))
+        if not ok:
+            falhas.append("reportou documento em projeto sem docs/")
 
         # O `/fluxo` não pode escrever nada. Um roteador que altera estado
         # deixa de ser roteador.

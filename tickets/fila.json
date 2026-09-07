@@ -181,6 +181,14 @@
       "bloqueado_por": [],
       "modulo": "distribuicao",
       "brief": "tickets/021-marketplace-e-portabilidade.md"
+    },
+    {
+      "id": "022",
+      "titulo": "Reconciliar o plano com a realidade, e fazer alguem vigiar",
+      "estado": "em-andamento",
+      "bloqueado_por": [],
+      "modulo": "docs",
+      "brief": "tickets/022-reconciliar-o-plano.md"
     }
   ]
 }
