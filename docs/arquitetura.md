@@ -1,6 +1,6 @@
 # Arquitetura do plugin `metodo`
 
-**SHA:** `a869ee5` · **Data:** 2026-09-07
+**SHA:** `d34825f` · **Data:** 2026-09-07
 
 > Este documento descreve o desenho **em vigor**. A história de como se chegou nele
 > está no [DECISIONS.md](../DECISIONS.md), append-only, e não é repetida aqui — duas
@@ -131,8 +131,6 @@ para os arquivos de referência não resolvem depois de instalado. Ver decisão 
 
 O que sobra:
 
-- **Sessão interativa com diálogo de confiança aceito.** `additionalDirectories` é
-  ignorado em workspace não confiado, e nenhuma sessão daqui pôde aceitar o diálogo.
 - **Se hooks dependem ou não de confiança.** Eles dispararam num workspace declarado
   não confiado, contra o que o README afirmava. A frase saiu de lá; a questão fica
   aberta em P12.
