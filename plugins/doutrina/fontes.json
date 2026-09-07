@@ -1,5 +1,5 @@
 {
-  "$comentario": "Indice de TODA a documentacao do Claude Code em ingles. Nenhuma pagina fica invisivel: as de prioridade `nucleo` sao destiladas em ficha local; as de `indice` existem aqui para que um agente saiba que existem e para onde ir.",
+  "$comentario": "Indice de TODA a documentacao do Claude Code em ingles, mais as paginas do blog de engenharia que fundamentam arquitetura de agentes. Nenhuma pagina fica invisivel. `prioridade` diz o que MERECE destilacao, nao o que ja foi destilado: quem responde isso e `fichas`, e ha nucleo sem ficha — e o backlog, e o verificador mostra o numero.",
   "$comentario_hash": "sha256 do markdown bruto da pagina, na data de `verificada_em`. E o que permite detectar drift sem guardar copia do conteudo. null = nunca verificada.",
   "$comentario_nao_atualiza": "NADA neste repositorio atualiza `hash` automaticamente. Desatualizacao e sinal para decisao humana; um indice que se conserta sozinho perde a unica propriedade que o torna confiavel, que e poder estar visivelmente errado.",
   "indice_da_doc": "https://code.claude.com/docs/llms.txt",
@@ -2015,6 +2015,216 @@
       "hash": null,
       "verificada_em": null,
       "fichas": []
+    },
+    {
+      "id": "eng-building-effective-agents",
+      "titulo": "Building effective agents",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "b0b33c15b7532560db5e51af91001510b4937b4ea11d020772df396cfa0619be",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-multi-agent-research-system",
+      "titulo": "How we built our multi-agent research system",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/multi-agent-research-system",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "db8a049b5b3aa60da8d5f9df74f627097299e2979eb7ce13930ad20df945db49",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-harness-design-long-running-apps",
+      "titulo": "Harness design for long-running application development",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/harness-design-long-running-apps",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "f358e50e4ebc4d1810e7d7523e9b751f9f2791ff873c54de3dde36f966c3724b",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-effective-harnesses-for-long-running-agents",
+      "titulo": "Effective harnesses for long-running agents",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "746d0d280f015dcd472d01fd55ef0940049c95b60e16c2b995d68dca2dd7ada9",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-building-c-compiler",
+      "titulo": "Building a C compiler with a team of parallel Claudes",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/building-c-compiler",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "b8c6e82d478ad3ab0f29c13184d5c57b3bbbcb68a0e480119a3b5a0896f93b0b",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-demystifying-evals-for-ai-agents",
+      "titulo": "Demystifying evals for AI agents",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "eee9f86ffd49a51ee5b46ff3df99bf5f677f6070efd37b2dd1761d20e0c41f74",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-effective-context-engineering-for-ai-agents",
+      "titulo": "Effective context engineering for AI agents",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "e498732b55dec231afb105a3dc197fafd1794d8a662d107c5db33800d6495663",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-writing-tools-for-agents",
+      "titulo": "Writing effective tools for agents - with agents",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "b143d187ab4ce363c3a7fb3364563b9ce727277d76665cd534de8aa6cbffc272",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-code-execution-with-mcp",
+      "titulo": "Code execution with MCP",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/code-execution-with-mcp",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "b2d6db8b0e890587a6f7322c8c3694eb67b2d2e38fa166fde66fbb1d090ffb72",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-equipping-agents-for-the-real-world-with-agent-skills",
+      "titulo": "Equipping agents for the real world with Agent Skills",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "2f6bc17252fe987079511cdb7a07ae7f5be9883a6f9c9329c13811b30f398b82",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-claude-code-sandboxing",
+      "titulo": "Beyond permission prompts",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/claude-code-sandboxing",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "86a8cefc07056f6e1bf41d4d5947a552825223e6ce1e516f25f647a370f83364",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-claude-code-auto-mode",
+      "titulo": "How we built Claude Code auto mode",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/claude-code-auto-mode",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "217c938039ad6ccab185f698b6f7711da91dd855854d9b3c8266679816dd5c77",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-how-we-contain-claude",
+      "titulo": "How we contain Claude across products",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/how-we-contain-claude",
+      "formato": "html",
+      "prioridade": "nucleo",
+      "hash": "6acb3c95d12012218eec2d8311cebb13ccefcf7c6a7b821f52fc024d9ff28549",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-managed-agents",
+      "titulo": "Managed agents",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/managed-agents",
+      "formato": "html",
+      "prioridade": "indice",
+      "hash": "7b1dd0b4a36169697e9eafc5573b207b80818d9f4a6057a19bff0d51d342b318",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-advanced-tool-use",
+      "titulo": "Advanced tool use",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/advanced-tool-use",
+      "formato": "html",
+      "prioridade": "indice",
+      "hash": "d5bb012585eb99eb84cc11c96ac64def2ac167cb7d1ff893c343af19555dc01d",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-claude-think-tool",
+      "titulo": "The think tool",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/claude-think-tool",
+      "formato": "html",
+      "prioridade": "indice",
+      "hash": "8d3208d20603ae4c61e0859bf0255e182414e54755d7ea907791d68c77b84502",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-contextual-retrieval",
+      "titulo": "Contextual retrieval",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/contextual-retrieval",
+      "formato": "html",
+      "prioridade": "indice",
+      "hash": "2fdf4a9e0988b61247ef7671632940fc97c3be7ba7e0ae738841e945bd6e3c23",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-swe-bench-sonnet",
+      "titulo": "Raising the bar on SWE-bench",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/swe-bench-sonnet",
+      "formato": "html",
+      "prioridade": "indice",
+      "hash": "8379e6eafa9fa3b9eb0ed0024d5a0c6aeee99dfcd5deb54ef140ed232a573fcf",
+      "verificada_em": "2026-09-07",
+      "fichas": []
+    },
+    {
+      "id": "eng-desktop-extensions",
+      "titulo": "Desktop extensions",
+      "secao": "engenharia",
+      "url": "https://www.anthropic.com/engineering/desktop-extensions",
+      "formato": "html",
+      "prioridade": "indice",
+      "hash": "990a2b0e91a0adb2bb1e3059a07abe9303cae13792b1e3dbb834ba5c2d6a9187",
+      "verificada_em": "2026-09-07",
+      "fichas": []
     }
-  ]
+  ],
+  "$comentario_formato": "`formato` diz como o hash e calculado. `markdown` (padrao): hash do arquivo bruto. `html`: hash do TEXTO extraido, sem script, style e tags — porque uma pagina construida muda de bytes a cada build do site sem o artigo mudar, e um detector que acusa toda semana e um detector que se aprende a ignorar."
 }

@@ -27,6 +27,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import sys
 
 RAIZ_PLUGIN = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -63,7 +64,35 @@ def buscar_padrao(url, timeout=30):
         return r.read()
 
 
-def sha(dados):
+def normalizar_html(bruto):
+    """Reduz uma pagina HTML ao texto visivel, para o hash medir o ARTIGO.
+
+    A doc oficial e markdown puro: hash do arquivo = hash do conteudo. O blog de
+    engenharia e uma pagina construida — 211 KB de HTML para 20 KB de texto, com
+    `nonce` em vinte lugares e nomes de classe com hash de build. Hashear isso cru
+    faz o detector acusar toda vez que o site e reconstruido, sem o artigo mudar.
+
+    Detector que acusa sempre e detector que se aprende a ignorar. Entao remove-se
+    script, style e as tags, e hasheia-se o que sobra.
+
+    A troca, registrada: mudanca de conteudo dentro de um `<script>` — dados
+    embutidos, por exemplo — passa despercebida. Para artigo em prosa, e a troca
+    certa.
+    """
+    if isinstance(bruto, bytes):
+        bruto = bruto.decode("utf-8", "replace")
+    t = re.sub(r"(?is)<script.*?</script>", " ", bruto)
+    t = re.sub(r"(?is)<style.*?</style>", " ", t)
+    t = re.sub(r"(?s)<[^>]+>", " ", t)
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def sha(dados, formato="markdown"):
+    """sha256 do conteudo. `formato` decide se a pagina passa pela normalizacao."""
+    if formato == "html":
+        dados = normalizar_html(dados).encode("utf-8")
+    elif isinstance(dados, str):
+        dados = dados.encode("utf-8")
     return hashlib.sha256(dados).hexdigest()
 
 
@@ -155,7 +184,7 @@ def verificar_drift(doc, buscar=buscar_padrao, tudo=False):
             indeterminadas.append(f"{pid}: sem hash registrado")
             continue
         try:
-            atual = sha(buscar(url))
+            atual = sha(buscar(url), p.get("formato", "markdown"))
         except Exception as erro:  # noqa: BLE001 — qualquer falha e indeterminacao
             indeterminadas.append(f"{pid}: nao consegui buscar: {type(erro).__name__}")
             continue
@@ -180,8 +209,14 @@ def main(argv=None):
 
     paginas = doc.get("paginas") or []
     nucleo = [x for x in paginas if x.get("prioridade") == "nucleo"]
+    # O backlog fica visivel de proposito. `nucleo` marca o que merece destilacao;
+    # `fichas` diz o que ja foi destilado. A diferenca entre os dois e uma divida
+    # real, e divida que ninguem conta e divida que ninguem paga.
+    com_ficha = [p for p in nucleo if p.get("fichas")]
     print(f"INDICE      {len(paginas)} pagina(s) · {len(nucleo)} nucleo · "
           f"{len(paginas) - len(nucleo)} so indexadas")
+    print(f"DESTILACAO  {len(com_ficha)} de {len(nucleo)} paginas do nucleo tem ficha "
+          f"· {len(nucleo) - len(com_ficha)} no backlog")
 
     problemas = verificar_estrutura(doc)
     if problemas:

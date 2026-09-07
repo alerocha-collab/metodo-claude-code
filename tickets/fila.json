@@ -189,6 +189,45 @@
       "bloqueado_por": [],
       "modulo": "docs",
       "brief": "tickets/022-reconciliar-o-plano.md"
+    },
+    {
+      "id": "023",
+      "titulo": "Indexar o blog de engenharia: o ponto cego do doutrina",
+      "estado": "concluido",
+      "bloqueado_por": [],
+      "modulo": "doutrina",
+      "brief": "tickets/023-indexar-blog-engenharia.md"
+    },
+    {
+      "id": "024",
+      "titulo": "doutrina: a ficha de arquitetura de sistemas agenticos",
+      "estado": "pronto",
+      "bloqueado_por": [
+        "023"
+      ],
+      "modulo": "doutrina",
+      "brief": "tickets/024-doutrina-arquitetar.md"
+    },
+    {
+      "id": "025",
+      "titulo": "doutrina: a ficha de verificacao e evals",
+      "estado": "pronto",
+      "bloqueado_por": [
+        "023"
+      ],
+      "modulo": "doutrina",
+      "brief": "tickets/025-doutrina-avaliar.md"
+    },
+    {
+      "id": "026",
+      "titulo": "Aposentar a arquiteto-claude-code, sem perder nada",
+      "estado": "pronto",
+      "bloqueado_por": [
+        "024",
+        "025"
+      ],
+      "modulo": "migracao",
+      "brief": "tickets/026-aposentar-arquiteto.md"
     }
   ]
 }

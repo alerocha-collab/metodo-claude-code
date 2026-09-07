@@ -14,7 +14,7 @@ de um repositório que já existe.
 python3 tests/testar_tudo.py
 ```
 
-Doze suítes, 169 casos, todas com **conjunto balanceado**: metade verifica que a trava
+Doze suítes, 177 casos, todas com **conjunto balanceado**: metade verifica que a trava
 age quando deve, metade que ela **não** age quando não deve. Uma suíte só com casos
 positivos aprova uma trava que bloqueia tudo.
 
@@ -71,7 +71,7 @@ python3 plugins/metodo/scripts/validar_fila.py tickets/fila.json
     ├── doutrina/                a documentação do Claude Code destilada
     │   ├── skills/              as seis fichas, por pergunta
     │   ├── referencias/         durável × volátil, carregado sob demanda
-    │   └── fontes.json          as 191 páginas indexadas, com hash
+    │   └── fontes.json          210 fontes indexadas, com hash
     └── metodo/                  a metodologia propriamente dita
         ├── agents/              papéis: construtor, operador, arquiteto
         ├── skills/              as do pipeline, mais o onboarding

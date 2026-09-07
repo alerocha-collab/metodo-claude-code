@@ -215,6 +215,56 @@ def main():
         print(f"  {'ok  ' if ok else 'FALHA'} indice cobre a doc inteira ({n} paginas)")
         if not ok:
             falhas.append(f"indice com apenas {n} paginas; a doc tem ~191")
+
+        # O blog de engenharia foi o ponto cego original: a doutrina de arquitetura
+        # de agentes nao esta na arvore de documentacao, e por isso ficou de fora.
+        total += 1
+        eng = [p for p in doc["paginas"] if p.get("secao") == "engenharia"]
+        ok = len(eng) >= 10
+        print(f"  {'ok  ' if ok else 'FALHA'} o blog de engenharia esta indexado ({len(eng)})")
+        if not ok:
+            falhas.append(f"so {len(eng)} paginas de engenharia indexadas")
+
+        # Pagina de HTML precisa dizer que e HTML, senao o hash e calculado sobre os
+        # bytes crus e o detector acusa a cada build do site.
+        total += 1
+        erradas = [p["id"] for p in eng if p.get("formato") != "html"]
+        print(f"  {'ok  ' if not erradas else 'FALHA'} toda pagina de engenharia declara formato html")
+        if erradas:
+            falhas.append(f"paginas de engenharia sem formato html: {erradas[:5]}")
+
+        print("== normalizacao de html ==")
+        # Mesmo artigo, build diferente do site: nonce, classe com hash, script novo.
+        # O hash TEM que ser o mesmo, ou o detector vira ruido semanal.
+        a = ('<html><head><style>.a{color:red}</style>'
+             '<script nonce="abc123">var buildId="x1"</script></head>'
+             '<body><h1>Titulo</h1><p>O texto do artigo.</p></body></html>')
+        b = ('<html><head><style>.b{color:blue}</style>'
+             '<script nonce="zzz999">var buildId="y7"</script></head>'
+             '<body><h1 class="css-8f3a">Titulo</h1><p>O texto do artigo.</p></body></html>')
+        total += 1
+        ok = vf.sha(a, "html") == vf.sha(b, "html")
+        print(f"  {'ok  ' if ok else 'FALHA'} ruido de build nao muda o hash")
+        if not ok:
+            falhas.append("normalizacao nao absorveu nonce/classe/script")
+
+        # E o inverso, sem o qual um normalizador que devolvesse "" passaria acima:
+        # mudanca no TEXTO tem que mudar o hash.
+        total += 1
+        c_ = a.replace("O texto do artigo.", "O texto do artigo, revisado.")
+        ok = vf.sha(a, "html") != vf.sha(c_, "html")
+        print(f"  {'ok  ' if ok else 'FALHA'} mudanca de texto MUDA o hash")
+        if not ok:
+            falhas.append("normalizacao apagou o conteudo: texto diferente deu hash igual")
+
+        # E o formato markdown nao pode passar pela normalizacao: um `<` legitimo
+        # dentro de um bloco de codigo viraria espaco, e o hash mediria outra coisa.
+        total += 1
+        md = "# Titulo\n\nUse `if x < 10:` no exemplo.\n"
+        ok = vf.sha(md) != vf.sha(md, "html")
+        print(f"  {'ok  ' if ok else 'FALHA'} markdown nao passa pela normalizacao de html")
+        if not ok:
+            falhas.append("sha() tratou markdown como html")
     finally:
         shutil.rmtree(base, ignore_errors=True)
 
