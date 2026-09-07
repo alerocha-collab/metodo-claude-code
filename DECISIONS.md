@@ -615,15 +615,21 @@ independente de sistema operacional.
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
 
+> **Higiene desta lista.** Em 2026-09-07, P2 e P3 estavam abertas e **já resolvidas há
+> semanas** — a lista tinha apodrecido em silêncio. É o mesmo risco que a decisão 017
+> nomeia: item que nunca sai tira o crédito dos que importam. Nada vigia esta tabela;
+> ela depende de ser lida ao fechar uma fase.
+
 | # | Pendência | Bloqueia |
 |---|---|---|
 | ~~P1~~ | **Resolvida.** As cópias de `~/.claude/` foram movidas para `~/.claude/_backup-arquiteto/`. Achado no caminho: renomear para `.bak` **não** tira uma skill de circulação — o Claude Code carrega skill pelo **diretório**, não pelo `name:` do frontmatter, e ela reapareceu como `arquiteto-claude-code.bak`. Agente sim exige `.md`. Apagar o backup só depois da P7. | — |
 | ~~P8~~ | **Resolvida por eliminação.** A questão perdeu objeto: o `hooks:` do frontmatter nem é lido para agentes de plugin (decisão 010), então a resolução da variável ali nunca importou. Ela volta a importar em `hooks/hooks.json`, onde é documentada. | — |
 | ~~P9~~ | **Fechada pelo negativo.** O portão não barrou: hooks no frontmatter são ignorados para agentes de plugin. Ver decisão 010; correção no ticket 006. | — |
-| P2 | **Repositório GitHub: público ou privado.** Privado exige credencial git em toda máquina que instale. | Publicação |
-| P3 | **`gh` não instalado** (ausente do PATH). Sem ele, requisições não autenticadas com rate limit. | Criação do repo remoto |
+| ~~P2~~ | **Resolvida.** Público, em `alerocha-collab/metodo-claude-code`, sem menções ao projeto privado que serviu de exemplo. Confirmado por `gh repo view`. | — |
+| ~~P3~~ | **Resolvida.** `gh` 2.100.0 no PATH e autenticado; usado para criar o repo e acompanhar o CI. | — |
 | ~~P10~~ | **Descartada como causa.** O ticket 003 confirmou `python3` 3.14.2 disponível em PowerShell e cmd, fora do Git Bash. A dependência segue não declarada — isso é o ticket 004, não uma pendência solta. | — |
 | P4 | **Bump de `version` a cada release.** Sem isso, quem instalou fica com a cópia em cache. Segue disciplina: agora em **dois** lugares (`plugin.json` e a entrada do marketplace), e `tests/testar_marketplace.py` reprova se divergirem — subir errado é pego, **esquecer de subir não**. | Publicação |
+| P11 | **O portão nunca disparou de um plugin INSTALADO.** A prova do ticket 021 é do mecanismo de instalação e das skills do `doutrina`, que não têm hook. É a lacuna mais próxima de doer: o portão é a peça que o `metodo` existe para entregar. | Confiar no `metodo` fora deste repositório |
 | ~~P5~~ | **Resolvida.** `claude plugin validate --strict` roda em CI para os dois plugins e para o marketplace, mais um passo que prova que a validação do marketplace reprova `version` divergente. | — |
 | ~~P7~~ | **Resolvida com ressalva** — ver decisão 006. Nome puro funciona. Ressalva: o teste rodou num repo que contém o plugin; confirmação definitiva na Fase 5. | — |
 | ~~P6~~ | **Resolvida.** Fase 0 fechada; achados e consequências em [docs/fase-0-mecanismos.md](docs/fase-0-mecanismos.md). | — |
