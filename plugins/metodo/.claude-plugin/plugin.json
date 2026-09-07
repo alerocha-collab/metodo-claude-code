@@ -1,7 +1,7 @@
 {
   "name": "metodo",
   "displayName": "Método",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "description": "Metodologia de engenharia com agentes: fluxo de trabalho dimensionado pela janela de contexto, separação por papel, estado em git + tickets, e o arquiteto de sistemas Claude Code.",
   "author": {
