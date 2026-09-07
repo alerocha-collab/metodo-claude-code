@@ -87,6 +87,26 @@ jobs:
           echo "comparando com: $BASE"
           python3 scripts/verificar_bump.py "$BASE"
 
+      # O passo acima so aprova. Sem esta prova, um detector quebrado — regex que
+      # nunca casa, `plugin_de` devolvendo None sempre — passaria em silencio e o
+      # portao inteiro seria decorativo. Aqui um commit descartavel altera conteudo
+      # de plugin SEM subir version, e o detector tem que reprovar.
+      - name: Provar que o detector de bump reprova quando falta o bump
+        run: |
+          git config user.email ci@exemplo && git config user.name ci
+          echo "<!-- linha descartavel, so para este teste -->" >> plugins/doutrina/referencias/armadilhas.md
+          git commit -qam "commit descartavel: muda plugin sem subir version"
+          set +e
+          python3 scripts/verificar_bump.py HEAD~1
+          CODIGO=$?
+          set -e
+          git reset -q --hard HEAD~1
+          if [ "$CODIGO" -eq 0 ]; then
+            echo "FALHA: o detector aprovou um plugin alterado sem bump de version."
+            exit 1
+          fi
+          echo "ok: falta de bump reprova (exit $CODIGO)."
+
       - name: Validar a fila de tickets, se existir
         run: |
           if [ -f tickets/fila.json ]; then
