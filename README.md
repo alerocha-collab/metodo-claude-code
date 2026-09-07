@@ -30,7 +30,7 @@ para o runner.
 | Artefato | Onde | Para quê |
 |---|---|---|
 | `arquitetura.md` | `docs/` | A forma do documento de arquitetura. O conteúdo vem do `doutrina` |
-| `metodo.json` | `.claude/` | Declara o comando que decide verde/vermelho. Sem ele, o portão bloqueia. **Copie o template — o formato não é adivinhável** |
+| `metodo.json` | `.claude/` | Declara o comando que decide verde/vermelho. **É ele que liga a metodologia:** sem ele o plugin fica inerte, e com ele o portão passa a exigir verde. Copie o template — o formato não é adivinhável |
 | `fila.json` | `tickets/` | Estado dos tickets e o grafo de bloqueio. JSON porque muda toda sessão |
 | `ticket.md` | `tickets/NNN-*.md` | A spec de uma fatia. Markdown porque é prosa escrita uma vez |
 | `DECISIONS.md` | raiz | Decisões append-only, abaixo da barra de um ADR |

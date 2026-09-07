@@ -970,6 +970,68 @@ com mudança não commitada.
 
 ---
 
+## 024 — "Ausência de verificação é falha" vale para quem prometeu verificar
+
+**Data:** 2026-09-07 · **Ticket:** 027 · **Ajusta o alcance de:** decisão de método nº 3
+
+Duas regras do próprio método colidiam, e a colisão só ficou visível ao apontar o
+`metodo` para um projeto que não era nosso:
+
+- **"Ausência de verificação conta como falha"** — o que impede um portão de aprovar o
+  que não consegue verificar.
+- **"O plugin não age em repositório que não aderiu"** — decisão do ticket 018, aplicada
+  em `proteger_testes.py` e **nunca** em `verificar_suite.py`.
+
+### O que estava medido
+
+| Situação | Portão, antes |
+|---|---|
+| Sem `metodo.json`, árvore limpa | libera |
+| Sem `metodo.json`, árvore **suja** | **bloqueia**, exigindo adoção |
+| Sem git nenhum | **bloqueia sempre** — `sessao_mudou_codigo` falha fechada |
+
+Instalar o `metodo` em escopo `user` travaria o fim de turno em **todo projeto da
+máquina** com mudança não commitada que nunca criou a config.
+
+### A decisão
+
+**A adesão vem primeiro.** `verificar_suite.py` passa a usar `comum.achar_config` como
+guarda inicial: sem config, sai calado.
+
+A primeira regra não foi enfraquecida — foi **escopada**. Ela sempre falou de quem
+prometeu verificar; o plugin é que estava arrancando a promessa de quem só o instalou. O
+bloqueio por verificação ausente continua inteiro para quem aderiu: `metodo.json`
+presente com comando vazio, ilegível ou `SUBSTITUA-ME` bloqueia como antes, em ramos
+que já existiam.
+
+A doutrina, aliás, já estava escrita — no docstring de `comum.aderiu()`, desde o ticket
+018: *"um plugin instalado não deve mudar o comportamento de repositório que não pediu
+por isso — a pessoa desinstala em vez de configurar, e aí perde também o que era útil."*
+O que faltava era o Stop chamá-la.
+
+**E o argumento que fechou:** `/metodo:onboarding-entender` existe para decidir **se**
+vale adotar. Um portão que exige adesão para rodar põe a resposta antes da pergunta — e
+foi exatamente o que impediu o primeiro contato com um projeto real.
+
+### A ordem das duas guardas importa
+
+Adesão **antes** de árvore suja. Perguntar "mudou algo?" a um repositório que não aderiu
+já seria agir sobre ele — e a pergunta é feita ao git, que em projeto sem git falha
+fechada e produz o bloqueio que a decisão elimina.
+
+### Alternativa descartada
+
+**Liberar quando não há git.** Resolveria o sintoma mais visível e criaria um buraco:
+repositório que aderiu e perdeu o `.git` deixaria de ser verificado. Não conseguir olhar
+nunca vira licença para liberar — só deixa de ser motivo para cobrar de quem nunca
+prometeu.
+
+Há um caso dedicado a isso: **sem git, mas com adesão, a suíte vermelha bloqueia.** E a
+mutação prova que ele é independente — remover a guarda mata os três casos novos e
+**não** mata esse.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.

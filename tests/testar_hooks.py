@@ -129,6 +129,26 @@ def sem_adesao(base):
     return proj
 
 
+def sem_git(base, com_config):
+    """Pasta que NAO e repositorio git. `com_config` decide se ela aderiu.
+
+    E o caso que travava sempre: sem git, `sessao_mudou_codigo` falha fechada e
+    devolve True, entao o portao seguia para a config e bloqueava. Medido num
+    projeto real cuja copia tinha perdido o `.git`.
+    """
+    nome = "sem_git_com_config" if com_config else "sem_git_sem_config"
+    proj = os.path.join(base, nome)
+    os.makedirs(os.path.join(proj, "tests"))
+    with open(os.path.join(proj, "tests", "test_a.py"), "w") as f:
+        f.write("def test_x():\n    pass\n")
+    if com_config:
+        os.makedirs(os.path.join(proj, ".claude"))
+        caminho = os.path.join(proj, ".claude", "metodo.json")
+        with open(caminho, "w", encoding="utf-8", newline="\n") as f:
+            f.write('{"verificacao":{"comando":"exit 1","descricao":"vermelha"}}\n')
+    return proj
+
+
 def sujar(proj):
     """Deixa a arvore com mudanca nao commitada."""
     with open(os.path.join(proj, "src.py"), "a", encoding="utf-8") as f:
@@ -168,7 +188,6 @@ def casos(proj):
 
     return [
         # --- verificar_suite DEVE bloquear ---
-        ("sem .claude/metodo.json", "verificar_suite.py", {"cwd": proj}, BLOQUEIA, None),
         ("comando nao preenchido", "verificar_suite.py", {"cwd": proj}, BLOQUEIA,
          '{"verificacao":{"comando":"SUBSTITUA-ME"}}'),
         ("suite vermelha", "verificar_suite.py", {"cwd": proj}, BLOQUEIA, vermelha),
@@ -183,6 +202,18 @@ def casos(proj):
         # quebrou — regra de construção barrando operação, o inverso exato do
         # sintoma que motivou separar papéis.
         (ARVORE_LIMPA, "verificar_suite.py", {"cwd": proj}, LIBERA, vermelha),
+        # A guarda de ADESAO, e por que ela vem antes da de arvore suja.
+        #
+        # "Ausencia de verificacao conta como falha" vale para quem PROMETEU
+        # verificar. Sem esta linha, `metodo` em escopo `user` travaria o fim de
+        # turno em todo projeto da maquina com mudanca nao commitada que nunca
+        # criou a config. Medido num projeto real.
+        #
+        # E ha a inversao que decidiu: `onboarding-entender` existe para decidir
+        # SE vale adotar. Portao que exige adesao para rodar poe a resposta antes
+        # da pergunta. Ver decisao 024.
+        ("sem config: o plugin nao age em quem nao aderiu", "verificar_suite.py",
+         {"cwd": proj}, LIBERA, None),
         # --- proteger_testes DEVE bloquear (projeto ADERENTE: config presente) ---
         ("Edit em teste existente", "proteger_testes.py",
          {"tool_name": "Edit", "tool_input": {"file_path": t("tests", "test_a.py")}}, BLOQUEIA, verde),
@@ -257,6 +288,19 @@ def main():
              {"tool_name": "Edit",
               "tool_input": {"file_path": os.path.join(proj_sem, "tests", "test_a.py")}},
              LIBERA),
+            # O portao tambem: instalado nao e adotado.
+            ("sem adesao: o portao tambem nao age",
+             "verificar_suite.py", {"cwd": proj_sem}, LIBERA),
+            # SEM GIT e sem adesao: o caso que travava SEMPRE, porque a guarda de
+            # arvore suja falha fechada quando nao consegue perguntar ao git.
+            ("sem git e sem adesao: nao trava a sessao",
+             "verificar_suite.py", {"cwd": sem_git(base, com_config=False)}, LIBERA),
+            # E o NEGATIVO que impede a correcao de virar buraco: quem ADERIU e
+            # perdeu o git continua sendo verificado, e a suite vermelha bloqueia.
+            # Nao conseguir olhar nao virou licenca para liberar — so deixou de ser
+            # motivo para cobrar de quem nunca prometeu.
+            ("sem git MAS com adesao: verifica, e bloqueia no vermelho",
+             "verificar_suite.py", {"cwd": sem_git(base, com_config=True)}, BLOQUEIA),
         ]
         for nome, hook, evento, esperado in escopo:
             obtido = rodar(hook, evento)

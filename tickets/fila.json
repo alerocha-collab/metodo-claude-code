@@ -232,7 +232,7 @@
     {
       "id": "027",
       "titulo": "O portao barra quem nunca adotou, e isso inverte a ordem do onboarding",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [],
       "modulo": "hooks",
       "brief": "tickets/027-portao-em-projeto-que-nao-adotou.md"

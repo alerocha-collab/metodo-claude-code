@@ -152,28 +152,31 @@ def main():
 
     raiz = evento.get("cwd") or os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
 
-    # Clausula de guarda: nada mudou, nada a verificar. Ver docstring.
-    if not sessao_mudou_codigo(raiz):
+    # PRIMEIRA guarda: este projeto adotou a metodologia?
+    #
+    # Sobe ate a raiz do repositorio procurando a config. Configuracao de projeto nao
+    # e herdada de diretorio pai, e a doc recomenda iniciar a sessao DENTRO do pacote
+    # num monorepo — entao olhar so o `cwd` bloqueia todo turno la. Medido em arvore
+    # de teste antes de existir esta busca.
+    #
+    # Sem config, o hook sai calado. "Ausencia de verificacao conta como falha" vale
+    # para quem PROMETEU verificar; o plugin nao arranca a promessa de quem so o
+    # instalou. Sem esta guarda, `metodo` em escopo `user` travaria o fim de turno em
+    # todo projeto da maquina com mudanca nao commitada — e travaria SEMPRE em projeto
+    # sem git, porque `sessao_mudou_codigo` falha fechada. Medido: era o caso.
+    #
+    # E ha a inversao que fechou a decisao: `onboarding-entender` existe para decidir
+    # SE vale adotar. Um portao que exige adesao para rodar poe a resposta antes da
+    # pergunta.
+    caminho = comum.achar_config(raiz)
+    if not caminho:
         liberar()
 
-    # Sobe ate a raiz do repositorio. Configuracao de projeto nao e herdada de
-    # diretorio pai, e a doc recomenda iniciar a sessao DENTRO do pacote num
-    # monorepo — entao olhar so o `cwd` bloqueia todo turno la, dizendo que nao ha
-    # verificacao declarada. Medido em arvore de teste antes de existir esta busca.
-    caminho = comum.achar_config(raiz)
-
-    if not caminho:
-        bloquear(
-            "PORTAO DE VERIFICACAO: nao ha verificacao declarada neste projeto.\n"
-            f"Esperava {CONFIG} na raiz do repositorio.\n\n"
-            "Ausencia de verificacao conta como falha, nao como aprovacao. Um\n"
-            "portao que aprova o que nao consegue verificar nao e um portao.\n\n"
-            "Copie o template do plugin (templates/metodo.json), declare o comando\n"
-            "que decide verde/vermelho, e prove-o contra um caso negativo: quebre\n"
-            "algo de proposito e confirme que o comando sai com codigo != 0. Um\n"
-            "verificador nunca testado contra o vermelho e uma esperanca, nao um\n"
-            "verificador."
-        )
+    # SEGUNDA guarda: ha o que verificar? Nada mudou, nada a verificar. Ver docstring.
+    # Vem depois da adesao de proposito: perguntar "mudou algo" a um repositorio que
+    # nao aderiu ja seria agir sobre ele.
+    if not sessao_mudou_codigo(raiz):
+        liberar()
 
     try:
         with open(caminho, encoding="utf-8") as f:
