@@ -763,6 +763,72 @@ se `0.1.0 -> 0.2.0` era a *magnitude* certa. Semântica de versão segue humana.
 
 ---
 
+## 021 — O plano vira intenção + retrospectiva, e o detector vai para onde alguém olha
+
+**Data:** 2026-09-07 · **Ticket:** 022
+
+`docs/plano-metodologia.md` afirmava "Fase 3 em andamento" (fechada, e três fases depois
+dela também), "as duas suítes" (são doze), e que `/doctor` entregava o orçamento de
+contexto (quem entregou foi `testar_orcamento.py`, com teto declarado). E não mencionava
+o `doutrina`: o repositório distribui **dois** plugins e o plano descrevia um.
+
+**A decisão de desenho veio antes da correção.** Reescrever o plano para descrever a
+realidade o transformaria num **segundo documento de arquitetura** — e `arquitetura.md`
+já é esse, carimbado e medido. Duas fontes sobre o mesmo assunto divergem na primeira
+semana.
+
+Um plano executado tem outro trabalho, que nenhum outro documento faz: **dizer se o
+plano estava certo.** Então a doutrina fica como foi escrita — intenção não se corrige
+por ter envelhecido —, as fases e a verificação ganham desfecho real, e uma seção nova
+registra onde a execução divergiu.
+
+**O que a retrospectiva encontrou, e que não estava registrado em lugar nenhum:**
+
+- A Fase 0 foi feita **duas vezes**, e a primeira não valia: perguntas já formuladas não
+  são levantamento.
+- A ordem das fases estava errada por um motivo detectável antes — um leitor de estado
+  não pode ser escrito antes de existir estado. Ordenar por dependência de dados, não
+  por importância.
+- Três verificações foram cumpridas **por mecanismo, não por consulta**. Consulta manual
+  se esquece; teto reprova.
+- **A verificação mais valiosa não estava no plano:** o conjunto balanceado. Ele veio dos
+  mecanismos absorvidos e virou o hábito que mais achou defeito.
+
+**O item 5 continua NÃO VERIFICADO,** e ficou escrito assim: o prefixo de reengenharia
+nunca rodou contra uma base de código existente.
+
+### O detector: em `estado.py`, deliberadamente fora do CI
+
+**Alternativa descartada:** rodar `verificar_documento.py` no CI. Ele sai com 1 quando o
+documento está atrás, e quase todo commit deixa algum documento atrás — o CI ficaria
+vermelho quase sempre. **Trava que grita sempre é trava que se aprende a ignorar**, e o
+detector deixaria de significar qualquer coisa exatamente por estar em toda parte.
+
+Ele foi para `estado.py`, que é o que uma pessoa consulta ao decidir o próximo passo —
+que é quando a pergunta *"este documento ainda descreve o desenho?"* importa. **Relata,
+não bloqueia** (decisão de método nº 3 e decisão 014), e há um caso de teste dedicado a
+essa propriedade: documento desatualizado **não** muda o cenário nem o passo recomendado.
+
+Essa asserção foi verificada por **mutação** — transformar o relato em trava faz
+exatamente esse caso reprovar, e só ele. Sem a mutação, ela poderia estar morta e os
+outros quatro casos continuariam verdes.
+
+**E o relato precisou de uma correção na primeira execução.** Os dois documentos
+apareceram vermelhos de imediato, e o rótulo sozinho não distinguia estar atrás de 1
+arquivo de estar atrás de 47 — que exigem decisões diferentes. Passou a mostrar a
+**magnitude**. Um aviso que não distingue os casos é lido como ruído em duas semanas, e
+essa era a mesma falha que motivou mantê-lo fora do CI.
+
+### O detector de bump pegou o próprio ticket
+
+O ticket alterou `plugins/metodo/scripts/estado.py` e não subiu a versão. O CI reprovou;
+`metodo` foi para `0.2.0`. **Terceiro achado real do mecanismo, o segundo contra mim.**
+
+A lição é de uso, não de código: `verificar_bump.py` compara estado **commitado**, então
+a ordem é commitar, rodar, empurrar. Eu empurrei sem rodar.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.

@@ -153,9 +153,17 @@ def documentos_carimbados(raiz):
             continue
         if not vd.extrair_sha(texto):
             continue
-        em_dia, rotulo, _ = vd.avaliar(raiz, relativo)
-        estado_txt = "em dia" if em_dia else f"DESATUALIZADO ({rotulo})"
-        linhas.append(f"DOCUMENTO   {relativo} — {estado_txt}")
+        em_dia, rotulo, detalhes = vd.avaliar(raiz, relativo)
+        if em_dia:
+            linhas.append(f"DOCUMENTO   {relativo} — em dia")
+            continue
+        # A MAGNITUDE, nao so o rotulo. Um documento atras de 1 arquivo e um
+        # atras de 47 exigem decisoes diferentes, e um aviso que nao distingue
+        # os dois e lido como ruido em duas semanas. `detalhes[0]` ja traz a
+        # contagem em prosa; a alternativa seria recontar por fora, duplicando
+        # a chamada de git que o detector acabou de fazer.
+        medida = (detalhes[0] if detalhes else rotulo).rstrip(".")
+        linhas.append(f"DOCUMENTO   {relativo} — DESATUALIZADO: {medida}")
     return linhas
 
 
