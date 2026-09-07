@@ -130,7 +130,12 @@ sai da lista — buraco que já foi tapado e continua listado ensina a ignorar a
 existir, e algo do mapa pertencer lá, proponha o trecho e deixe a decisão com o
 humano. São arquivos que o projeto já governa.
 
-O mapa é artefato novo, em `docs/`. Não sequestra os que já estão lá.
+O mapa é artefato novo, e vai em **`docs/mapa-do-projeto.md`** — esse nome, porque é
+por ele que `/metodo:onboarding-modelar` procura. Nome diferente não quebra nada, mas
+custa à skill seguinte uma busca que não precisava existir. Há um template em
+`${CLAUDE_PLUGIN_ROOT}/templates/mapa-do-projeto.md`.
+
+Não sequestra os artefatos que já estão lá.
 
 ## Depois
 

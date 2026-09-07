@@ -22,6 +22,9 @@ o sistema faz, quais são as capacidades e onde estão as fronteiras. **Leia-o
 primeiro.** Reler o repositório do zero desperdiça o trabalho anterior e enche a
 janela com o que já foi destilado.
 
+Se o mapa tiver outro nome, use-o assim mesmo — procure em `docs/` antes de concluir
+que não existe. O que importa é não recomeçar do zero, não o nome do arquivo.
+
 Se o mapa não existe, pare e rode `/metodo:onboarding-entender`. Extrair vocabulário
 sem saber o que o sistema faz produz lista de palavras, não glossário.
 
