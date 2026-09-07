@@ -577,6 +577,40 @@ a prova é do mecanismo, que os dois compartilham, não da instalação dele.
 
 ---
 
+## 017 — macOS e Linux saem da lista de pendências
+
+**Data:** 2026-09-07 · **Revoga o escopo de:** 016 ("o que segue sem prova")
+
+Decisão do dono do projeto: ele não roda nada em macOS nem em Linux. Listar as duas
+plataformas como dívida é registrar uma cobrança que ninguém vai fazer — e uma lista de
+pendências com item que nunca sai perde o crédito dos itens que importam.
+
+Ao aplicar, a formulação antiga se revelou **imprecisa**, não só mal escopada. Ela dizia
+*"o shell dos hooks é outro lá"*, o que sugere risco onde ele é menor:
+
+- **Linux já tem cobertura contínua.** O job `suites` roda em `ubuntu-latest` a cada
+  push: os scripts e as onze suítes — a metade Python inteira — passam lá desde sempre.
+- **Nos hooks, macOS e Linux são o caso FÁCIL.** Eles rodam em `sh`, e `|| exit 2` é
+  sintaxe POSIX: a rede que converte `python3` ausente em bloqueio funciona lá por
+  construção.
+- **O caso frágil é Windows sem Git Bash**, onde os hooks caem em PowerShell, a rede
+  POSIX não vale e a ausência de `python3` volta a falhar aberta. É da própria família
+  de plataformas em uso, e já estava no README como risco residual.
+
+Ou seja: a pendência apontava para a direção errada. Removê-la não afrouxa o rigor —
+corrige para onde ele aponta.
+
+**O que fica no lugar,** em `docs/arquitetura.md`, como nota para quem instalar do
+repositório público: em macOS ou Linux o não exercitado é **o portão numa sessão real**;
+o resto tem CI.
+
+**E o que virou pendência de verdade no lugar:** os hooks do `metodo` nunca dispararam a
+partir de um plugin **instalado**. A prova de 021 é do mecanismo de instalação e das
+skills do `doutrina`, que não têm hook. Essa é a lacuna próxima de doer, e ela é
+independente de sistema operacional.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.

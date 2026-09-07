@@ -123,8 +123,37 @@ Não em calendário — documento com data de revisão é documento que ninguém
 
 ## 6. O que ainda não foi verificado
 
-- **macOS e Linux.** Tudo foi exercitado em Windows 11 com PowerShell e Git Bash. O
-  shell dos hooks é outro lá.
-- **Instalação por marketplace.** O plugin só rodou via `--plugin-dir`.
-- **Segundo projeto.** A portabilidade é a premissa do desenho inteiro e segue sem
-  prova — é a Fase 5.
+Duas entradas desta lista caíram no ticket 021. **Instalação por marketplace** e
+**segundo projeto** deixaram de ser premissa: o `doutrina` foi instalado num repositório
+git limpo, por `claude plugin install`, e as seis skills apareceram numa sessão que
+nunca viu este repositório. O exercício também **achou um defeito** — links relativos
+para os arquivos de referência não resolvem depois de instalado. Ver decisão 016.
+
+O que sobra:
+
+- **Os hooks do `metodo` numa instalação de verdade.** A prova de 021 é do mecanismo de
+  instalação, que os dois plugins compartilham, e das skills do `doutrina`, que não têm
+  hook. O portão nunca disparou a partir de um plugin instalado — só via `--plugin-dir`.
+  É a lacuna mais próxima de doer.
+- **Sessão interativa com diálogo de confiança aceito.** `additionalDirectories` é
+  ignorado em workspace não confiado, e nenhuma sessão daqui pôde aceitar o diálogo.
+
+### Plataforma: fora de escopo, não pendente
+
+macOS e Linux **não** são pendência deste projeto: ele é usado em Windows, e listar
+como dívida algo que ninguém vai cobrar é ruído que faz a lista inteira perder crédito.
+
+A formulação anterior — *"o shell dos hooks é outro lá"* — sugeria risco onde ele é
+menor, e desviava do risco de verdade:
+
+| | Situação |
+|---|---|
+| **Linux** | Os scripts e as onze suítes rodam em `ubuntu-latest` **a cada push**. É a metade Python, coberta continuamente e sem esforço |
+| **macOS/Linux, hooks** | Rodam em `sh`. `\|\| exit 2` é sintaxe POSIX: a rede que converte `python3` ausente em bloqueio funciona lá **por construção** |
+| **Windows sem Git Bash** | Hooks caem em PowerShell, onde a rede POSIX **não vale** e a ausência de `python3` volta a falhar aberta |
+
+O caso frágil é o terceiro — e é da própria família de plataformas em uso, não das
+outras. Está no README como risco residual, sem contorno portátil conhecido.
+
+Se alguém instalar a partir do repositório público em macOS ou Linux, o não exercitado
+é o portão numa sessão real. O resto tem cobertura de CI.
