@@ -120,7 +120,7 @@ detectar quando a fonte mudou.
 | **2a — Os papéis e o portão** | **Concluída.** `construtor` e `operador`, o `Stop` de verificação e o `PreToolUse` que protege os testes |
 | **3 — Core adaptado** | **Concluída.** As skills de fluxo com as nove decisões aplicadas |
 | **2b — `/fluxo`** | **Concluída.** Reordenada para depois da 2a e da 3: o leitor de estado só podia ser escrito depois de existir estado real. Decisões 007 e 008 |
-| **4 — Prefixo de reengenharia** | **Concluída** como código: as três skills de onboarding existem. **Não exercitada:** nenhuma rodou contra uma base de código existente |
+| **4 — Prefixo de reengenharia** | **Concluída e exercitada.** As três rodaram contra um projeto real. Custaram quatro correções às próprias skills, e devolveram sete defeitos ao projeto — inclusive uma afirmação falsa em documento que vai a juízo. Ver decisão 023 |
 | **5 — Reconciliação do projeto de referência** | **Aberta, e sem alvo.** O dono do projeto retirou o projeto privado do escopo e ofereceu "outro projeto se for o caso". Escolher o alvo é decisão dele, não deste plano |
 
 O plano não previa uma fase de distribuição, e ela aconteceu: `.claude-plugin/marketplace.json`,
@@ -135,8 +135,8 @@ Decisões 016 e 018.
 | 2 | `/fluxo` acerta o estado em **quatro** cenários montados | ✅ **Verificado, e excedido:** `tests/testar_estado.py` cobre **doze**, incluindo os que o plano não previu — grafo de bloqueio mandando sobre ordem numérica, e ticket em andamento vencendo árvore suja |
 | 3 | O `Stop` hook barra de verdade | ✅ **Verificado duas vezes.** Local (ticket 003) e a partir de um plugin **instalado** (decisão 018), com o conjunto balanceado: bloqueia com suíte vermelha, **solta** com verde |
 | 4 | Orçamento de contexto medido, não estimado | ✅ **Verificado, por outro caminho.** Não por `/doctor`: `tests/testar_orcamento.py` mede com tetos declarados. O plano previa consulta manual; a execução construiu mecanismo |
-| 5 | O prefixo produz fila, não relatório | ⬜ **Não verificado.** As três skills existem e nunca rodaram contra uma base de código existente. É a lacuna aberta mais antiga deste plano |
-| 6 | Nada do projeto existente é sobrescrito sem decisão explícita | ⬜ **Sem objeto.** Depende da Fase 5, que não tem alvo. O `DECISIONS.md` cumpre a forma — 20 decisões com alternativa descartada — mas nunca contra um projeto existente |
+| 5 | O prefixo produz fila, não relatório | ✅ **Verificado.** As três skills rodaram contra um projeto real de terceiro (Python, 261 testes, `.claude/` próprio). Produziram mapa, glossário e **fila de 7 tickets em ordem de bloqueio**, com critérios de aceitação — não relatório |
+| 6 | Nada do projeto existente é sobrescrito sem decisão explícita | ✅ **Verificado, e medido:** `git diff --stat HEAD` no projeto alvo devolveu **vazio**. Nenhum arquivo versionado tocado; só três artefatos novos. A skill recusou-se a sequestrar o `CLAUDE.md` existente |
 
 ## Onde a execução divergiu do plano
 
@@ -163,6 +163,13 @@ ordem de importância.
 orçamento de contexto viraria `/doctor` na intenção, e virou suíte com teto declarado. A
 diferença importa: consulta manual se esquece; teto reprova. O mesmo aconteceu com o
 bump de `version`, que o plano nem listava e virou detector em CI.
+
+**O prefixo só ficou pronto quando encontrou um projeto que não era nosso.** Três
+execuções contra o mesmo repositório real corrigiram, em camadas, um defeito que nenhuma
+leitura do texto teria achado: a skill **localizava** a verificação em vez de executá-la;
+corrigida, **executava no shell que supunha**; corrigida de novo, aprendeu a **provocar o
+hook a agir e ver se a ação chega**. Cada camada só apareceu porque a anterior foi
+fechada. Repositório descartável não tem hook próprio para quebrar.
 
 **A verificação mais valiosa não estava no plano.** Nenhum dos seis itens pedia o
 conjunto balanceado — *bloqueia quando deve* **e** *solta quando não deve*. Ele veio dos

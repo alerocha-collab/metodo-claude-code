@@ -901,6 +901,75 @@ porque a skill removida sozinha ocupava 486.
 
 ---
 
+## 023 — O prefixo de reengenharia rodou contra um projeto real, e fechou o plano
+
+**Data:** 2026-09-07 · **Fecha:** os itens 5 e 6 da verificação do plano · **Tickets:** 028
+
+A lacuna mais antiga do plano — *"o prefixo produz fila, não relatório"* — estava aberta
+desde a Fase 4 porque as três skills nunca tinham rodado contra código que alguém já
+tivesse escrito. Rodaram, contra um projeto Python de terceiro com 261 testes, cinco
+hooks próprios, dois subagentes e um `CLAUDE.md` de 177 linhas.
+
+### O que o prefixo entregou
+
+Mapa de 545 linhas, glossário de 806, e **fila de 7 tickets em ordem de bloqueio**, com
+critérios de aceitação e um registro de decisões com seis pendências de dois lados
+escritos. Não relatório.
+
+E `git diff --stat HEAD` no projeto alvo devolveu **vazio**: nenhum arquivo versionado
+foi tocado. A skill recusou-se a sequestrar o `CLAUDE.md` que já existia, como mandado.
+
+### O que ele achou no projeto
+
+Sete defeitos, e o mais grave sai do escopo de software: **a petição afirma ao juízo que
+o valor é o "fixado para a primeira praça"**, com texto fixo, enquanto o cálculo cai na
+avaliação em silêncio quando não há primeira praça. A reserva é correta e documentada; a
+frase que a acompanha, não.
+
+Dois identificadores fantasma — citados na documentação, ausentes do dicionário —
+**exatamente a classe de defeito que o projeto foi criado para impedir**, segundo o
+`CLAUDE.md` dele. E o código que os pegaria já existe: `E-LINT-003`, *"campo listado na
+tabela mas ausente do dicionario"*, está no catálogo e **nenhum módulo o emite**. O
+portão foi projetado e nunca ligado.
+
+### O que ele custou às nossas skills
+
+Quatro correções, e a sequência é a lição:
+
+| Passada | Onde parou |
+|---|---|
+| 1ª | **Localizou** a verificação; não executou. Escreveu que o portão funcionava |
+| 2ª | Executou — **no shell que supôs**. Testou justamente a combinação que funciona |
+| 3ª | Descobriu o shell, e **provocou o harness**: fez a ação que o hook deveria barrar |
+
+A terceira passada fechou um ponto cego que a segunda tinha declarado irredutível, e
+descobriu a técnica que a nossa armadilha 16 não tinha: **você não vê o hook falhar, mas
+vê o hook barrar.** Testar o comando prova que o script funciona; provocar prova que a
+ligação funciona.
+
+Nenhuma dessas camadas apareceria lendo o texto da skill. Cada uma só ficou visível
+depois que a anterior foi fechada — e nenhuma existiria num repositório descartável, que
+não tem hook próprio para quebrar.
+
+### O saldo, e o que ele diz sobre o método
+
+**Sete defeitos no projeto, cinco nas nossas skills, dois da plataforma.** A proporção se
+inverteu ao longo do exercício: no começo era meio a meio, no fim foi um nosso contra
+seis do projeto — o instrumento parou de tropeçar em si mesmo e começou a medir.
+
+**O fluxo foi nos dois sentidos**, que é o que o plano chama de reconciliação
+bidirecional. Do projeto vieram: a invocação `cmd //c` que o Git Bash exige, a técnica de
+provocar o hook, e o `_py.cmd` — resolvedor de interpretador que trata venv, launcher,
+versão mínima e o impostor da Microsoft Store, e que é melhor que qualquer coisa que o
+`metodo` tenha hoje.
+
+**O que segue aberto:** a fila de 7 tickets é do dono daquele projeto, não nossa. E o
+ticket 027 — o portão barrando quem nunca adotou — segue pendente, com um caso concreto
+agora: instalar o `metodo` em escopo `user` travaria toda sessão de projeto não adotado
+com mudança não commitada.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
