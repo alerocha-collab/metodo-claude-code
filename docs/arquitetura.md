@@ -1,6 +1,6 @@
 # Arquitetura do plugin `metodo`
 
-**SHA:** `d34825f` · **Data:** 2026-09-07
+**SHA:** `0442473` · **Data:** 2026-09-07
 
 > Este documento descreve o desenho **em vigor**. A história de como se chegou nele
 > está no [DECISIONS.md](../DECISIONS.md), append-only, e não é repetida aqui — duas
