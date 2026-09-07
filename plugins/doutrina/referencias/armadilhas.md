@@ -148,11 +148,28 @@ Duas consequências medidas ao instalar num repositório limpo:
   **não** derrubou a barreira no teste; `--add-dir` derrubou.
 - **E o conserto permanente tem uma condição escondida.** `additionalDirectories` no
   `settings.json` do projeto é **ignorado enquanto o workspace não é confiado**, e a
-  mensagem é literal: *"Ignoring 2 permissions.additionalDirectories entries from
+  mensagem é literal: *"Ignoring 1 permissions.additionalDirectories entry from
   .claude/settings.json: this workspace has not been trusted."* A confiança vem do
   diálogo interativo — que num clone novo, numa sessão headless ou em CI **nunca
-  aconteceu**. Ou seja: a configuração versionada que deveria resolver o problema é
-  justamente a que não vale onde o problema aparece.
+  aconteceu**. A configuração versionada que deveria resolver o problema é justamente a
+  que não vale onde o problema aparece.
+
+### O conserto, medido nos dois estados
+
+Mesmo repositório, mesmo `settings.json`, mesma pergunta. A única variável trocada foi
+`hasTrustDialogAccepted`:
+
+| Confiança | O que aconteceu |
+|---|---|
+| **Não aceita** | A skill disparou, roteou e **nomeou o arquivo certo** — e não conseguiu abri-lo |
+| **Aceita** | Leu o arquivo e citou o caminho absoluto na resposta |
+
+Então a receita é: `permissions.additionalDirectories` apontando para a raiz do plugin,
+**mais** o diálogo de confiança aceito uma vez. Onde não há como aceitar diálogo — CI,
+headless, `-p` num clone novo — só `--add-dir` resolve.
+
+O diagnóstico rápido: se a linha *"Ignoring N permissions.additionalDirectories
+entries"* aparece, o problema é confiança, não a regra.
 
 O sintoma engana: a skill dispara, roteia certo, nomeia o arquivo — e não entrega. Parece
 skill mal escrita, e é fronteira de diretório.

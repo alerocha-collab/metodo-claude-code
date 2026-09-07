@@ -134,18 +134,24 @@ O que funciona de imediato, por sessão:
 claude --add-dir ~/.claude/plugins/cache
 ```
 
-O permanente é `permissions.additionalDirectories` no `.claude/settings.json` do projeto
-— **com uma condição medida aqui**:
+O permanente são **duas coisas, e as duas são necessárias**. Primeiro, a regra no
+`.claude/settings.json` do projeto:
 
 ```json
 { "permissions": { "additionalDirectories": ["~/.claude/plugins/cache"] } }
 ```
 
-> ⚠️ Num workspace ainda **não confiado**, essa chave é **ignorada**, e a mensagem diz
-> isso: *"Ignoring 2 permissions.additionalDirectories entries from
-> `.claude/settings.json`: this workspace has not been trusted."* Rode `claude`
-> interativamente uma vez na pasta e aceite o diálogo de confiança. Em clone novo,
-> sessão headless ou CI, isso nunca aconteceu — e o único caminho é `--add-dir`.
+Segundo, **aceitar o diálogo de confiança** — rode `claude` interativamente na pasta uma
+vez. Sem isso a regra acima é **ignorada**, e a mensagem diz exatamente isso:
+*"Ignoring 1 permissions.additionalDirectories entry from `.claude/settings.json`: this
+workspace has not been trusted."*
+
+Medido nos dois estados, mesmo repositório e mesmo `settings.json`, trocando só a
+confiança: **não confiado**, a skill roteia e nomeia o arquivo mas não o abre;
+**confiado**, ela lê e cita o caminho.
+
+> ⚠️ Em clone novo, sessão headless ou CI o diálogo nunca aconteceu — lá o único caminho
+> é `--add-dir`.
 
 O sintoma sem nada disso engana: a skill **dispara**, roteia certo, nomeia o arquivo — e
 não entrega. Parece skill mal escrita, e é fronteira de diretório. Registrado como

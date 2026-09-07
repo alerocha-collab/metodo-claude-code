@@ -656,6 +656,41 @@ O que a falta de confiança comprovadamente desliga é `permissions.additionalDi
 
 ---
 
+## 019 — A armadilha nº 14 tem conserto, e ele foi medido nos dois estados
+
+**Data:** 2026-09-07
+
+A decisão 016 deixou em aberto se aceitar o diálogo de confiança faria
+`permissions.additionalDirectories` passar a valer. O teste foi montado como experimento
+controlado, num repositório novo (`teste-metodo`) com o `doutrina` instalado por
+marketplace e a regra apontando para a raiz do plugin.
+
+**Uma variável só mudou** entre as duas execuções: `hasTrustDialogAccepted`. Mesmo
+repositório, mesmo `settings.json`, mesma pergunta — a precedência de skills × rules, que
+é boa justamente por ser uma **inversão**: um agente que responda de memória provavelmente
+acerta, então o que conta é ele **citar o caminho**.
+
+| Confiança | Resultado |
+|---|---|
+| Ausente (`hasTrustDialogAccepted` inexistente) | Roteou, nomeou `precedencias.md` — e **não conseguiu abrir**. A linha *"Ignoring 1 permissions.additionalDirectories entry"* apareceu |
+| `true`, aceita no diálogo | **Leu e citou o caminho absoluto.** `managed > user > project` para skills, `project > user` para rules |
+
+**A receita, agora com prova:** `additionalDirectories` apontando para a raiz do plugin,
+**mais** o diálogo aceito uma vez. As duas são necessárias; nenhuma sozinha basta.
+
+**O que não muda:** onde não há diálogo a aceitar — CI, headless, `-p` num clone novo —
+só `--add-dir` resolve. A metade versionada da receita é justamente a que não vale lá.
+
+**Diagnóstico de um segundo:** se a linha *"Ignoring N permissions.additionalDirectories
+entries"* aparece, o problema é confiança, não a regra.
+
+**Sobre o método.** A linha de base foi registrada **antes** de pedir a ação humana, com
+o estado não confiado confirmado em `~/.claude.json`. Sem isso o resultado positivo não
+provaria nada: seria indistinguível de o agente ter acertado de memória, ou de a regra
+já valer o tempo todo. Um experimento com um estado só não é experimento.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
