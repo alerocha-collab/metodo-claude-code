@@ -12,6 +12,11 @@
 > python3 plugins/metodo/scripts/verificar_documento.py
 > ```
 >
+> `estado` também reporta essa distância, para todo `docs/*.md` que traga carimbo — é
+> onde alguém já está decidindo o próximo passo. **Não está no CI de propósito:** lá o
+> detector ficaria vermelho em quase todo commit, e trava que grita sempre é trava que
+> se aprende a ignorar.
+>
 > Nada atualiza o carimbo automaticamente, de propósito. Um documento que parece
 > sempre atual é o pior artefato de handoff possível: diz uma coisa, o código faz
 > outra, e ninguém percebe.
@@ -82,7 +87,7 @@ Três propriedades deliberadas:
 |---|---|---|
 | `validar_fila` | Detecta ciclo, aresta pendurada, mais de um em andamento | Corrigir |
 | `marcar_ticket` | Recusa transição ilegal; revalida antes de gravar | Gravar fila inválida |
-| `estado` | Lê disco e diz o próximo passo | Escrever, executar |
+| `estado` | Lê disco e diz o próximo passo, **e relata a distância dos documentos carimbados** | Escrever, executar, bloquear |
 | `verificar_documento` | Mede a distância entre carimbo e `HEAD` | Atualizar o carimbo |
 
 O padrão é o mesmo nos quatro: **detectam e recusam; nunca curam sozinhos.**
