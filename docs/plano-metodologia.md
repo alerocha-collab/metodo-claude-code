@@ -1,6 +1,6 @@
 # Plano — a metodologia como plugin
 
-**SHA:** `99fa983` · **Data:** 2026-09-07
+**SHA:** `3ff7a82` · **Data:** 2026-09-07
 
 > **O que este documento é, e o que ele não é.** Ele é a **intenção**, mais o registro
 > de como a execução se comportou contra ela. Não é o desenho em vigor — esse é
