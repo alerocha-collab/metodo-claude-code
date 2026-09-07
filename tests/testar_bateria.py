@@ -135,6 +135,21 @@ PERGUNTAS = [
      "referencias/duravel/arquitetura-de-agentes.md",
      ["remova", "meça"],
      [["obsolesc", "envelhec"], ["suposição", "suposicao", "desconfian"]], True),
+
+    ("Como sei se o meu verificador e bom?",
+     "skills/avaliar/SKILL.md",
+     ["regress", "negativ"],
+     [["cobertura"], ["otimiza", "gargalo"]], True),
+
+    ("Devo relatar pass@k ou pass^k?",
+     "skills/avaliar/SKILL.md",
+     ["pass@k", "pass^k"],
+     [["toda vez", "usuário", "usuario"], ["diverg", "despenca"]], True),
+
+    ("Meu revisor acha problema em tudo. Isso e bom?",
+     "referencias/duravel/evals.md",
+     ["transcript", "calibr"],
+     [["grader"], ["balanceado", "negativ"]], True),
 ]
 
 

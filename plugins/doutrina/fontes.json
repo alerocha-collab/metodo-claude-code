@@ -167,7 +167,8 @@
         "referencias/duravel/compaction.md",
         "skills/contexto/SKILL.md",
         "skills/escrever-skill/SKILL.md",
-        "skills/onde-colocar/SKILL.md"
+        "skills/onde-colocar/SKILL.md",
+        "skills/avaliar/SKILL.md"
       ]
     },
     {
@@ -2055,7 +2056,8 @@
       "verificada_em": "2026-09-07",
       "fichas": [
         "skills/arquitetar/SKILL.md",
-        "referencias/duravel/arquitetura-de-agentes.md"
+        "referencias/duravel/arquitetura-de-agentes.md",
+        "referencias/duravel/evals.md"
       ]
     },
     {
@@ -2081,7 +2083,9 @@
       "hash": "b8c6e82d478ad3ab0f29c13184d5c57b3bbbcb68a0e480119a3b5a0896f93b0b",
       "verificada_em": "2026-09-07",
       "fichas": [
-        "referencias/duravel/arquitetura-de-agentes.md"
+        "referencias/duravel/arquitetura-de-agentes.md",
+        "skills/avaliar/SKILL.md",
+        "referencias/duravel/evals.md"
       ]
     },
     {
@@ -2093,7 +2097,10 @@
       "prioridade": "nucleo",
       "hash": "eee9f86ffd49a51ee5b46ff3df99bf5f677f6070efd37b2dd1761d20e0c41f74",
       "verificada_em": "2026-09-07",
-      "fichas": []
+      "fichas": [
+        "skills/avaliar/SKILL.md",
+        "referencias/duravel/evals.md"
+      ]
     },
     {
       "id": "eng-effective-context-engineering-for-ai-agents",
