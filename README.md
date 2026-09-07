@@ -209,6 +209,17 @@ O `metodo` **não** carrega doutrina de arquitetura. Ele traz a *forma* do docum
 — quando usar agente, qual padrão, como avaliar — vem do plugin `doutrina`. A separação
 é deliberada: camada de processo não carrega cópia da camada de conhecimento.
 
+### Elas são invocadas por você, não pelo modelo
+
+Oito das nove skills do `metodo` são `disable-model-invocation: true`: o modelo **não
+pode** dispará-las sozinho. São rituais que a pessoa inicia, digitando
+`/metodo:fatiar`. A exceção é `fluxo`, que só relata estado.
+
+A consequência prática, medida ao testar: **uma sessão `-p` não consegue exercitá-las**
+— pedir "use a skill X" em prosa não é o mesmo que invocá-la, e o modelo responde que
+ela não existe. Isso é o desenho funcionando, não um defeito; mas custa uma sessão
+descobrir sozinho.
+
 E o prefixo de reengenharia, para partir de um repositório que já existe. As três
 rodam em ordem, e depois a trilha converge com a de projeto novo:
 

@@ -228,6 +228,14 @@
       ],
       "modulo": "migracao",
       "brief": "tickets/026-aposentar-arquiteto.md"
+    },
+    {
+      "id": "027",
+      "titulo": "O portao barra quem nunca adotou, e isso inverte a ordem do onboarding",
+      "estado": "pronto",
+      "bloqueado_por": [],
+      "modulo": "hooks",
+      "brief": "tickets/027-portao-em-projeto-que-nao-adotou.md"
     }
   ]
 }
