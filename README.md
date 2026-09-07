@@ -29,7 +29,7 @@ para o runner.
 
 | Artefato | Onde | Para quê |
 |---|---|---|
-| `metodo.json` | `.claude/` | Declara o comando que decide verde/vermelho. Sem ele, o portão bloqueia |
+| `metodo.json` | `.claude/` | Declara o comando que decide verde/vermelho. Sem ele, o portão bloqueia. **Copie o template — o formato não é adivinhável** |
 | `fila.json` | `tickets/` | Estado dos tickets e o grafo de bloqueio. JSON porque muda toda sessão |
 | `ticket.md` | `tickets/NNN-*.md` | A spec de uma fatia. Markdown porque é prosa escrita uma vez |
 | `DECISIONS.md` | raiz | Decisões append-only, abaixo da barra de um ADR |
@@ -38,9 +38,13 @@ para o runner.
 ### A camada de permissões
 
 As skills e os agentes são **pedido**: o modelo lê e decide. Os hooks são garantia
-**condicional**: disparam sempre, mas dão timeout, saem com código que não bloqueia, e
-não rodam em pasta não confiada. `permissions` é a única camada **dura** — aplicada
-pelo cliente antes de o modelo agir.
+**condicional**: disparam sempre, mas dão timeout e saem com código que não bloqueia.
+`permissions` é a única camada **dura** — aplicada pelo cliente antes de o modelo agir.
+
+> A lista de condições costumava incluir *"e não rodam em pasta não confiada"*. Isso
+> **não se sustentou no teste**: os dois hooks dispararam num workspace que o Claude Code
+> declarou não confiado. A frase saiu daqui até ser verificada — pendência P12. O que a
+> falta de confiança comprovadamente desliga é `permissions.additionalDirectories`.
 
 O plugin **não** a instala sozinho, de propósito: regra de permissão que aparece sem
 alguém ter escolhido é a forma mais rápida de perder a confiança de quem instalou.

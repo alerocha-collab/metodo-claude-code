@@ -131,12 +131,17 @@ para os arquivos de referência não resolvem depois de instalado. Ver decisão 
 
 O que sobra:
 
-- **Os hooks do `metodo` numa instalação de verdade.** A prova de 021 é do mecanismo de
-  instalação, que os dois plugins compartilham, e das skills do `doutrina`, que não têm
-  hook. O portão nunca disparou a partir de um plugin instalado — só via `--plugin-dir`.
-  É a lacuna mais próxima de doer.
 - **Sessão interativa com diálogo de confiança aceito.** `additionalDirectories` é
   ignorado em workspace não confiado, e nenhuma sessão daqui pôde aceitar o diálogo.
+- **Se hooks dependem ou não de confiança.** Eles dispararam num workspace declarado
+  não confiado, contra o que o README afirmava. A frase saiu de lá; a questão fica
+  aberta em P12.
+
+Caiu também, na decisão 018: **os hooks do `metodo` numa instalação de verdade**. O
+drill de três casos rodou a partir de um plugin instalado — bloqueia com suíte vermelha,
+solta com verde, nega edição de teste existente. A combinação que faltava era o
+`metodo.json` no **projeto** e os hooks no **plugin**, que só se separam depois da
+instalação.
 
 ### Plataforma: fora de escopo, não pendente
 

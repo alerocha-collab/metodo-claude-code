@@ -611,6 +611,51 @@ independente de sistema operacional.
 
 ---
 
+## 018 — O portão foi exercitado a partir de um plugin instalado
+
+**Data:** 2026-09-07 · **Fecha:** P11
+
+O drill rodou no mesmo repositório descartável do ticket 021, agora com o `metodo`
+instalado por `claude plugin install metodo@metodo-claude-code --scope project` — não
+por `--plugin-dir`. A suíte é declarada em `.claude/metodo.json` do projeto; os hooks
+moram no plugin, fora dele.
+
+| Caso | Esperado | Resultado |
+|---|---|---|
+| Suíte vermelha + árvore suja | **bloqueia** | bloqueou, com a mensagem do portão |
+| Suíte verde + árvore suja | **solta** | soltou, turno encerrou limpo |
+| Editar teste que já existe | **nega** | negou, com a mensagem do `proteger_testes` |
+
+O conjunto é balanceado de propósito: um portão que só foi visto bloqueando é
+indistinguível de um portão que bloqueia tudo.
+
+**A combinação que nunca tinha sido exercitada** é justamente essa separação: o
+`metodo.json` mora no **projeto**, os hooks moram no **plugin**, e os dois só se
+encontram depois da instalação. Dentro deste repositório eles são a mesma pasta, e a
+distinção não existia para ser testada.
+
+**Erro cometido no caminho, e o que ele diz.** Escrevi o `metodo.json` com `verificacao`
+como string, de memória. O schema é objeto, com `comando`, `timeout_segundos` e
+`descricao`. Peguei conferindo o template antes de rodar. Vale registrar porque é o erro
+que quem instalar vai cometer: **o formato não é adivinhável**, e o README não o mostra
+— só o template mostra.
+
+### Uma discrepância que este drill abriu, e não fechou
+
+Os hooks **dispararam** num workspace que o próprio Claude Code declarou não confiado: a
+mensagem *this workspace has not been trusted* apareceu em todas as execuções, e mesmo
+assim o portão bloqueou e o `proteger_testes` negou.
+
+Isso **não bate** com a linha do nosso README dizendo que hooks *não rodam em pasta não
+confiada*. Ou os dois sentidos de confiança são coisas diferentes, ou a nossa formulação
+está errada. Não sei qual, e escolher sem verificar seria trocar um erro por outro.
+
+O que a falta de confiança comprovadamente desliga é `permissions.additionalDirectories`
+— medido, literal, e já registrado como armadilha nº 14. A afirmação sobre hooks fica
+**marcada como não verificada** em vez de repetida.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
@@ -628,8 +673,9 @@ Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na 
 | ~~P2~~ | **Resolvida.** Público, em `alerocha-collab/metodo-claude-code`, sem menções ao projeto privado que serviu de exemplo. Confirmado por `gh repo view`. | — |
 | ~~P3~~ | **Resolvida.** `gh` 2.100.0 no PATH e autenticado; usado para criar o repo e acompanhar o CI. | — |
 | ~~P10~~ | **Descartada como causa.** O ticket 003 confirmou `python3` 3.14.2 disponível em PowerShell e cmd, fora do Git Bash. A dependência segue não declarada — isso é o ticket 004, não uma pendência solta. | — |
+| P12 | **A afirmação de que hooks não rodam em pasta não confiada não se sustentou.** Eles dispararam num workspace que o Claude Code declarou não confiado. Ou os dois sentidos de confiança diferem, ou o nosso README está errado. Ver decisão 018. | Confiar na nossa própria descrição da camada de garantia |
 | P4 | **Bump de `version` a cada release.** Sem isso, quem instalou fica com a cópia em cache. Segue disciplina: agora em **dois** lugares (`plugin.json` e a entrada do marketplace), e `tests/testar_marketplace.py` reprova se divergirem — subir errado é pego, **esquecer de subir não**. | Publicação |
-| P11 | **O portão nunca disparou de um plugin INSTALADO.** A prova do ticket 021 é do mecanismo de instalação e das skills do `doutrina`, que não têm hook. É a lacuna mais próxima de doer: o portão é a peça que o `metodo` existe para entregar. | Confiar no `metodo` fora deste repositório |
+| ~~P11~~ | **Resolvida.** Drill de três casos a partir de um plugin instalado: bloqueia com suíte vermelha, solta com verde, nega edição de teste existente. Ver decisão 018. | — |
 | ~~P5~~ | **Resolvida.** `claude plugin validate --strict` roda em CI para os dois plugins e para o marketplace, mais um passo que prova que a validação do marketplace reprova `version` divergente. | — |
 | ~~P7~~ | **Resolvida com ressalva** — ver decisão 006. Nome puro funciona. Ressalva: o teste rodou num repo que contém o plugin; confirmação definitiva na Fase 5. | — |
 | ~~P6~~ | **Resolvida.** Fase 0 fechada; achados e consequências em [docs/fase-0-mecanismos.md](docs/fase-0-mecanismos.md). | — |
