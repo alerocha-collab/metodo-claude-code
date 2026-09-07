@@ -39,6 +39,20 @@ ser do sistema operacional, e cobre **filesystem e rede**.
 
 Então negar leitura é a regra mais forte disponível, e costuma ser a única necessária.
 
+## A terceira assimetria: confiança barra o que concede
+
+Num workspace ainda não confiado, `permissions.allow` e `additionalDirectories` do
+projeto **não valem** — eles concedem. `deny` e `ask` valem desde sempre, porque só
+restringem. **O que protege não espera permissão para proteger.**
+
+Consequência que inverte a intuição: **hooks rodam antes de você confiar em qualquer
+coisa** — os de settings, os de skill de projeto e os de plugin instalado. Se a
+preocupação é código de terceiro executando na sua máquina, confiança **não** é a
+defesa; `--bare`, `--setting-sources user` e `disableAllHooks` são.
+
+A lista completa do que espera confiança, e as três consequências que pegam, estão em
+[referencias/armadilhas.md](${CLAUDE_PLUGIN_ROOT}/referencias/armadilhas.md), item 15.
+
 ## Os cinco modos de falha que produzem portão inerte
 
 Um hook que não funciona é pior que nenhum, porque dá sensação de cobertura. Estes

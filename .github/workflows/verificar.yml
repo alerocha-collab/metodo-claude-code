@@ -14,7 +14,13 @@ jobs:
     name: suites (fail-closed)
     runs-on: ubuntu-latest
     steps:
+      # `fetch-depth: 0` porque o detector de bump compara HEAD com a base. Com o
+      # checkout raso padrao (profundidade 1) a base nao existe, e ele avisaria em
+      # vez de verificar — falha aberta silenciosa, que e o que ele existe para
+      # impedir.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -62,6 +68,24 @@ jobs:
       # nao e falha de build — quem verifica drift e uma pessoa, deliberadamente.
       - name: Validar a integridade do indice de fontes
         run: python3 plugins/doutrina/scripts/verificar_fontes.py
+
+      # Todo push para `main` e um release: o marketplace aponta para ./plugins/<nome>
+      # e o cache de quem instalou e chaveado por versao. Mudar conteudo sem mudar
+      # `version` publica um plugin diferente sob o mesmo numero, e quem ja instalou
+      # fica com a copia antiga sem nada avisar. Este passo torna isso um erro.
+      - name: Exigir bump de version quando um plugin muda
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE="${{ github.event.before }}"
+          fi
+          # Push inicial de branch, ou historico reescrito: o git usa 40 zeros.
+          case "$BASE" in
+            ""|0000000000000000000000000000000000000000) BASE="HEAD~1" ;;
+          esac
+          echo "comparando com: $BASE"
+          python3 scripts/verificar_bump.py "$BASE"
 
       - name: Validar a fila de tickets, se existir
         run: |

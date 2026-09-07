@@ -691,6 +691,78 @@ já valer o tempo todo. Um experimento com um estado só não é experimento.
 
 ---
 
+## 020 — A confiança barra o que concede (fecha P12), e o bump virou mecanismo (fecha P4)
+
+**Data:** 2026-09-07
+
+### P12 — eu estava errado, e de um jeito que vale mais que o acerto
+
+A decisão 018 registrou que os hooks dispararam num workspace não confiado, contra o que
+o nosso README afirmava, e deixou a questão aberta em vez de escolher um lado. A doc
+resolve, e a regra é mais estreita e mais útil do que qualquer das duas leituras:
+
+> *"`permissions.allow` rules and `permissions.additionalDirectories` entries in a
+> project's `.claude/settings.json` **grant capability**, so Claude Code applies them
+> only after you accept the workspace trust dialog. `deny` and `ask` rules aren't
+> affected, **since they only restrict**."*
+
+**Confiança é um portão sobre concessão.** O que restringe vale sempre — o que protege
+não espera permissão para proteger. Na tabela oficial, hooks em settings aparecem como
+`Used` nas duas colunas sem confiança.
+
+Meu erro não foi um detalhe trocado: eu tinha juntado numa lista só coisas que a
+plataforma trata de formas opostas. `additionalDirectories` e hooks estavam na mesma
+frase, e um espera confiança e o outro não.
+
+**Três consequências que a correção trouxe, e que não estavam em lugar nenhum nosso:**
+
+1. **Hooks rodam antes de qualquer confiança**, venham de settings, de skill de projeto
+   ou de plugin. Se a preocupação é código de terceiro executando na máquina, confiança
+   **não** é a defesa: `--bare`, `--setting-sources user` e `disableAllHooks` são.
+2. **Hook de subagente é o oposto do de settings**: fica parado, e *sem diálogo
+   oferecido* — não há o que aceitar.
+3. **`extraKnownMarketplaces` do repositório não carrega antes da confiança.** Isso
+   atinge a nossa própria instrução de instalar com `--scope project`: quem clonar não
+   recebe os plugins até confiar na pasta. Está no README agora.
+
+Registrado como armadilha nº 15, e a assimetria entrou na skill `garantir` — é dela que
+alguém precisa ao decidir onde pôr uma garantia.
+
+### P4 — de disciplina a mecanismo
+
+O que faltava não era lembrete, era o **modelo certo do problema**: o `marketplace.json`
+aponta para `./plugins/<nome>`, então **todo push para `main` é um release**. Não há
+etapa de publicação separada. E o cache é chaveado por versão
+(`~/.claude/plugins/cache/<mkt>/<plugin>/<versão>/`), então mudar conteúdo sem mudar
+`version` publica um plugin diferente sob o mesmo número — e quem já instalou fica com a
+cópia antiga **sem nada avisar**.
+
+`scripts/verificar_bump.py` compara HEAD com a base e reprova quando conteúdo de plugin
+mudou e `version` não. No CI, com `fetch-depth: 0` — com o checkout raso padrão a base
+não existiria e o detector avisaria em vez de verificar, que é a falha aberta que ele
+existe para impedir.
+
+**As duas metades, agora fechadas:** `testar_marketplace.py` pega **subir errado**
+(versão divergente entre marketplace e `plugin.json`); `verificar_bump.py` pega
+**esquecer de subir**. Uma sozinha deixava metade do problema em pé.
+
+**A suíte é balanceada em dois eixos, não um.** O óbvio: mudou sem bump reprova, mudou
+com bump passa. O menos óbvio, e o que impede um detector histérico: mexer só em
+`README.md`, em `tests/` ou no CI **não** pode exigir bump. Se exigisse, todo commit de
+manutenção viraria release e a disciplina seria abandonada por ser insuportável. Também
+verifica **qual** plugin foi acusado — um detector que acusa o errado passaria nos casos
+positivos e mandaria subir a versão errada.
+
+**E ele mordeu na primeira execução, num erro meu.** Rodado contra o histórico real,
+acusou o commit `d34825f`: alterou `armadilhas.md` e deixou o `doutrina` em `0.1.0`.
+Eu tinha acabado de escrever que o bump era disciplina — e falhei nela enquanto escrevia
+o mecanismo que a substitui. `doutrina` foi para `0.2.0`, nos dois lugares.
+
+**O que continua fora de alcance:** o detector compara commits, então ele não pode julgar
+se `0.1.0 -> 0.2.0` era a *magnitude* certa. Semântica de versão segue humana.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.
@@ -700,6 +772,10 @@ Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na 
 > nomeia: item que nunca sai tira o crédito dos que importam. Nada vigia esta tabela;
 > ela depende de ser lida ao fechar uma fase.
 
+**Nenhuma pendência aberta em 2026-09-07.** As riscadas ficam por registro, e vale
+notar o padrão: várias foram fechadas **pelo negativo** — descobrindo que a premissa
+estava errada, não que o trabalho faltava.
+
 | # | Pendência | Bloqueia |
 |---|---|---|
 | ~~P1~~ | **Resolvida.** As cópias de `~/.claude/` foram movidas para `~/.claude/_backup-arquiteto/`. Achado no caminho: renomear para `.bak` **não** tira uma skill de circulação — o Claude Code carrega skill pelo **diretório**, não pelo `name:` do frontmatter, e ela reapareceu como `arquiteto-claude-code.bak`. Agente sim exige `.md`. Apagar o backup só depois da P7. | — |
@@ -708,8 +784,8 @@ Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na 
 | ~~P2~~ | **Resolvida.** Público, em `alerocha-collab/metodo-claude-code`, sem menções ao projeto privado que serviu de exemplo. Confirmado por `gh repo view`. | — |
 | ~~P3~~ | **Resolvida.** `gh` 2.100.0 no PATH e autenticado; usado para criar o repo e acompanhar o CI. | — |
 | ~~P10~~ | **Descartada como causa.** O ticket 003 confirmou `python3` 3.14.2 disponível em PowerShell e cmd, fora do Git Bash. A dependência segue não declarada — isso é o ticket 004, não uma pendência solta. | — |
-| P12 | **A afirmação de que hooks não rodam em pasta não confiada não se sustentou.** Eles dispararam num workspace que o Claude Code declarou não confiado. Ou os dois sentidos de confiança diferem, ou o nosso README está errado. Ver decisão 018. | Confiar na nossa própria descrição da camada de garantia |
-| P4 | **Bump de `version` a cada release.** Sem isso, quem instalou fica com a cópia em cache. Segue disciplina: agora em **dois** lugares (`plugin.json` e a entrada do marketplace), e `tests/testar_marketplace.py` reprova se divergirem — subir errado é pego, **esquecer de subir não**. | Publicação |
+| ~~P12~~ | **Resolvida: o README estava errado.** A confiança barra o que **concede** (`allow`, `additionalDirectories`), não o que executa. Hooks rodam sem ela. Armadilha nº 15 e decisão 020. | — |
+| ~~P4~~ | **Resolvida.** `scripts/verificar_bump.py` no CI reprova conteúdo de plugin alterado sem `version` alterada. Com `testar_marketplace.py`, as duas metades fecham: subir errado e esquecer de subir. Ver decisão 020. | — |
 | ~~P11~~ | **Resolvida.** Drill de três casos a partir de um plugin instalado: bloqueia com suíte vermelha, solta com verde, nega edição de teste existente. Ver decisão 018. | — |
 | ~~P5~~ | **Resolvida.** `claude plugin validate --strict` roda em CI para os dois plugins e para o marketplace, mais um passo que prova que a validação do marketplace reprova `version` divergente. | — |
 | ~~P7~~ | **Resolvida com ressalva** — ver decisão 006. Nome puro funciona. Ressalva: o teste rodou num repo que contém o plugin; confirmação definitiva na Fase 5. | — |

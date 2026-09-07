@@ -14,7 +14,7 @@ de um repositório que já existe.
 python3 tests/testar_tudo.py
 ```
 
-Onze suítes, ~149 casos, todas com **conjunto balanceado**: metade verifica que a trava
+Doze suítes, 169 casos, todas com **conjunto balanceado**: metade verifica que a trava
 age quando deve, metade que ela **não** age quando não deve. Uma suíte só com casos
 positivos aprova uma trava que bloqueia tudo.
 
@@ -41,10 +41,13 @@ As skills e os agentes são **pedido**: o modelo lê e decide. Os hooks são gar
 **condicional**: disparam sempre, mas dão timeout e saem com código que não bloqueia.
 `permissions` é a única camada **dura** — aplicada pelo cliente antes de o modelo agir.
 
-> A lista de condições costumava incluir *"e não rodam em pasta não confiada"*. Isso
-> **não se sustentou no teste**: os dois hooks dispararam num workspace que o Claude Code
-> declarou não confiado. A frase saiu daqui até ser verificada — pendência P12. O que a
-> falta de confiança comprovadamente desliga é `permissions.additionalDirectories`.
+> Este README já afirmou que hooks *"não rodam em pasta não confiada"*. **Estava
+> errado**, e a doc é explícita sobre por quê: a confiança de workspace barra o que
+> **concede** — `permissions.allow` e `additionalDirectories` —, não o que executa.
+> `deny` e `ask` valem sempre, *since they only restrict*. **Hooks rodam antes de você
+> confiar em qualquer coisa**, venham de settings, de skill de projeto ou de plugin. Se
+> a preocupação é código de terceiro rodando na sua máquina, a defesa é `--bare`,
+> `--setting-sources user` ou `disableAllHooks`, não confiança. Ver armadilha nº 15.
 
 O plugin **não** a instala sozinho, de propósito: regra de permissão que aparece sem
 alguém ter escolhido é a forma mais rápida de perder a confiança de quem instalou.
@@ -117,6 +120,12 @@ claude plugin install doutrina@metodo-claude-code --scope project
 de na configuração do seu usuário. Troque `doutrina` por `metodo` para o outro. Os dois
 são independentes: nenhum depende do outro.
 
+> ⚠️ **O preço do escopo de projeto:** `extraKnownMarketplaces` vindo do repositório
+> **não carrega até a pasta ser confiada**. Quem clonar o projeto não recebe os plugins
+> antes de aceitar o diálogo — inclusive em `-p`, onde ele nunca aparece. Se você quer os
+> plugins disponíveis sem esse passo, instale com `--scope user`, ao custo de eles não
+> virem versionados com o repositório.
+
 ### O passo que quase todo mundo esquece
 
 As skills do `doutrina` são curtas de propósito e carregam o detalhe sob demanda, de
@@ -142,7 +151,8 @@ O permanente são **duas coisas, e as duas são necessárias**. Primeiro, a regr
 ```
 
 Segundo, **aceitar o diálogo de confiança** — rode `claude` interativamente na pasta uma
-vez. Sem isso a regra acima é **ignorada**, e a mensagem diz exatamente isso:
+vez. `additionalDirectories` concede capacidade, e é exatamente essa classe de regra que
+a confiança segura. Sem ela a regra acima é **ignorada**, e a mensagem diz isso:
 *"Ignoring 1 permissions.additionalDirectories entry from `.claude/settings.json`: this
 workspace has not been trusted."*
 
@@ -239,8 +249,19 @@ continua com a cópia em cache. E o bump é em **dois lugares**: `plugin.json` e
 correspondente no `marketplace.json`. `tests/testar_marketplace.py` reprova se os dois
 divergirem, porque o validador oficial só avisa.
 
-Continua sendo disciplina, não mecanismo: nada obriga a subir a versão. O que existe é
-detecção — subir errado é pego, esquecer de subir não.
+**Isso é mecanismo, não disciplina.** `scripts/verificar_bump.py` roda no CI e reprova
+quando conteúdo de plugin mudou e `version` não:
+
+```bash
+python3 scripts/verificar_bump.py HEAD~1
+```
+
+As duas metades fecham o problema: `testar_marketplace.py` pega **subir errado**, este
+pega **esquecer de subir**. Mexer só em `README.md`, em `tests/` ou no CI não exige
+bump — se exigisse, todo commit de manutenção viraria release.
+
+O que segue humano é a **magnitude**: o detector compara commits, não julga se
+`0.1.0 → 0.2.0` era o salto certo.
 
 ## Documentos
 

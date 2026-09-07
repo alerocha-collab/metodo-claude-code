@@ -171,6 +171,51 @@ headless, `-p` num clone novo — só `--add-dir` resolve.
 O diagnóstico rápido: se a linha *"Ignoring N permissions.additionalDirectories
 entries"* aparece, o problema é confiança, não a regra.
 
+### 15. A confiança de workspace barra o que CONCEDE, não o que executa
+
+O erro intuitivo é achar que pasta não confiada é pasta inerte. Não é. A regra real é
+mais estreita e mais útil:
+
+> *"`permissions.allow` rules and `permissions.additionalDirectories` entries in a
+> project's `.claude/settings.json` **grant capability**, so Claude Code applies them
+> only after you accept the workspace trust dialog. `deny` and `ask` rules aren't
+> affected, **since they only restrict**."*
+
+Ou seja: **confiança é um portão sobre concessão.** Restrição vale sempre — o que protege
+não espera permissão para proteger.
+
+O que isso implica, e contradiz a leitura rápida:
+
+| Conteúdo do repositório | Vale sem confiança? |
+|---|---|
+| Hooks em settings, `env`, `apiKeyHelper` | **Sim** |
+| Hooks e `allowed-tools` de skill de projeto | **Sim** — `allowed-tools` nunca é barrado por confiança, em sessão nenhuma |
+| Hooks de plugin instalado | **Sim** (medido) |
+| `deny` e `ask` | **Sim** |
+| `permissions.allow` e `additionalDirectories` | **Não** |
+| Hooks no frontmatter de **subagente** de projeto | **Não** — e nenhum diálogo é oferecido |
+| `extraKnownMarketplaces` vindo do repositório | **Não** |
+| `mcpServers` inline no frontmatter de subagente | **Não** |
+
+**Três consequências que pegam:**
+
+1. **Um `hooks.json` roda antes de você confiar em nada.** Se a preocupação for código de
+   terceiro executando na sua máquina, confiança **não** é a defesa — `--bare`,
+   `--setting-sources user` ou `--settings '{"disableAllHooks": true}'` são.
+2. **Hook de subagente e hook de settings se comportam de formas opostas.** O de subagente
+   fica parado, e *sem diálogo oferecido* — não há o que aceitar.
+3. **`extraKnownMarketplaces` no `.claude/settings.json` de um repositório não carrega
+   antes da confiança.** Quem clona um repositório que declara um marketplace de projeto
+   não recebe o plugin até confiar na pasta.
+
+**Onde a confiança mora:** é chaveada na **raiz do repositório git**, não na pasta onde
+você abriu. Fora de repositório, na pasta de início. Na home, vale só para a sessão e não
+é escrita em disco.
+
+**`claude -p` nunca mostra o diálogo**, e confiar na pasta-pai não conta para estas
+regras. Para conceder à mão: `projects["<raiz>"].hasTrustDialogAccepted: true` em
+`~/.claude.json`.
+
 O sintoma engana: a skill dispara, roteia certo, nomeia o arquivo — e não entrega. Parece
 skill mal escrita, e é fronteira de diretório.
 
@@ -187,4 +232,5 @@ comportamento que esta ficha afirma, confira a data no topo — a doc muda toda 
 
 *Fontes: `features-overview`, `memory`, `context-window`, `claude-directory`,
 `how-claude-code-works`, `sub-agents`, `agents`, `agent-teams`, `hooks`, `hooks-guide`,
-`skills`, `best-practices`. Os itens 6, 7 e 14 foram medidos em sessão real, não só lidos.*
+`skills`, `best-practices`. Os itens 6, 7 e 14 foram medidos em sessão real, não só lidos. O 15 corrige uma
+afirmação que estava errada na nossa própria documentação — ver DECISIONS 020.*
