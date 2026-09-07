@@ -59,6 +59,24 @@ disputando atenção com a certa.
 
 O mesmo vale entre tarefas não relacionadas: recomeçar é mais barato que carregar.
 
+## A altitude do que você escreve
+
+Vale para prompt de sistema, `CLAUDE.md` e corpo de skill — todos sofrem da mesma zona
+entre dois extremos:
+
+- **Específico demais** codifica lógica condicional frágil, que quebra no primeiro caso
+  não previsto.
+- **Vago demais** não guia, e assume um entendimento compartilhado que não existe.
+
+O alvo é *"o conjunto mínimo de informação que descreve completamente o comportamento
+esperado"* — concreto o bastante para guiar, flexível o bastante para servir de
+heurística.
+
+**A regra de crescimento:** comece mínimo num modelo capaz e acrescente instrução **com
+base em falha observada**, nunca antecipadamente. Instrução escrita para um problema
+que ainda não aconteceu custa contexto em todo request e frequentemente descreve um
+problema que o modelo não tem.
+
 ## Onde a instrução mora muda o custo
 
 Esta é a decisão de contexto que se toma uma vez e vale para sempre.

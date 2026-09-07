@@ -118,6 +118,33 @@ um número de bloqueios seguidos sem progresso. O evento traz um campo dizendo q
 hook já bloqueou; um hook que o ignora se desliga sozinho, em silêncio, exatamente
 quando está funcionando.
 
+## Quando o portão é um classificador, e não uma regra
+
+Há um terceiro desenho além de regra fixa e hook: **julgar cada ação antes de executar**.
+É o que o auto mode faz, e as decisões dele generalizam para qualquer avaliador de ação.
+
+A motivação é medida e desconfortável: **usuários aprovavam 93% dos prompts de permissão
+de qualquer forma.** Prompt que aparece sempre não é revisão, é ritual.
+
+**Duas decisões que valem fora do caso:**
+
+1. **O avaliador não vê o raciocínio do agente.** Isso impede que o agente *"convença o
+   classificador a tomar uma decisão ruim"* com racionalização persuasiva, e força a
+   decisão sobre a **ação**, não sobre a justificativa dela.
+2. **Negar e continuar**, em vez de negar e parar. O modelo recebe o feedback e procura
+   um caminho mais seguro; o usuário vê um retry, não o fim da sessão. Isso torna falso
+   positivo **sobrevivível** — e é o que permite apertar o portão sem tornar a
+   ferramenta insuportável.
+
+**E o número honesto:** em incidentes reais de ação excessiva, **17% de falso negativo**.
+Não porque o classificador não veja o comando perigoso, mas porque não consegue
+determinar se o consentimento cobria aquele raio de dano. *"Uma aprovação não é um
+padrão."*
+
+A consequência de projeto: um classificador **substitui acesso irrestrito, não revisão
+humana** em infraestrutura de alto risco. Restrinja operação autônoma às tarefas onde
+17% é aceitável.
+
 ## Antes de escrever o hook
 
 Duas perguntas, nesta ordem:

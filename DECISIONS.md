@@ -829,6 +829,78 @@ a ordem é commitar, rodar, empurrar. Eu empurrei sem rodar.
 
 ---
 
+## 022 — A `arquiteto-claude-code` aposentada, com inventário
+
+**Data:** 2026-09-07 · **Tickets:** 023, 024, 025, 026
+
+### O que motivou
+
+Ao debater se o `metodo` deveria "chamar" o `doutrina` ao planejar, apareceu um fato que
+mudava a pergunta: o `metodo` **já carregava** uma skill em forma de doutrina, com sete
+arquivos de referência próprios. Não era dependência faltando — era **duplicação**.
+
+Na primeira leitura chamei aquilo de duplicata do `doutrina`. **Estava errado**, e medir
+corrigiu: os dois corpos tinham **bases de fonte diferentes**. `fontes.json` indexava 191
+páginas, todas de `code.claude.com`; de `anthropic.com/engineering`, **zero**. A skill do
+`metodo` vinha justamente do blog. Três das sete referências tinham par no `doutrina`;
+três não tinham nenhum.
+
+Sem essa medição, a decisão teria sido apagar a skill — e perder ~400 linhas de doutrina
+sem herdeiro.
+
+### O inventário de migração
+
+Nada saiu por omissão. As sete referências, mais o corpo da skill:
+
+| Origem | Destino |
+|---|---|
+| `01-arquitetura-agentes` | **Migrado** → skill `doutrina:arquitetar` + `referencias/duravel/arquitetura-de-agentes.md` |
+| `04-verificacao-e-evals` | **Migrado** → skill `doutrina:avaliar` + `referencias/duravel/evals.md` |
+| `02-contexto-e-memoria` | Coberto por `doutrina:contexto`. **Faltava a altitude do prompt** — migrada para lá |
+| `03-mecanismos-extensao` | Coberto por `onde-colocar`, `escrever-skill`, `paralelizar`. MCP, output styles e precedências já estavam |
+| `05-seguranca` | Coberto por `garantir`. **Faltava o padrão de classificador de ações** — migrado para lá |
+| `06-fontes` | Virou dado: 19 páginas em `fontes.json`, com hash e detecção de drift. Deixa de ser lista em prosa |
+| `07-template-entregavel` | **Movido para o `metodo`** → `templates/arquitetura.md`. Não é conhecimento: é a forma de um artefato, irmã do `ticket.md` |
+| Corpo: regras invioláveis, viés a combater, contrato de saída | **Movidos para o template**, que é onde eles se aplicam |
+| Corpo: tabela de alocação, diagnósticos rápidos | Já cobertos por `matriz.md` e `armadilhas.md` |
+| Corpo: procedimento de 8 passos | **Descartado.** Era roteiro de skill; com o `doutrina` instalado, cada passo tem ficha própria e mais específica |
+
+### A regra que a migração fixou
+
+**A camada de processo não carrega cópia da camada de conhecimento.**
+
+O `metodo` ficou com a *forma* do documento e o papel que o produz. O `doutrina` ficou
+com o *conteúdo*. E o agente `arquiteto` foi religado: usa as fichas se elas existirem, e
+**se o `doutrina` não estiver instalado, diz isso na primeira linha do documento**.
+
+**Alternativa descartada:** declarar dependência entre os plugins. Ela reverteria a
+separação da Fase 2 (cadência e propósito diferentes), custaria contexto a quem quer só o
+processo, e falharia aberta no pior jeito — sem o `doutrina` instalado, o agente
+improvisaria achando que cumpriu o passo. A degradação declarada é honesta; a dependência
+escondida não é.
+
+### Dois achados no caminho
+
+**O detector não transferia para o blog.** A doc é markdown puro; o blog é página
+construída — 211 KB de HTML para 20 KB de texto, `nonce` em vinte lugares, classes com
+hash de build. Hashear cru faria o detector acusar a cada reconstrução do site. Daí
+`normalizar_html` e o campo `formato`, com o teste que importa: ruído de build **não**
+muda o hash, mudança de texto **muda** — sem o segundo, um normalizador que devolvesse
+`""` passaria.
+
+**Uma afirmação falsa no índice.** O comentário dizia que `prioridade: nucleo` significa
+"destilada em ficha local". Não significa: 53 das 80 páginas núcleo não têm ficha.
+`nucleo` marca o que **merece** destilação. O verificador agora imprime a diferença,
+porque dívida que ninguém conta é dívida que ninguém paga.
+
+### O saldo
+
+Duas skills a mais no `doutrina`, uma a menos no `metodo`, e o orçamento de descrição
+**caiu**: 4.462 → 4.407 caracteres. O conhecimento cresceu e o custo por request diminuiu,
+porque a skill removida sozinha ocupava 486.
+
+---
+
 ## Pendências que este repositório carrega
 
 Registradas aqui porque bloqueiam fases seguintes e se perdem se ficarem só na conversa.

@@ -29,6 +29,7 @@ para o runner.
 
 | Artefato | Onde | Para quê |
 |---|---|---|
+| `arquitetura.md` | `docs/` | A forma do documento de arquitetura. O conteúdo vem do `doutrina` |
 | `metodo.json` | `.claude/` | Declara o comando que decide verde/vermelho. Sem ele, o portão bloqueia. **Copie o template — o formato não é adivinhável** |
 | `fila.json` | `tickets/` | Estado dos tickets e o grafo de bloqueio. JSON porque muda toda sessão |
 | `ticket.md` | `tickets/NNN-*.md` | A spec de uma fatia. Markdown porque é prosa escrita uma vez |
@@ -69,9 +70,9 @@ python3 plugins/metodo/scripts/validar_fila.py tickets/fila.json
 │   └── marketplace.json         anuncia os dois plugins para instalação
 └── plugins/
     ├── doutrina/                a documentação do Claude Code destilada
-    │   ├── skills/              as seis fichas, por pergunta
+    │   ├── skills/              as oito fichas, por pergunta
     │   ├── referencias/         durável × volátil, carregado sob demanda
-    │   └── fontes.json          210 fontes indexadas, com hash
+    │   └── fontes.json          210 fontes indexadas, com hash — docs e blog
     └── metodo/                  a metodologia propriamente dita
         ├── agents/              papéis: construtor, operador, arquiteto
         ├── skills/              as do pipeline, mais o onboarding
@@ -203,6 +204,11 @@ sobe só a entrada acha que publicou, e o cache continua servindo a versão anti
 | `/metodo:revisar` | Revisa em dois eixos, Standards e Spec, em contextos separados |
 | `/metodo:fluxo` | Diz onde o projeto está e qual é o próximo passo |
 
+O `metodo` **não** carrega doutrina de arquitetura. Ele traz a *forma* do documento
+(`templates/arquitetura.md`) e o papel que o produz (o agente `arquiteto`); o *conteúdo*
+— quando usar agente, qual padrão, como avaliar — vem do plugin `doutrina`. A separação
+é deliberada: camada de processo não carrega cópia da camada de conhecimento.
+
 E o prefixo de reengenharia, para partir de um repositório que já existe. As três
 rodam em ordem, e depois a trilha converge com a de projeto novo:
 
@@ -215,7 +221,7 @@ rodam em ordem, e depois a trilha converge com a de projeto novo:
 ## Namespacing
 
 Tudo que o plugin distribui carrega o prefixo `metodo:`. Skills se invocam como
-`/metodo:arquiteto-claude-code`; agentes aparecem no typeahead como
+`/metodo:fatiar`; agentes aparecem no typeahead como
 `metodo:arquiteto`.
 
 ### A assimetria que pega quem instala

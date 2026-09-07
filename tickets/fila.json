@@ -221,7 +221,7 @@
     {
       "id": "026",
       "titulo": "Aposentar a arquiteto-claude-code, sem perder nada",
-      "estado": "pronto",
+      "estado": "concluido",
       "bloqueado_por": [
         "024",
         "025"
